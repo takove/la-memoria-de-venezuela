@@ -157,14 +157,6 @@
             No acusaciones anónimas, rumores, o listas arbitrarias.
           </p>
         </div>
-        
-        <div class="p-4 bg-blue-50 border-l-4 border-blue-600">
-          <h3 class="font-bold text-blue-900 mb-2">🕊️ No Violencia</h3>
-          <p class="text-blue-800">
-            Promovemos rendición de cuentas legal y pacífica. Prohibimos cualquier amenaza 
-            o llamado a violencia. La justicia se logra con transparencia, no con venganza.
-          </p>
-        </div>
 
         <div class="p-4 bg-blue-50 border-l-4 border-blue-600">
           <h3 class="font-bold text-blue-900 mb-2">📖 Derecho a Corrección</h3>
