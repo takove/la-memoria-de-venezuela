@@ -143,18 +143,18 @@
       <h2>Principios Fundamentales</h2>
       <div class="space-y-4">
         <div class="p-4 bg-blue-50 border-l-4 border-blue-600">
-          <h3 class="font-bold text-blue-900 mb-2">🔍 Solo Funcionarios Públicos</h3>
+          <h3 class="font-bold text-blue-900 mb-2">⚖️ Fuentes Verificadas</h3>
           <p class="text-blue-800">
-            NUNCA documentaremos ciudadanos comunes, votantes, o personas sin poder político.
-            Solo funcionarios que ejercen autoridad del Estado.
+            Priorizamos información de gobiernos, cortes, y organizaciones internacionales.
+            También documentamos información verificable de múltiples fuentes confiables.
           </p>
         </div>
-        
+
         <div class="p-4 bg-blue-50 border-l-4 border-blue-600">
-          <h3 class="font-bold text-blue-900 mb-2">⚖️ Solo Fuentes Oficiales</h3>
+          <h3 class="font-bold text-blue-900 mb-2">📊 Niveles de Confianza</h3>
           <p class="text-blue-800">
-            Toda información proviene de gobiernos, cortes, y organizaciones internacionales.
-            No acusaciones anónimas, rumores, o listas arbitrarias.
+            Toda información incluye un nivel de confianza (1-5) basado en la calidad y cantidad de fuentes.
+            Los usuarios pueden filtrar por nivel de confianza según sus necesidades.
           </p>
         </div>
 
