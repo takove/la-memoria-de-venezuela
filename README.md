@@ -89,14 +89,15 @@ expose-enchufados/
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 20+
+- Node.js 18+
 - pnpm (recommended) or npm
 - PostgreSQL or Supabase account
 
 ### 1. Clone and Install
 
 ```bash
-cd expose-enchufados
+git clone https://github.com/takove/la-memoria-de-venezuela.git
+cd la-memoria-de-venezuela
 
 # Install backend dependencies
 cd backend && pnpm install
@@ -110,51 +111,96 @@ cd ../frontend && pnpm install
 ```bash
 # Backend (.env)
 cp backend/.env.example backend/.env
+# Edit backend/.env with your Supabase credentials
 
 # Frontend (.env)
 cp frontend/.env.example frontend/.env
+# Edit frontend/.env with API URL
+```
+
+**Important**: Use Supabase Session Pooler URL for database connection:
+```
+DATABASE_URL=postgresql://postgres.PROJECT_REF:PASSWORD@aws-1-us-east-1.pooler.supabase.com:5432/postgres
 ```
 
 ### 3. Database Setup
 
 ```bash
-# Run migrations
-cd backend && pnpm migration:run
+# TypeORM will auto-sync schema in development
+cd backend && pnpm start:dev
 ```
 
 ### 4. Start Development
 
 ```bash
-# Terminal 1: Backend
+# Terminal 1: Backend (port 3000)
 cd backend && pnpm start:dev
 
-# Terminal 2: Frontend
+# Terminal 2: Frontend (port 5173)
 cd frontend && pnpm dev
+```
+
+Visit `http://localhost:5173` to see the app.
+
+## 💻 Development
+
+### Coding Standards
+
+See [`.github/copilot-instructions.md`](.github/copilot-instructions.md) for comprehensive coding guidelines including:
+- TypeScript best practices
+- NestJS patterns
+- SvelteKit component structure
+- Database schema conventions
+- API design principles
+- Testing requirements
+
+### Contributing
+
+Please read [`CONTRIBUTING.md`](.github/CONTRIBUTING.md) before submitting pull requests.
+
+### Running Tests
+
+```bash
+# Backend tests (Jest)
+cd backend && pnpm test
+
+# Frontend tests (Vitest) - Coming soon
+cd frontend && pnpm test
 ```
 
 ## 📋 Roadmap
 
-### Phase 1: Foundation (Month 1)
-- [x] Project setup
-- [ ] Database schema
-- [ ] Basic API endpoints
-- [ ] Search functionality
+### ✅ Phase 1: Foundation (Completed)
+- [x] Project setup (NestJS + SvelteKit)
+- [x] Database schema (PostgreSQL + TypeORM)
+- [x] Basic API endpoints (Officials, Sanctions, Cases)
+- [x] Search functionality (Full-text search)
+- [x] 5 sample officials with data
+- [x] 3 OFAC sanctions
+- [x] 2 federal cases with involvements
 
-### Phase 2: Data Ingestion (Month 2)
-- [ ] OFAC sanctions import
-- [ ] Indictment data parsing
-- [ ] IACHR report integration
+### 🚧 Phase 2: Enhanced Features (In Progress)
+- [x] GitHub Copilot instructions
+- [ ] Unit testing (Jest + Vitest)
+- [ ] TIER 2: Testaferros database (200+ individuals)
+- [ ] Business screening API for sanctions check
+- [ ] Network visualization with D3.js
 
-### Phase 3: Frontend (Month 2-3)
-- [ ] Search interface
-- [ ] Official profiles
-- [ ] Timeline visualization
-- [ ] Mobile responsive
+### 📅 Phase 3: Data Expansion (Planned)
+- [ ] TIER 3: Business enablers (500+ entities)
+- [ ] TIER 4: Cultural figures (500+ propagandists)
+- [ ] TIER 5: International enablers
+- [ ] Confidence level system (1-5 scale)
+- [ ] Dispute resolution process
 
-### Phase 4: Launch (Month 3-4)
+### 🚀 Phase 4: Production (Planned)
+- [ ] CI/CD pipeline with GitHub Actions
+- [ ] Comprehensive documentation
 - [ ] Security audit
 - [ ] Performance optimization
 - [ ] Public launch
+
+**Current Status**: Core application functional with sample data. See [GitHub Issues](https://github.com/takove/la-memoria-de-venezuela/issues) for detailed tasks.
 
 ## ⚖️ Legal Disclaimer
 
