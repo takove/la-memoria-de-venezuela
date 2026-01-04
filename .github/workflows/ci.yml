@@ -37,7 +37,7 @@ jobs:
         run: pnpm --dir backend lint
 
       - name: Test backend
-        run: pnpm --dir backend test:cov -- --runInBand
+        run: pnpm --dir backend test:cov --runInBand
 
       - name: Lint frontend
         run: pnpm --dir frontend lint
