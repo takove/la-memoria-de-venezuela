@@ -42,6 +42,9 @@ jobs:
       - name: Lint frontend
         run: pnpm --dir frontend lint
 
+      - name: Sync SvelteKit types
+        run: pnpm --dir frontend svelte-kit sync
+
       - name: Test frontend
         run: pnpm --dir frontend test:ci
 
