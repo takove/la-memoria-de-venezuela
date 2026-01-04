@@ -1,33 +1,35 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CasesService } from './cases.service';
-import { Case, CaseType, CaseStatus, Jurisdiction } from '../../entities/case.entity';
-import { CaseInvolvement } from '../../entities/case-involvement.entity';
-import { NotFoundException } from '@nestjs/common';
+import { Test, TestingModule } from "@nestjs/testing";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import { CasesService } from "./cases.service";
+import {
+  Case,
+  CaseType,
+  CaseStatus,
+  Jurisdiction,
+} from "../../entities/case.entity";
+import { CaseInvolvement } from "../../entities/case-involvement.entity";
+import { NotFoundException } from "@nestjs/common";
 
-describe('CasesService', () => {
+describe("CasesService", () => {
   let service: CasesService;
-  let casesRepository: Repository<Case>;
-  let involvementsRepository: Repository<CaseInvolvement>;
 
   const mockCase: Case = {
-    id: 'case-uuid',
-    caseNumber: '1:20-cr-00177',
-    title: 'Test Case',
-    titleEs: 'Caso de Prueba',
+    id: "case-uuid",
+    caseNumber: "1:20-cr-00177",
+    title: "Test Case",
+    titleEs: "Caso de Prueba",
     type: CaseType.INDICTMENT,
     jurisdiction: Jurisdiction.USA,
-    court: 'Test Court',
-    description: 'Test description',
-    descriptionEs: 'Descripción de prueba',
-    charges: ['Charge 1'],
-    chargesEs: ['Cargo 1'],
-    filingDate: new Date('2020-01-01'),
+    court: "Test Court",
+    description: "Test description",
+    descriptionEs: "Descripción de prueba",
+    charges: ["Charge 1"],
+    chargesEs: ["Cargo 1"],
+    filingDate: new Date("2020-01-01"),
     resolutionDate: undefined,
     status: CaseStatus.OPEN,
     documentUrl: undefined,
-    sourceUrl: 'https://test.gov',
+    sourceUrl: "https://test.gov",
     metadata: undefined,
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -35,12 +37,12 @@ describe('CasesService', () => {
   } as any;
 
   const mockInvolvement: CaseInvolvement = {
-    id: 'involvement-uuid',
-    officialId: 'official-uuid',
-    caseId: 'case-uuid',
-    role: 'defendant' as any,
-    details: 'Test details',
-    detailsEs: 'Detalles de prueba',
+    id: "involvement-uuid",
+    officialId: "official-uuid",
+    caseId: "case-uuid",
+    role: "defendant" as any,
+    details: "Test details",
+    detailsEs: "Detalles de prueba",
     createdAt: new Date(),
     official: undefined,
     case: undefined,
@@ -77,22 +79,18 @@ describe('CasesService', () => {
     }).compile();
 
     service = module.get<CasesService>(CasesService);
-    casesRepository = module.get<Repository<Case>>(getRepositoryToken(Case));
-    involvementsRepository = module.get<Repository<CaseInvolvement>>(
-      getRepositoryToken(CaseInvolvement),
-    );
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('findAll', () => {
-    it('should return paginated list of cases', async () => {
+  describe("findAll", () => {
+    it("should return paginated list of cases", async () => {
       const mockQueryBuilder = {
         leftJoinAndSelect: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
@@ -115,7 +113,7 @@ describe('CasesService', () => {
       });
     });
 
-    it('should filter by type', async () => {
+    it("should filter by type", async () => {
       const mockQueryBuilder = {
         leftJoinAndSelect: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
@@ -127,19 +125,19 @@ describe('CasesService', () => {
 
       mockCasesRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
 
-      await service.findAll({ 
+      await service.findAll({
         type: CaseType.INDICTMENT,
         page: 1,
-        limit: 20
+        limit: 20,
       });
 
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        'case.type = :type',
-        { type: CaseType.INDICTMENT }
+        "case.type = :type",
+        { type: CaseType.INDICTMENT },
       );
     });
 
-    it('should filter by jurisdiction', async () => {
+    it("should filter by jurisdiction", async () => {
       const mockQueryBuilder = {
         leftJoinAndSelect: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
@@ -151,61 +149,61 @@ describe('CasesService', () => {
 
       mockCasesRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
 
-      await service.findAll({ 
+      await service.findAll({
         jurisdiction: Jurisdiction.USA,
         page: 1,
-        limit: 20
+        limit: 20,
       });
 
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        'case.jurisdiction = :jurisdiction',
-        { jurisdiction: Jurisdiction.USA }
+        "case.jurisdiction = :jurisdiction",
+        { jurisdiction: Jurisdiction.USA },
       );
     });
   });
 
-  describe('findOne', () => {
-    it('should return a case by id', async () => {
+  describe("findOne", () => {
+    it("should return a case by id", async () => {
       mockCasesRepository.findOne.mockResolvedValue(mockCase);
 
-      const result = await service.findOne('case-uuid');
+      const result = await service.findOne("case-uuid");
 
       expect(result).toEqual(mockCase);
       expect(mockCasesRepository.findOne).toHaveBeenCalledWith({
-        where: { id: 'case-uuid' },
-        relations: ['involvements', 'involvements.official'],
+        where: { id: "case-uuid" },
+        relations: ["involvements", "involvements.official"],
       });
     });
 
-    it('should throw NotFoundException when case not found', async () => {
+    it("should throw NotFoundException when case not found", async () => {
       mockCasesRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.findOne('invalid-id')).rejects.toThrow(
+      await expect(service.findOne("invalid-id")).rejects.toThrow(
         NotFoundException,
       );
     });
   });
 
-  describe('findByOfficial', () => {
-    it('should return all cases for an official', async () => {
+  describe("findByOfficial", () => {
+    it("should return all cases for an official", async () => {
       mockInvolvementsRepository.find.mockResolvedValue([mockInvolvement]);
 
-      const result = await service.findByOfficial('official-uuid');
+      const result = await service.findByOfficial("official-uuid");
 
       expect(result).toEqual([mockInvolvement]);
       expect(mockInvolvementsRepository.find).toHaveBeenCalledWith({
-        where: { officialId: 'official-uuid' },
-        relations: ['case'],
-        order: { createdAt: 'DESC' },
+        where: { officialId: "official-uuid" },
+        relations: ["case"],
+        order: { createdAt: "DESC" },
       });
     });
   });
 
-  describe('create', () => {
-    it('should create a new case', async () => {
+  describe("create", () => {
+    it("should create a new case", async () => {
       const createDto = {
-        caseNumber: '1:20-cr-00177',
-        title: 'New Case',
+        caseNumber: "1:20-cr-00177",
+        title: "New Case",
         type: CaseType.CRIMINAL,
         jurisdiction: Jurisdiction.USA,
       };
@@ -221,27 +219,27 @@ describe('CasesService', () => {
     });
   });
 
-  describe('addInvolvement', () => {
-    it('should add an official to a case', async () => {
+  describe("addInvolvement", () => {
+    it("should add an official to a case", async () => {
       const involvementData = {
-        role: 'defendant' as any,
-        details: 'Test details',
+        role: "defendant" as any,
+        details: "Test details",
       };
 
       mockInvolvementsRepository.create.mockReturnValue(mockInvolvement);
       mockInvolvementsRepository.save.mockResolvedValue(mockInvolvement);
 
       const result = await service.addInvolvement(
-        'case-uuid',
-        'official-uuid',
+        "case-uuid",
+        "official-uuid",
         involvementData,
       );
 
       expect(result).toEqual(mockInvolvement);
       expect(mockInvolvementsRepository.create).toHaveBeenCalledWith({
         ...involvementData,
-        caseId: 'case-uuid',
-        officialId: 'official-uuid',
+        caseId: "case-uuid",
+        officialId: "official-uuid",
       });
     });
   });

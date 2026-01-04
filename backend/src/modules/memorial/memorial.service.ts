@@ -1,9 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Victim, VictimCategory } from '../../entities/victim.entity';
-import { PoliticalPrisoner, PrisonerStatus } from '../../entities/political-prisoner.entity';
-import { ExileStory, ExileReason } from '../../entities/exile-story.entity';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Victim } from "../../entities/victim.entity";
+import {
+  PoliticalPrisoner,
+  PrisonerStatus,
+} from "../../entities/political-prisoner.entity";
+import { ExileStory } from "../../entities/exile-story.entity";
 import {
   CreateVictimDto,
   UpdateVictimDto,
@@ -14,13 +17,13 @@ import {
   CreateExileStoryDto,
   UpdateExileStoryDto,
   ExileStoryQueryDto,
-} from './dto';
+} from "./dto";
 
 /**
  * Memorial Service
- * 
+ *
  * "This is why we exist."
- * 
+ *
  * Manages the database of victims, political prisoners, and exile stories.
  * Every record here represents a Venezuelan who suffered under the regime.
  */
@@ -50,42 +53,55 @@ export class MemorialService {
       placeOfDeath,
       page = 1,
       limit = 20,
-      sortBy = 'dateOfDeath',
-      sortOrder = 'DESC',
+      sortBy = "dateOfDeath",
+      sortOrder = "DESC",
     } = query;
 
-    const qb = this.victimRepository.createQueryBuilder('victim');
+    const qb = this.victimRepository.createQueryBuilder("victim");
 
     // Only show victims with confidence level 3+ publicly
-    qb.where('victim.confidenceLevel >= :minConf', { minConf: minConfidence || 3 });
+    qb.where("victim.confidenceLevel >= :minConf", {
+      minConf: minConfidence || 3,
+    });
 
     if (search) {
       qb.andWhere(
-        '(victim.fullName ILIKE :search OR victim.biography ILIKE :search OR victim.biographyEs ILIKE :search)',
+        "(victim.fullName ILIKE :search OR victim.biography ILIKE :search OR victim.biographyEs ILIKE :search)",
         { search: `%${search}%` },
       );
     }
 
     if (category) {
-      qb.andWhere('victim.category = :category', { category });
+      qb.andWhere("victim.category = :category", { category });
     }
 
     if (yearFrom) {
-      qb.andWhere('EXTRACT(YEAR FROM victim.dateOfDeath) >= :yearFrom', { yearFrom });
+      qb.andWhere("EXTRACT(YEAR FROM victim.dateOfDeath) >= :yearFrom", {
+        yearFrom,
+      });
     }
 
     if (yearTo) {
-      qb.andWhere('EXTRACT(YEAR FROM victim.dateOfDeath) <= :yearTo', { yearTo });
+      qb.andWhere("EXTRACT(YEAR FROM victim.dateOfDeath) <= :yearTo", {
+        yearTo,
+      });
     }
 
     if (placeOfDeath) {
-      qb.andWhere('victim.placeOfDeath ILIKE :place', { place: `%${placeOfDeath}%` });
+      qb.andWhere("victim.placeOfDeath ILIKE :place", {
+        place: `%${placeOfDeath}%`,
+      });
     }
 
     // Sorting
-    const validSortFields = ['fullName', 'dateOfDeath', 'createdAt', 'category'];
-    const field = validSortFields.includes(sortBy) ? sortBy : 'dateOfDeath';
-    qb.orderBy(`victim.${field}`, sortOrder === 'ASC' ? 'ASC' : 'DESC');
+    const validSortFields = [
+      "fullName",
+      "dateOfDeath",
+      "createdAt",
+      "category",
+    ];
+    const field = validSortFields.includes(sortBy) ? sortBy : "dateOfDeath";
+    qb.orderBy(`victim.${field}`, sortOrder === "ASC" ? "ASC" : "DESC");
 
     // Pagination
     const skip = (page - 1) * limit;
@@ -110,7 +126,7 @@ export class MemorialService {
   async findOneVictim(id: string): Promise<Victim> {
     const victim = await this.victimRepository.findOne({
       where: { id },
-      relations: ['responsibleOfficial'],
+      relations: ["responsibleOfficial"],
     });
 
     if (!victim) {
@@ -149,27 +165,27 @@ export class MemorialService {
    * Get victim statistics for the memorial wall
    */
   async getVictimStatistics() {
-    const qb = this.victimRepository.createQueryBuilder('victim');
+    const qb = this.victimRepository.createQueryBuilder("victim");
 
     // Total count
     const total = await qb.getCount();
 
     // By category
     const byCategory = await this.victimRepository
-      .createQueryBuilder('victim')
-      .select('victim.category', 'category')
-      .addSelect('COUNT(*)', 'count')
-      .groupBy('victim.category')
+      .createQueryBuilder("victim")
+      .select("victim.category", "category")
+      .addSelect("COUNT(*)", "count")
+      .groupBy("victim.category")
       .getRawMany();
 
     // By year
     const byYear = await this.victimRepository
-      .createQueryBuilder('victim')
-      .select('EXTRACT(YEAR FROM victim.dateOfDeath)', 'year')
-      .addSelect('COUNT(*)', 'count')
-      .where('victim.dateOfDeath IS NOT NULL')
-      .groupBy('EXTRACT(YEAR FROM victim.dateOfDeath)')
-      .orderBy('year', 'ASC')
+      .createQueryBuilder("victim")
+      .select("EXTRACT(YEAR FROM victim.dateOfDeath)", "year")
+      .addSelect("COUNT(*)", "count")
+      .where("victim.dateOfDeath IS NOT NULL")
+      .groupBy("EXTRACT(YEAR FROM victim.dateOfDeath)")
+      .orderBy("year", "ASC")
       .getRawMany();
 
     return {
@@ -194,42 +210,54 @@ export class MemorialService {
       minConfidence,
       page = 1,
       limit = 20,
-      sortBy = 'dateArrested',
-      sortOrder = 'DESC',
+      sortBy = "dateArrested",
+      sortOrder = "DESC",
     } = query;
 
-    const qb = this.prisonerRepository.createQueryBuilder('prisoner');
+    const qb = this.prisonerRepository.createQueryBuilder("prisoner");
 
     // Only show with confidence level 3+
-    qb.where('prisoner.confidenceLevel >= :minConf', { minConf: minConfidence || 3 });
+    qb.where("prisoner.confidenceLevel >= :minConf", {
+      minConf: minConfidence || 3,
+    });
 
     if (search) {
       qb.andWhere(
-        '(prisoner.fullName ILIKE :search OR prisoner.biography ILIKE :search)',
+        "(prisoner.fullName ILIKE :search OR prisoner.biography ILIKE :search)",
         { search: `%${search}%` },
       );
     }
 
     if (status) {
-      qb.andWhere('prisoner.status = :status', { status });
+      qb.andWhere("prisoner.status = :status", { status });
     }
 
     if (facilityType) {
-      qb.andWhere('prisoner.primaryFacilityType = :facilityType', { facilityType });
+      qb.andWhere("prisoner.primaryFacilityType = :facilityType", {
+        facilityType,
+      });
     }
 
     if (torture !== undefined) {
-      qb.andWhere('prisoner.torture = :torture', { torture });
+      qb.andWhere("prisoner.torture = :torture", { torture });
     }
 
     if (currentlyDetained) {
-      qb.andWhere('prisoner.status = :imprisoned', { imprisoned: PrisonerStatus.IMPRISONED });
+      qb.andWhere("prisoner.status = :imprisoned", {
+        imprisoned: PrisonerStatus.IMPRISONED,
+      });
     }
 
     // Sorting
-    const validSortFields = ['fullName', 'dateArrested', 'dateReleased', 'createdAt', 'status'];
-    const field = validSortFields.includes(sortBy) ? sortBy : 'dateArrested';
-    qb.orderBy(`prisoner.${field}`, sortOrder === 'ASC' ? 'ASC' : 'DESC');
+    const validSortFields = [
+      "fullName",
+      "dateArrested",
+      "dateReleased",
+      "createdAt",
+      "status",
+    ];
+    const field = validSortFields.includes(sortBy) ? sortBy : "dateArrested";
+    qb.orderBy(`prisoner.${field}`, sortOrder === "ASC" ? "ASC" : "DESC");
 
     // Pagination
     const skip = (page - 1) * limit;
@@ -254,7 +282,7 @@ export class MemorialService {
   async findOnePrisoner(id: string): Promise<PoliticalPrisoner> {
     const prisoner = await this.prisonerRepository.findOne({
       where: { id },
-      relations: ['arrestingOfficial'],
+      relations: ["arrestingOfficial"],
     });
 
     if (!prisoner) {
@@ -267,7 +295,9 @@ export class MemorialService {
   /**
    * Create a new political prisoner record
    */
-  async createPrisoner(dto: CreatePoliticalPrisonerDto): Promise<PoliticalPrisoner> {
+  async createPrisoner(
+    dto: CreatePoliticalPrisonerDto,
+  ): Promise<PoliticalPrisoner> {
     const prisoner = this.prisonerRepository.create(dto);
     return this.prisonerRepository.save(prisoner);
   }
@@ -275,7 +305,10 @@ export class MemorialService {
   /**
    * Update an existing political prisoner record
    */
-  async updatePrisoner(id: string, dto: UpdatePoliticalPrisonerDto): Promise<PoliticalPrisoner> {
+  async updatePrisoner(
+    id: string,
+    dto: UpdatePoliticalPrisonerDto,
+  ): Promise<PoliticalPrisoner> {
     const prisoner = await this.findOnePrisoner(id);
     Object.assign(prisoner, dto);
     return this.prisonerRepository.save(prisoner);
@@ -293,7 +326,7 @@ export class MemorialService {
    * Get political prisoner statistics
    */
   async getPrisonerStatistics() {
-    const qb = this.prisonerRepository.createQueryBuilder('prisoner');
+    const qb = this.prisonerRepository.createQueryBuilder("prisoner");
 
     // Total count
     const total = await qb.getCount();
@@ -310,19 +343,19 @@ export class MemorialService {
 
     // By status
     const byStatus = await this.prisonerRepository
-      .createQueryBuilder('prisoner')
-      .select('prisoner.status', 'status')
-      .addSelect('COUNT(*)', 'count')
-      .groupBy('prisoner.status')
+      .createQueryBuilder("prisoner")
+      .select("prisoner.status", "status")
+      .addSelect("COUNT(*)", "count")
+      .groupBy("prisoner.status")
       .getRawMany();
 
     // By facility type
     const byFacility = await this.prisonerRepository
-      .createQueryBuilder('prisoner')
-      .select('prisoner.primaryFacilityType', 'facility')
-      .addSelect('COUNT(*)', 'count')
-      .where('prisoner.primaryFacilityType IS NOT NULL')
-      .groupBy('prisoner.primaryFacilityType')
+      .createQueryBuilder("prisoner")
+      .select("prisoner.primaryFacilityType", "facility")
+      .addSelect("COUNT(*)", "count")
+      .where("prisoner.primaryFacilityType IS NOT NULL")
+      .groupBy("prisoner.primaryFacilityType")
       .getRawMany();
 
     return {
@@ -350,47 +383,51 @@ export class MemorialService {
       familySeparated,
       page = 1,
       limit = 20,
-      sortBy = 'yearLeft',
-      sortOrder = 'DESC',
+      sortBy = "yearLeft",
+      sortOrder = "DESC",
     } = query;
 
-    const qb = this.exileRepository.createQueryBuilder('exile');
+    const qb = this.exileRepository.createQueryBuilder("exile");
 
     if (search) {
       qb.andWhere(
-        '(exile.fullName ILIKE :search OR exile.displayName ILIKE :search OR exile.story ILIKE :search)',
+        "(exile.fullName ILIKE :search OR exile.displayName ILIKE :search OR exile.story ILIKE :search)",
         { search: `%${search}%` },
       );
     }
 
     if (reason) {
-      qb.andWhere('exile.reason = :reason', { reason });
+      qb.andWhere("exile.reason = :reason", { reason });
     }
 
     if (journeyRoute) {
-      qb.andWhere('exile.journeyRoute = :journeyRoute', { journeyRoute });
+      qb.andWhere("exile.journeyRoute = :journeyRoute", { journeyRoute });
     }
 
     if (destination) {
-      qb.andWhere('exile.destination ILIKE :destination', { destination: `%${destination}%` });
+      qb.andWhere("exile.destination ILIKE :destination", {
+        destination: `%${destination}%`,
+      });
     }
 
     if (yearFrom) {
-      qb.andWhere('exile.yearLeft >= :yearFrom', { yearFrom });
+      qb.andWhere("exile.yearLeft >= :yearFrom", { yearFrom });
     }
 
     if (yearTo) {
-      qb.andWhere('exile.yearLeft <= :yearTo', { yearTo });
+      qb.andWhere("exile.yearLeft <= :yearTo", { yearTo });
     }
 
     if (familySeparated !== undefined) {
-      qb.andWhere('exile.familySeparated = :familySeparated', { familySeparated });
+      qb.andWhere("exile.familySeparated = :familySeparated", {
+        familySeparated,
+      });
     }
 
     // Sorting
-    const validSortFields = ['yearLeft', 'destination', 'createdAt'];
-    const field = validSortFields.includes(sortBy) ? sortBy : 'yearLeft';
-    qb.orderBy(`exile.${field}`, sortOrder === 'ASC' ? 'ASC' : 'DESC');
+    const validSortFields = ["yearLeft", "destination", "createdAt"];
+    const field = validSortFields.includes(sortBy) ? sortBy : "yearLeft";
+    qb.orderBy(`exile.${field}`, sortOrder === "ASC" ? "ASC" : "DESC");
 
     // Pagination
     const skip = (page - 1) * limit;
@@ -435,7 +472,10 @@ export class MemorialService {
   /**
    * Update an existing exile story
    */
-  async updateExileStory(id: string, dto: UpdateExileStoryDto): Promise<ExileStory> {
+  async updateExileStory(
+    id: string,
+    dto: UpdateExileStoryDto,
+  ): Promise<ExileStory> {
     const story = await this.findOneExileStory(id);
     Object.assign(story, dto);
     return this.exileRepository.save(story);
@@ -453,36 +493,36 @@ export class MemorialService {
    * Get exile statistics for dashboard
    */
   async getExileStatistics() {
-    const qb = this.exileRepository.createQueryBuilder('exile');
+    const qb = this.exileRepository.createQueryBuilder("exile");
 
     // Total stories documented
     const totalStories = await qb.getCount();
 
     // By destination country
     const byDestination = await this.exileRepository
-      .createQueryBuilder('exile')
-      .select('exile.destination', 'destination')
-      .addSelect('COUNT(*)', 'count')
-      .groupBy('exile.destination')
-      .orderBy('count', 'DESC')
+      .createQueryBuilder("exile")
+      .select("exile.destination", "destination")
+      .addSelect("COUNT(*)", "count")
+      .groupBy("exile.destination")
+      .orderBy("count", "DESC")
       .limit(20)
       .getRawMany();
 
     // By year
     const byYear = await this.exileRepository
-      .createQueryBuilder('exile')
-      .select('exile.yearLeft', 'year')
-      .addSelect('COUNT(*)', 'count')
-      .groupBy('exile.yearLeft')
-      .orderBy('year', 'ASC')
+      .createQueryBuilder("exile")
+      .select("exile.yearLeft", "year")
+      .addSelect("COUNT(*)", "count")
+      .groupBy("exile.yearLeft")
+      .orderBy("year", "ASC")
       .getRawMany();
 
     // By reason
     const byReason = await this.exileRepository
-      .createQueryBuilder('exile')
-      .select('exile.reason', 'reason')
-      .addSelect('COUNT(*)', 'count')
-      .groupBy('exile.reason')
+      .createQueryBuilder("exile")
+      .select("exile.reason", "reason")
+      .addSelect("COUNT(*)", "count")
+      .groupBy("exile.reason")
       .getRawMany();
 
     // Family separated count
@@ -492,7 +532,7 @@ export class MemorialService {
 
     // Darién Gap crossings
     const darienCrossings = await this.exileRepository.count({
-      where: { journeyRoute: 'darien_gap' as any },
+      where: { journeyRoute: "darien_gap" as any },
     });
 
     return {
@@ -523,8 +563,9 @@ export class MemorialService {
       victims: victimStats,
       politicalPrisoners: prisonerStats,
       exiles: exileStats,
-      message: 'We will remember you. We will tell your story. You will not be forgotten.',
-      messageEs: 'Te recordaremos. Contaremos tu historia. No serás olvidado.',
+      message:
+        "We will remember you. We will tell your story. You will not be forgotten.",
+      messageEs: "Te recordaremos. Contaremos tu historia. No serás olvidado.",
     };
   }
 }

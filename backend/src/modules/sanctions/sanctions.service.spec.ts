@@ -1,28 +1,30 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { SanctionsService } from './sanctions.service';
-import { Sanction, SanctionType, SanctionStatus } from '../../entities/sanction.entity';
-import { NotFoundException } from '@nestjs/common';
+import { Test, TestingModule } from "@nestjs/testing";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import { SanctionsService } from "./sanctions.service";
+import {
+  Sanction,
+  SanctionType,
+  SanctionStatus,
+} from "../../entities/sanction.entity";
+import { NotFoundException } from "@nestjs/common";
 
-describe('SanctionsService', () => {
+describe("SanctionsService", () => {
   let service: SanctionsService;
-  let repository: Repository<Sanction>;
 
   const mockSanction: Sanction = {
-    id: 'sanction-uuid',
-    officialId: 'official-uuid',
+    id: "sanction-uuid",
+    officialId: "official-uuid",
     type: SanctionType.OFAC_SDN,
-    programCode: 'VENEZUELA',
-    programName: 'Venezuela Sanctions Program',
-    ofacId: '12345',
-    reason: 'Corruption',
-    reasonEs: 'Corrupción',
-    imposedDate: new Date('2018-05-21'),
+    programCode: "VENEZUELA",
+    programName: "Venezuela Sanctions Program",
+    ofacId: "12345",
+    reason: "Corruption",
+    reasonEs: "Corrupción",
+    imposedDate: new Date("2018-05-21"),
     liftedDate: undefined,
     status: SanctionStatus.ACTIVE,
     treasuryPressRelease: undefined,
-    sourceUrl: 'https://ofac.treasury.gov',
+    sourceUrl: "https://ofac.treasury.gov",
     metadata: undefined,
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -65,7 +67,6 @@ describe('SanctionsService', () => {
     }).compile();
 
     service = module.get<SanctionsService>(SanctionsService);
-    repository = module.get<Repository<Sanction>>(getRepositoryToken(Sanction));
 
     // Setup default mockQueryBuilder return values
     mockQueryBuilder.getManyAndCount.mockResolvedValue([[mockSanction], 1]);
@@ -75,12 +76,12 @@ describe('SanctionsService', () => {
     jest.clearAllMocks();
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('findAll', () => {
-    it('should return paginated list of sanctions', async () => {
+  describe("findAll", () => {
+    it("should return paginated list of sanctions", async () => {
       const sanctions = [mockSanction];
       mockRepository.findAndCount.mockResolvedValue([sanctions, 1]);
 
@@ -95,67 +96,67 @@ describe('SanctionsService', () => {
       });
     });
 
-    it('should filter by type', async () => {
+    it("should filter by type", async () => {
       mockQueryBuilder.getManyAndCount.mockResolvedValue([[mockSanction], 1]);
 
-      const result = await service.findAll({ 
+      await service.findAll({
         type: SanctionType.OFAC_SDN,
         page: 1,
-        limit: 20
+        limit: 20,
       });
 
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        'sanction.type = :type',
-        { type: SanctionType.OFAC_SDN }
+        "sanction.type = :type",
+        { type: SanctionType.OFAC_SDN },
       );
     });
 
-    it('should filter by status', async () => {
+    it("should filter by status", async () => {
       mockQueryBuilder.getManyAndCount.mockResolvedValue([[mockSanction], 1]);
 
-      await service.findAll({ 
+      await service.findAll({
         status: SanctionStatus.ACTIVE,
         page: 1,
-        limit: 20
+        limit: 20,
       });
 
       expect(mockQueryBuilder.andWhere).toHaveBeenCalledWith(
-        'sanction.status = :status',
-        { status: SanctionStatus.ACTIVE }
+        "sanction.status = :status",
+        { status: SanctionStatus.ACTIVE },
       );
     });
   });
 
-  describe('findOne', () => {
-    it('should return a sanction by id', async () => {
+  describe("findOne", () => {
+    it("should return a sanction by id", async () => {
       mockRepository.findOne.mockResolvedValue(mockSanction);
 
-      const result = await service.findOne('sanction-uuid');
+      const result = await service.findOne("sanction-uuid");
 
       expect(result).toEqual(mockSanction);
       expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { id: 'sanction-uuid' },
-        relations: ['official'],
+        where: { id: "sanction-uuid" },
+        relations: ["official"],
       });
     });
 
-    it('should throw NotFoundException when sanction not found', async () => {
+    it("should throw NotFoundException when sanction not found", async () => {
       mockRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.findOne('invalid-id')).rejects.toThrow(
+      await expect(service.findOne("invalid-id")).rejects.toThrow(
         NotFoundException,
       );
     });
   });
 
-  describe('create', () => {
-    it('should create a new sanction', async () => {
+  describe("create", () => {
+    it("should create a new sanction", async () => {
       const createDto = {
-        officialId: 'official-uuid',
+        officialId: "official-uuid",
         type: SanctionType.OFAC_SDN,
-        programName: 'Test Program',
-        reason: 'Test reason',
-        imposedDate: new Date('2020-01-01'),
+        programName: "Test Program",
+        reason: "Test reason",
+        imposedDate: new Date("2020-01-01"),
       } as any;
 
       mockRepository.create.mockReturnValue(mockSanction);
@@ -169,15 +170,15 @@ describe('SanctionsService', () => {
     });
   });
 
-  describe('getStatistics', () => {
-    it('should return statistics about sanctions', async () => {
+  describe("getStatistics", () => {
+    it("should return statistics about sanctions", async () => {
       const mockByType = [
-        { type: 'ofac_sdn', count: '10' },
-        { type: 'eu', count: '5' },
+        { type: "ofac_sdn", count: "10" },
+        { type: "eu", count: "5" },
       ];
       const mockByYear = [
-        { year: '2018', count: '12' },
-        { year: '2019', count: '3' },
+        { year: "2018", count: "12" },
+        { year: "2019", count: "3" },
       ];
 
       mockQueryBuilder.getRawMany
@@ -190,11 +191,11 @@ describe('SanctionsService', () => {
 
       expect(result.total).toBe(15);
       expect(result.byType).toHaveLength(2);
-      expect(result.byType[0]).toHaveProperty('type');
-      expect(result.byType[0]).toHaveProperty('count');
+      expect(result.byType[0]).toHaveProperty("type");
+      expect(result.byType[0]).toHaveProperty("count");
       expect(result.byYear).toHaveLength(2);
-      expect(result.byYear[0]).toHaveProperty('year');
-      expect(result.byYear[0]).toHaveProperty('count');
+      expect(result.byYear[0]).toHaveProperty("year");
+      expect(result.byYear[0]).toHaveProperty("count");
     });
   });
 });

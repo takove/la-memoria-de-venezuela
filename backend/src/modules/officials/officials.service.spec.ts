@@ -1,20 +1,18 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { OfficialsService } from './officials.service';
-import { Official, OfficialStatus } from '../../entities/official.entity';
-import { NotFoundException } from '@nestjs/common';
+import { Test, TestingModule } from "@nestjs/testing";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import { OfficialsService } from "./officials.service";
+import { Official, OfficialStatus } from "../../entities/official.entity";
+import { NotFoundException } from "@nestjs/common";
 
-describe('OfficialsService', () => {
+describe("OfficialsService", () => {
   let service: OfficialsService;
-  let repository: Repository<Official>;
 
   const mockOfficial: Official = {
-    id: 'uuid-123',
-    fullName: 'Nicolás Maduro Moros',
-    fullNameEs: 'Nicolás Maduro Moros',
-    biography: 'Test biography',
-    biographyEs: 'Biografía de prueba',
+    id: "uuid-123",
+    fullName: "Nicolás Maduro Moros",
+    fullNameEs: "Nicolás Maduro Moros",
+    biography: "Test biography",
+    biographyEs: "Biografía de prueba",
     status: OfficialStatus.ACTIVE,
     confidenceLevel: 5,
     photoUrl: undefined,
@@ -63,7 +61,6 @@ describe('OfficialsService', () => {
     }).compile();
 
     service = module.get<OfficialsService>(OfficialsService);
-    repository = module.get<Repository<Official>>(getRepositoryToken(Official));
 
     // Setup default mockQueryBuilder return values
     mockQueryBuilder.getManyAndCount.mockResolvedValue([[mockOfficial], 1]);
@@ -73,12 +70,12 @@ describe('OfficialsService', () => {
     jest.clearAllMocks();
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  describe('findAll', () => {
-    it('should return paginated list of officials', async () => {
+  describe("findAll", () => {
+    it("should return paginated list of officials", async () => {
       const officials = [mockOfficial];
       mockRepository.findAndCount.mockResolvedValue([officials, 1]);
 
@@ -91,10 +88,9 @@ describe('OfficialsService', () => {
         limit: 20,
         totalPages: 1,
       });
-
     });
 
-    it('should handle pagination correctly', async () => {
+    it("should handle pagination correctly", async () => {
       mockQueryBuilder.getManyAndCount.mockResolvedValue([[mockOfficial], 50]);
 
       const result = await service.findAll({ page: 2, limit: 10 });
@@ -107,7 +103,7 @@ describe('OfficialsService', () => {
       });
     });
 
-    it('should use default pagination values', async () => {
+    it("should use default pagination values", async () => {
       mockRepository.findAndCount.mockResolvedValue([[], 0]);
 
       const result = await service.findAll({});
@@ -117,43 +113,43 @@ describe('OfficialsService', () => {
     });
   });
 
-  describe('findOne', () => {
-    it('should return an official by id', async () => {
+  describe("findOne", () => {
+    it("should return an official by id", async () => {
       mockRepository.findOne.mockResolvedValue(mockOfficial);
 
-      const result = await service.findOne('uuid-123');
+      const result = await service.findOne("uuid-123");
 
       expect(result).toEqual(mockOfficial);
       expect(mockRepository.findOne).toHaveBeenCalledWith({
-        where: { id: 'uuid-123' },
-        relations: ['sanctions', 'caseInvolvements', 'caseInvolvements.case'],
+        where: { id: "uuid-123" },
+        relations: ["sanctions", "caseInvolvements", "caseInvolvements.case"],
       });
     });
 
-    it('should throw NotFoundException when official not found', async () => {
+    it("should throw NotFoundException when official not found", async () => {
       mockRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.findOne('invalid-id')).rejects.toThrow(
+      await expect(service.findOne("invalid-id")).rejects.toThrow(
         NotFoundException,
       );
-      await expect(service.findOne('invalid-id')).rejects.toThrow(
-        'Official with ID invalid-id not found',
+      await expect(service.findOne("invalid-id")).rejects.toThrow(
+        "Official with ID invalid-id not found",
       );
     });
   });
 
-  describe('create', () => {
-    it('should create a new official', async () => {
+  describe("create", () => {
+    it("should create a new official", async () => {
       const createDto = {
-        firstName: 'Test',
-        lastName: 'Official',
+        firstName: "Test",
+        lastName: "Official",
         status: OfficialStatus.ACTIVE,
         confidenceLevel: 3,
       };
 
       const expectedData = {
         ...createDto,
-        fullName: 'Test Official',
+        fullName: "Test Official",
       };
 
       mockRepository.create.mockReturnValue(mockOfficial);
@@ -167,11 +163,11 @@ describe('OfficialsService', () => {
     });
   });
 
-  describe('getStatistics', () => {
-    it('should return statistics about officials', async () => {
+  describe("getStatistics", () => {
+    it("should return statistics about officials", async () => {
       mockQueryBuilder.getRawMany.mockResolvedValue([
-        { status: 'active', count: '10' },
-        { status: 'inactive', count: '5' },
+        { status: "active", count: "10" },
+        { status: "inactive", count: "5" },
       ]);
       mockQueryBuilder.getCount.mockResolvedValue(5);
 
@@ -181,8 +177,8 @@ describe('OfficialsService', () => {
 
       expect(result.total).toBe(15);
       expect(result.byStatus).toHaveLength(2);
-      expect(result.byStatus[0]).toHaveProperty('status', 'active');
-      expect(result.byStatus[0]).toHaveProperty('count');
+      expect(result.byStatus[0]).toHaveProperty("status", "active");
+      expect(result.byStatus[0]).toHaveProperty("count");
       expect(mockRepository.count).toHaveBeenCalled();
     });
   });

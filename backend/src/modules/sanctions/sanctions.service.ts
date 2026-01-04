@@ -1,7 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between } from 'typeorm';
-import { Sanction, SanctionType, SanctionStatus } from '../../entities/sanction.entity';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import {
+  Sanction,
+  SanctionType,
+  SanctionStatus,
+} from "../../entities/sanction.entity";
 
 export interface FindSanctionsOptions {
   page?: number;
@@ -24,26 +28,29 @@ export class SanctionsService {
     const skip = (page - 1) * limit;
 
     const queryBuilder = this.sanctionsRepository
-      .createQueryBuilder('sanction')
-      .leftJoinAndSelect('sanction.official', 'official');
+      .createQueryBuilder("sanction")
+      .leftJoinAndSelect("sanction.official", "official");
 
     if (type) {
-      queryBuilder.andWhere('sanction.type = :type', { type });
+      queryBuilder.andWhere("sanction.type = :type", { type });
     }
 
     if (status) {
-      queryBuilder.andWhere('sanction.status = :status', { status });
+      queryBuilder.andWhere("sanction.status = :status", { status });
     }
 
     if (fromDate && toDate) {
-      queryBuilder.andWhere('sanction.imposedDate BETWEEN :fromDate AND :toDate', {
-        fromDate,
-        toDate,
-      });
+      queryBuilder.andWhere(
+        "sanction.imposedDate BETWEEN :fromDate AND :toDate",
+        {
+          fromDate,
+          toDate,
+        },
+      );
     }
 
     const [sanctions, total] = await queryBuilder
-      .orderBy('sanction.imposedDate', 'DESC')
+      .orderBy("sanction.imposedDate", "DESC")
       .skip(skip)
       .take(limit)
       .getManyAndCount();
@@ -62,7 +69,7 @@ export class SanctionsService {
   async findOne(id: string) {
     const sanction = await this.sanctionsRepository.findOne({
       where: { id },
-      relations: ['official'],
+      relations: ["official"],
     });
 
     if (!sanction) {
@@ -75,7 +82,7 @@ export class SanctionsService {
   async findByOfficial(officialId: string) {
     return this.sanctionsRepository.find({
       where: { officialId },
-      order: { imposedDate: 'DESC' },
+      order: { imposedDate: "DESC" },
     });
   }
 
@@ -86,24 +93,24 @@ export class SanctionsService {
 
   async getStatistics() {
     const total = await this.sanctionsRepository.count();
-    
+
     const active = await this.sanctionsRepository.count({
       where: { status: SanctionStatus.ACTIVE },
     });
 
     const byType = await this.sanctionsRepository
-      .createQueryBuilder('sanction')
-      .select('sanction.type', 'type')
-      .addSelect('COUNT(*)', 'count')
-      .groupBy('sanction.type')
+      .createQueryBuilder("sanction")
+      .select("sanction.type", "type")
+      .addSelect("COUNT(*)", "count")
+      .groupBy("sanction.type")
       .getRawMany();
 
     const byYear = await this.sanctionsRepository
-      .createQueryBuilder('sanction')
-      .select("EXTRACT(YEAR FROM sanction.imposedDate)", 'year')
-      .addSelect('COUNT(*)', 'count')
+      .createQueryBuilder("sanction")
+      .select("EXTRACT(YEAR FROM sanction.imposedDate)", "year")
+      .addSelect("COUNT(*)", "count")
       .groupBy("EXTRACT(YEAR FROM sanction.imposedDate)")
-      .orderBy('year', 'ASC')
+      .orderBy("year", "ASC")
       .getRawMany();
 
     return {
@@ -116,19 +123,19 @@ export class SanctionsService {
 
   async getTimeline() {
     return this.sanctionsRepository
-      .createQueryBuilder('sanction')
-      .leftJoinAndSelect('sanction.official', 'official')
+      .createQueryBuilder("sanction")
+      .leftJoinAndSelect("sanction.official", "official")
       .select([
-        'sanction.id',
-        'sanction.imposedDate',
-        'sanction.type',
-        'sanction.programName',
-        'sanction.reason',
-        'official.id',
-        'official.fullName',
-        'official.photoUrl',
+        "sanction.id",
+        "sanction.imposedDate",
+        "sanction.type",
+        "sanction.programName",
+        "sanction.reason",
+        "official.id",
+        "official.fullName",
+        "official.photoUrl",
       ])
-      .orderBy('sanction.imposedDate', 'DESC')
+      .orderBy("sanction.imposedDate", "DESC")
       .limit(50)
       .getMany();
   }
