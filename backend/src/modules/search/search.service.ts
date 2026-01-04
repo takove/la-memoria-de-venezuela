@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Official } from '../../entities/official.entity';
-import { Sanction } from '../../entities/sanction.entity';
-import { Case } from '../../entities/case.entity';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Official } from "../../entities/official.entity";
+import { Sanction } from "../../entities/sanction.entity";
+import { Case } from "../../entities/case.entity";
 
 export interface SearchResult {
   officials: Official[];
@@ -15,7 +15,7 @@ export interface SearchResult {
 export interface SearchOptions {
   query: string;
   limit?: number;
-  types?: ('officials' | 'sanctions' | 'cases')[];
+  types?: ("officials" | "sanctions" | "cases")[];
 }
 
 @Injectable()
@@ -30,7 +30,11 @@ export class SearchService {
   ) {}
 
   async search(options: SearchOptions): Promise<SearchResult> {
-    const { query, limit = 10, types = ['officials', 'sanctions', 'cases'] } = options;
+    const {
+      query,
+      limit = 10,
+      types = ["officials", "sanctions", "cases"],
+    } = options;
     const searchPattern = `%${query}%`;
 
     const result: SearchResult = {
@@ -41,44 +45,56 @@ export class SearchService {
     };
 
     // Search officials
-    if (types.includes('officials')) {
+    if (types.includes("officials")) {
       result.officials = await this.officialsRepository
-        .createQueryBuilder('official')
-        .leftJoinAndSelect('official.sanctions', 'sanctions')
-        .where('official.fullName ILIKE :pattern', { pattern: searchPattern })
-        .orWhere('official.aliases::text ILIKE :pattern', { pattern: searchPattern })
-        .orWhere('official.cedula ILIKE :pattern', { pattern: searchPattern })
-        .orWhere('official.biography ILIKE :pattern', { pattern: searchPattern })
-        .orWhere('official.biographyEs ILIKE :pattern', { pattern: searchPattern })
+        .createQueryBuilder("official")
+        .leftJoinAndSelect("official.sanctions", "sanctions")
+        .where("official.fullName ILIKE :pattern", { pattern: searchPattern })
+        .orWhere("official.aliases::text ILIKE :pattern", {
+          pattern: searchPattern,
+        })
+        .orWhere("official.cedula ILIKE :pattern", { pattern: searchPattern })
+        .orWhere("official.biography ILIKE :pattern", {
+          pattern: searchPattern,
+        })
+        .orWhere("official.biographyEs ILIKE :pattern", {
+          pattern: searchPattern,
+        })
         .take(limit)
         .getMany();
     }
 
     // Search sanctions
-    if (types.includes('sanctions')) {
+    if (types.includes("sanctions")) {
       result.sanctions = await this.sanctionsRepository
-        .createQueryBuilder('sanction')
-        .leftJoinAndSelect('sanction.official', 'official')
-        .where('sanction.reason ILIKE :pattern', { pattern: searchPattern })
-        .orWhere('sanction.reasonEs ILIKE :pattern', { pattern: searchPattern })
-        .orWhere('sanction.programName ILIKE :pattern', { pattern: searchPattern })
-        .orWhere('official.fullName ILIKE :pattern', { pattern: searchPattern })
+        .createQueryBuilder("sanction")
+        .leftJoinAndSelect("sanction.official", "official")
+        .where("sanction.reason ILIKE :pattern", { pattern: searchPattern })
+        .orWhere("sanction.reasonEs ILIKE :pattern", { pattern: searchPattern })
+        .orWhere("sanction.programName ILIKE :pattern", {
+          pattern: searchPattern,
+        })
+        .orWhere("official.fullName ILIKE :pattern", { pattern: searchPattern })
         .take(limit)
         .getMany();
     }
 
     // Search cases
-    if (types.includes('cases')) {
+    if (types.includes("cases")) {
       result.cases = await this.casesRepository
-        .createQueryBuilder('case')
-        .leftJoinAndSelect('case.involvements', 'involvements')
-        .leftJoinAndSelect('involvements.official', 'official')
-        .where('case.title ILIKE :pattern', { pattern: searchPattern })
-        .orWhere('case.titleEs ILIKE :pattern', { pattern: searchPattern })
-        .orWhere('case.description ILIKE :pattern', { pattern: searchPattern })
-        .orWhere('case.descriptionEs ILIKE :pattern', { pattern: searchPattern })
-        .orWhere('case.caseNumber ILIKE :pattern', { pattern: searchPattern })
-        .orWhere('case.charges::text ILIKE :pattern', { pattern: searchPattern })
+        .createQueryBuilder("case")
+        .leftJoinAndSelect("case.involvements", "involvements")
+        .leftJoinAndSelect("involvements.official", "official")
+        .where("case.title ILIKE :pattern", { pattern: searchPattern })
+        .orWhere("case.titleEs ILIKE :pattern", { pattern: searchPattern })
+        .orWhere("case.description ILIKE :pattern", { pattern: searchPattern })
+        .orWhere("case.descriptionEs ILIKE :pattern", {
+          pattern: searchPattern,
+        })
+        .orWhere("case.caseNumber ILIKE :pattern", { pattern: searchPattern })
+        .orWhere("case.charges::text ILIKE :pattern", {
+          pattern: searchPattern,
+        })
         .take(limit)
         .getMany();
     }
@@ -93,17 +109,17 @@ export class SearchService {
     const searchPattern = `${query}%`;
 
     const officials = await this.officialsRepository
-      .createQueryBuilder('official')
-      .select(['official.id', 'official.fullName', 'official.photoUrl'])
-      .where('official.fullName ILIKE :pattern', { pattern: searchPattern })
-      .orWhere('official.lastName ILIKE :pattern', { pattern: searchPattern })
+      .createQueryBuilder("official")
+      .select(["official.id", "official.fullName", "official.photoUrl"])
+      .where("official.fullName ILIKE :pattern", { pattern: searchPattern })
+      .orWhere("official.lastName ILIKE :pattern", { pattern: searchPattern })
       .take(limit)
       .getMany();
 
     return officials.map((o) => ({
       id: o.id,
       name: o.fullName,
-      type: 'official',
+      type: "official",
       photoUrl: o.photoUrl,
     }));
   }
@@ -111,15 +127,15 @@ export class SearchService {
   async getHighlightedOfficials(limit = 6) {
     // Get officials with most sanctions
     return this.officialsRepository
-      .createQueryBuilder('official')
-      .leftJoinAndSelect('official.sanctions', 'sanctions')
+      .createQueryBuilder("official")
+      .leftJoinAndSelect("official.sanctions", "sanctions")
       .addSelect((subQuery) => {
         return subQuery
-          .select('COUNT(s.id)', 'sanctionCount')
-          .from(Sanction, 's')
-          .where('s.officialId = official.id');
-      }, 'sanctionCount')
-      .orderBy('sanctionCount', 'DESC')
+          .select("COUNT(s.id)", "sanctionCount")
+          .from(Sanction, "s")
+          .where("s.officialId = official.id");
+      }, "sanctionCount")
+      .orderBy("sanctionCount", "DESC")
       .take(limit)
       .getMany();
   }

@@ -1,22 +1,22 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { api } from '$lib/api';
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { api } from "$lib/api";
 
 // Mock fetch globally
 global.fetch = vi.fn();
 
-describe('API Client', () => {
+describe("API Client", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  describe('Officials API', () => {
-    it('should fetch officials with default pagination', async () => {
+  describe("Officials API", () => {
+    it("should fetch officials with default pagination", async () => {
       const mockData = {
         data: [
           {
-            id: 'uuid-123',
-            fullName: 'Nicolás Maduro Moros',
-            status: 'active',
+            id: "uuid-123",
+            fullName: "Nicolás Maduro Moros",
+            status: "active",
             confidenceLevel: 5,
           },
         ],
@@ -36,17 +36,17 @@ describe('API Client', () => {
       const result = await api.getOfficials();
 
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/v1/officials'),
+        expect.stringContaining("/api/v1/officials"),
         expect.objectContaining({
           headers: expect.objectContaining({
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           }),
         }),
       );
       expect(result).toEqual(mockData);
     });
 
-    it('should fetch officials with custom pagination', async () => {
+    it("should fetch officials with custom pagination", async () => {
       const mockData = {
         data: [],
         meta: {
@@ -65,15 +65,15 @@ describe('API Client', () => {
       await api.getOfficials({ page: 2, limit: 10 });
 
       const call = (global.fetch as any).mock.calls[0][0];
-      expect(call).toContain('page=2');
-      expect(call).toContain('limit=10');
+      expect(call).toContain("page=2");
+      expect(call).toContain("limit=10");
     });
 
-    it('should fetch official by id', async () => {
+    it("should fetch official by id", async () => {
       const mockOfficial = {
-        id: 'uuid-123',
-        fullName: 'Nicolás Maduro Moros',
-        status: 'active',
+        id: "uuid-123",
+        fullName: "Nicolás Maduro Moros",
+        status: "active",
         confidenceLevel: 5,
         sanctions: [],
         caseInvolvements: [],
@@ -84,37 +84,37 @@ describe('API Client', () => {
         json: async () => mockOfficial,
       });
 
-      const result = await api.getOfficial('uuid-123');
+      const result = await api.getOfficial("uuid-123");
 
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/v1/officials/uuid-123'),
+        expect.stringContaining("/api/v1/officials/uuid-123"),
         expect.any(Object),
       );
       expect(result).toEqual(mockOfficial);
     });
 
-    it('should throw error when fetch fails', async () => {
+    it("should throw error when fetch fails", async () => {
       (global.fetch as any).mockResolvedValueOnce({
         ok: false,
         status: 404,
-        statusText: 'Not Found',
+        statusText: "Not Found",
       });
 
-      await expect(api.getOfficial('invalid')).rejects.toThrow(
-        'API Error: 404 Not Found',
+      await expect(api.getOfficial("invalid")).rejects.toThrow(
+        "API Error: 404 Not Found",
       );
     });
   });
 
-  describe('Sanctions API', () => {
-    it('should fetch sanctions', async () => {
+  describe("Sanctions API", () => {
+    it("should fetch sanctions", async () => {
       const mockData = {
         data: [
           {
-            id: 'sanction-uuid',
-            type: 'ofac_sdn',
-            status: 'active',
-            imposedDate: '2018-05-21',
+            id: "sanction-uuid",
+            type: "ofac_sdn",
+            status: "active",
+            imposedDate: "2018-05-21",
           },
         ],
         meta: {
@@ -133,22 +133,22 @@ describe('API Client', () => {
       const result = await api.getSanctions();
 
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/v1/sanctions'),
+        expect.stringContaining("/api/v1/sanctions"),
         expect.any(Object),
       );
       expect(result).toEqual(mockData);
     });
   });
 
-  describe('Cases API', () => {
-    it('should fetch cases', async () => {
+  describe("Cases API", () => {
+    it("should fetch cases", async () => {
       const mockData = {
         data: [
           {
-            id: 'case-uuid',
-            caseNumber: 'CASE-001',
-            type: 'criminal',
-            status: 'active',
+            id: "case-uuid",
+            caseNumber: "CASE-001",
+            type: "criminal",
+            status: "active",
           },
         ],
         meta: {
@@ -167,21 +167,21 @@ describe('API Client', () => {
       const result = await api.getCases();
 
       expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/v1/cases'),
+        expect.stringContaining("/api/v1/cases"),
         expect.any(Object),
       );
       expect(result).toEqual(mockData);
     });
   });
 
-  describe('Search API', () => {
-    it('should perform search', async () => {
+  describe("Search API", () => {
+    it("should perform search", async () => {
       const mockResults = {
         officials: [
           {
-            id: 'uuid-123',
-            fullName: 'Nicolás Maduro',
-            type: 'official',
+            id: "uuid-123",
+            fullName: "Nicolás Maduro",
+            type: "official",
           },
         ],
         sanctions: [],
@@ -193,11 +193,11 @@ describe('API Client', () => {
         json: async () => mockResults,
       });
 
-      const result = await api.search('Maduro');
+      const result = await api.search("Maduro");
 
       const call = (global.fetch as any).mock.calls[0][0];
-      expect(call).toContain('/api/v1/search');
-      expect(call).toContain('q=Maduro');
+      expect(call).toContain("/api/v1/search");
+      expect(call).toContain("q=Maduro");
       expect(result).toEqual(mockResults);
     });
   });

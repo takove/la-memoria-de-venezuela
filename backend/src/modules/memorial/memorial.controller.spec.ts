@@ -1,33 +1,33 @@
-import { INestApplication, HttpStatus } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
-import * as request from 'supertest';
-import { MemorialController } from './memorial.controller';
-import { MemorialService } from './memorial.service';
-import { VictimCategory } from '../../entities/victim.entity';
+import { INestApplication, HttpStatus } from "@nestjs/common";
+import { Test, TestingModule } from "@nestjs/testing";
+import * as request from "supertest";
+import { MemorialController } from "./memorial.controller";
+import { MemorialService } from "./memorial.service";
+import { VictimCategory } from "../../entities/victim.entity";
 
 // Using loose typing to keep the controller contract focused
 const mockVictim = {
-  id: '11111111-1111-1111-1111-111111111111',
-  fullName: 'Test Victim',
+  id: "11111111-1111-1111-1111-111111111111",
+  fullName: "Test Victim",
   category: VictimCategory.PROTEST,
 };
 
 const mockPrisoner = {
-  id: '22222222-2222-2222-2222-222222222222',
-  fullName: 'Test Prisoner',
-  status: 'detained',
+  id: "22222222-2222-2222-2222-222222222222",
+  fullName: "Test Prisoner",
+  status: "detained",
 };
 
 const mockExile = {
-  id: '33333333-3333-3333-3333-333333333333',
-  fullName: 'Test Exile',
-  destination: 'Colombia',
+  id: "33333333-3333-3333-3333-333333333333",
+  fullName: "Test Exile",
+  destination: "Colombia",
 };
 
 const mockStats = {
   total: 10,
-  byCategory: [{ category: VictimCategory.PROTEST, count: '5' }],
-  byYear: [{ year: '2019', count: '3' }],
+  byCategory: [{ category: VictimCategory.PROTEST, count: "5" }],
+  byYear: [{ year: "2019", count: "3" }],
 };
 
 const mockService = {
@@ -50,7 +50,9 @@ const mockService = {
   }),
   getPrisonerStatistics: jest.fn().mockResolvedValue({ total: 3 }),
   findOnePrisoner: jest.fn().mockResolvedValue(mockPrisoner),
-  createPrisoner: jest.fn().mockImplementation((dto) => ({ ...mockPrisoner, ...dto })),
+  createPrisoner: jest
+    .fn()
+    .mockImplementation((dto) => ({ ...mockPrisoner, ...dto })),
   updatePrisoner: jest.fn().mockResolvedValue(mockPrisoner),
   deletePrisoner: jest.fn().mockResolvedValue(undefined),
   findAllExileStories: jest.fn().mockResolvedValue({
@@ -59,12 +61,14 @@ const mockService = {
   }),
   getExileStatistics: jest.fn().mockResolvedValue({ total: 5 }),
   findOneExileStory: jest.fn().mockResolvedValue(mockExile),
-  createExileStory: jest.fn().mockImplementation((dto) => ({ ...mockExile, ...dto })),
+  createExileStory: jest
+    .fn()
+    .mockImplementation((dto) => ({ ...mockExile, ...dto })),
   updateExileStory: jest.fn().mockResolvedValue(mockExile),
   deleteExileStory: jest.fn().mockResolvedValue(undefined),
 };
 
-describe('MemorialController (integration)', () => {
+describe("MemorialController (integration)", () => {
   let app: INestApplication;
 
   beforeAll(async () => {
@@ -90,28 +94,34 @@ describe('MemorialController (integration)', () => {
     await app.close();
   });
 
-  describe('victims', () => {
-    it('GET /memorial/victims returns paginated victims', async () => {
+  describe("victims", () => {
+    it("GET /memorial/victims returns paginated victims", async () => {
       const res = await request(app.getHttpServer())
-        .get('/memorial/victims?page=1&limit=20')
+        .get("/memorial/victims?page=1&limit=20")
         .expect(HttpStatus.OK);
 
       expect(res.body.data).toHaveLength(1);
       expect(res.body.meta.total).toBe(1);
-      expect(mockService.findAllVictims).toHaveBeenCalledWith({ page: '1', limit: '20' });
+      expect(mockService.findAllVictims).toHaveBeenCalledWith({
+        page: "1",
+        limit: "20",
+      });
     });
 
-    it('GET /memorial/victims/:id rejects invalid UUID', () => {
+    it("GET /memorial/victims/:id rejects invalid UUID", () => {
       return request(app.getHttpServer())
-        .get('/memorial/victims/not-a-uuid')
+        .get("/memorial/victims/not-a-uuid")
         .expect(HttpStatus.BAD_REQUEST);
     });
 
-    it('POST /memorial/victims creates a victim', async () => {
-      const payload = { fullName: 'New Victim', category: VictimCategory.PROTEST };
+    it("POST /memorial/victims creates a victim", async () => {
+      const payload = {
+        fullName: "New Victim",
+        category: VictimCategory.PROTEST,
+      };
 
       const res = await request(app.getHttpServer())
-        .post('/memorial/victims')
+        .post("/memorial/victims")
         .send(payload)
         .expect(HttpStatus.CREATED);
 
@@ -120,19 +130,19 @@ describe('MemorialController (integration)', () => {
     });
   });
 
-  describe('statistics', () => {
-    it('GET /memorial/statistics returns overall stats', async () => {
+  describe("statistics", () => {
+    it("GET /memorial/statistics returns overall stats", async () => {
       const res = await request(app.getHttpServer())
-        .get('/memorial/statistics')
+        .get("/memorial/statistics")
         .expect(HttpStatus.OK);
 
       expect(res.body).toEqual({ totalVictims: 10 });
       expect(mockService.getOverallStatistics).toHaveBeenCalled();
     });
 
-    it('GET /memorial/victims/statistics returns victim stats', async () => {
+    it("GET /memorial/victims/statistics returns victim stats", async () => {
       const res = await request(app.getHttpServer())
-        .get('/memorial/victims/statistics')
+        .get("/memorial/victims/statistics")
         .expect(HttpStatus.OK);
 
       expect(res.body.total).toBe(10);
@@ -140,37 +150,40 @@ describe('MemorialController (integration)', () => {
     });
   });
 
-  describe('prisoners', () => {
-    it('GET /memorial/prisoners returns paginated prisoners', async () => {
+  describe("prisoners", () => {
+    it("GET /memorial/prisoners returns paginated prisoners", async () => {
       const res = await request(app.getHttpServer())
-        .get('/memorial/prisoners?page=2&limit=5')
+        .get("/memorial/prisoners?page=2&limit=5")
         .expect(HttpStatus.OK);
 
       expect(res.body.data[0].id).toBe(mockPrisoner.id);
       expect(res.body.meta.total).toBe(1);
-      expect(mockService.findAllPrisoners).toHaveBeenCalledWith({ page: '2', limit: '5' });
+      expect(mockService.findAllPrisoners).toHaveBeenCalledWith({
+        page: "2",
+        limit: "5",
+      });
     });
 
-    it('GET /memorial/prisoners/statistics returns prisoner stats', async () => {
+    it("GET /memorial/prisoners/statistics returns prisoner stats", async () => {
       const res = await request(app.getHttpServer())
-        .get('/memorial/prisoners/statistics')
+        .get("/memorial/prisoners/statistics")
         .expect(HttpStatus.OK);
 
       expect(res.body.total).toBe(3);
       expect(mockService.getPrisonerStatistics).toHaveBeenCalled();
     });
 
-    it('GET /memorial/prisoners/:id rejects invalid UUID', () => {
+    it("GET /memorial/prisoners/:id rejects invalid UUID", () => {
       return request(app.getHttpServer())
-        .get('/memorial/prisoners/not-a-uuid')
+        .get("/memorial/prisoners/not-a-uuid")
         .expect(HttpStatus.BAD_REQUEST);
     });
 
-    it('POST /memorial/prisoners creates a prisoner', async () => {
-      const payload = { fullName: 'New Prisoner', status: 'detained' };
+    it("POST /memorial/prisoners creates a prisoner", async () => {
+      const payload = { fullName: "New Prisoner", status: "detained" };
 
       const res = await request(app.getHttpServer())
-        .post('/memorial/prisoners')
+        .post("/memorial/prisoners")
         .send(payload)
         .expect(HttpStatus.CREATED);
 
@@ -178,18 +191,21 @@ describe('MemorialController (integration)', () => {
       expect(mockService.createPrisoner).toHaveBeenCalled();
     });
 
-    it('PATCH /memorial/prisoners/:id updates a prisoner', async () => {
-      const payload = { status: 'released' };
+    it("PATCH /memorial/prisoners/:id updates a prisoner", async () => {
+      const payload = { status: "released" };
 
       await request(app.getHttpServer())
         .patch(`/memorial/prisoners/${mockPrisoner.id}`)
         .send(payload)
         .expect(HttpStatus.OK);
 
-      expect(mockService.updatePrisoner).toHaveBeenCalledWith(mockPrisoner.id, payload);
+      expect(mockService.updatePrisoner).toHaveBeenCalledWith(
+        mockPrisoner.id,
+        payload,
+      );
     });
 
-    it('DELETE /memorial/prisoners/:id deletes a prisoner', async () => {
+    it("DELETE /memorial/prisoners/:id deletes a prisoner", async () => {
       await request(app.getHttpServer())
         .delete(`/memorial/prisoners/${mockPrisoner.id}`)
         .expect(HttpStatus.NO_CONTENT);
@@ -198,36 +214,39 @@ describe('MemorialController (integration)', () => {
     });
   });
 
-  describe('exile stories', () => {
-    it('GET /memorial/exiles returns paginated exiles', async () => {
+  describe("exile stories", () => {
+    it("GET /memorial/exiles returns paginated exiles", async () => {
       const res = await request(app.getHttpServer())
-        .get('/memorial/exiles?page=1&limit=10')
+        .get("/memorial/exiles?page=1&limit=10")
         .expect(HttpStatus.OK);
 
       expect(res.body.data[0].id).toBe(mockExile.id);
-      expect(mockService.findAllExileStories).toHaveBeenCalledWith({ page: '1', limit: '10' });
+      expect(mockService.findAllExileStories).toHaveBeenCalledWith({
+        page: "1",
+        limit: "10",
+      });
     });
 
-    it('GET /memorial/exiles/statistics returns exile stats', async () => {
+    it("GET /memorial/exiles/statistics returns exile stats", async () => {
       const res = await request(app.getHttpServer())
-        .get('/memorial/exiles/statistics')
+        .get("/memorial/exiles/statistics")
         .expect(HttpStatus.OK);
 
       expect(res.body.total).toBe(5);
       expect(mockService.getExileStatistics).toHaveBeenCalled();
     });
 
-    it('GET /memorial/exiles/:id rejects invalid UUID', () => {
+    it("GET /memorial/exiles/:id rejects invalid UUID", () => {
       return request(app.getHttpServer())
-        .get('/memorial/exiles/not-a-uuid')
+        .get("/memorial/exiles/not-a-uuid")
         .expect(HttpStatus.BAD_REQUEST);
     });
 
-    it('POST /memorial/exiles creates an exile story', async () => {
-      const payload = { fullName: 'New Exile', destination: 'Peru' };
+    it("POST /memorial/exiles creates an exile story", async () => {
+      const payload = { fullName: "New Exile", destination: "Peru" };
 
       const res = await request(app.getHttpServer())
-        .post('/memorial/exiles')
+        .post("/memorial/exiles")
         .send(payload)
         .expect(HttpStatus.CREATED);
 
@@ -235,18 +254,21 @@ describe('MemorialController (integration)', () => {
       expect(mockService.createExileStory).toHaveBeenCalled();
     });
 
-    it('PATCH /memorial/exiles/:id updates an exile story', async () => {
-      const payload = { destination: 'Chile' };
+    it("PATCH /memorial/exiles/:id updates an exile story", async () => {
+      const payload = { destination: "Chile" };
 
       await request(app.getHttpServer())
         .patch(`/memorial/exiles/${mockExile.id}`)
         .send(payload)
         .expect(HttpStatus.OK);
 
-      expect(mockService.updateExileStory).toHaveBeenCalledWith(mockExile.id, payload);
+      expect(mockService.updateExileStory).toHaveBeenCalledWith(
+        mockExile.id,
+        payload,
+      );
     });
 
-    it('DELETE /memorial/exiles/:id deletes an exile story', async () => {
+    it("DELETE /memorial/exiles/:id deletes an exile story", async () => {
       await request(app.getHttpServer())
         .delete(`/memorial/exiles/${mockExile.id}`)
         .expect(HttpStatus.NO_CONTENT);

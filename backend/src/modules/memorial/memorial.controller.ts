@@ -10,8 +10,8 @@ import {
   ParseUUIDPipe,
   HttpCode,
   HttpStatus,
-} from '@nestjs/common';
-import { MemorialService } from './memorial.service';
+} from "@nestjs/common";
+import { MemorialService } from "./memorial.service";
 import {
   CreateVictimDto,
   UpdateVictimDto,
@@ -22,17 +22,17 @@ import {
   CreateExileStoryDto,
   UpdateExileStoryDto,
   ExileStoryQueryDto,
-} from './dto';
+} from "./dto";
 
 /**
  * Memorial Controller
- * 
+ *
  * "This is why we exist."
- * 
+ *
  * API endpoints for the victims memorial.
  * Every name here represents a Venezuelan who suffered.
  */
-@Controller('memorial')
+@Controller("memorial")
 export class MemorialController {
   constructor(private readonly memorialService: MemorialService) {}
 
@@ -42,7 +42,7 @@ export class MemorialController {
    * GET /api/v1/memorial/statistics
    * Get overall memorial statistics
    */
-  @Get('statistics')
+  @Get("statistics")
   async getOverallStatistics() {
     return this.memorialService.getOverallStatistics();
   }
@@ -53,7 +53,7 @@ export class MemorialController {
    * GET /api/v1/memorial/victims
    * Get all victims with filtering and pagination
    */
-  @Get('victims')
+  @Get("victims")
   async findAllVictims(@Query() query: VictimQueryDto) {
     return this.memorialService.findAllVictims(query);
   }
@@ -62,7 +62,7 @@ export class MemorialController {
    * GET /api/v1/memorial/victims/statistics
    * Get victim statistics
    */
-  @Get('victims/statistics')
+  @Get("victims/statistics")
   async getVictimStatistics() {
     return this.memorialService.getVictimStatistics();
   }
@@ -71,8 +71,8 @@ export class MemorialController {
    * GET /api/v1/memorial/victims/:id
    * Get a single victim by ID
    */
-  @Get('victims/:id')
-  async findOneVictim(@Param('id', ParseUUIDPipe) id: string) {
+  @Get("victims/:id")
+  async findOneVictim(@Param("id", ParseUUIDPipe) id: string) {
     return this.memorialService.findOneVictim(id);
   }
 
@@ -80,7 +80,7 @@ export class MemorialController {
    * POST /api/v1/memorial/victims
    * Create a new victim record
    */
-  @Post('victims')
+  @Post("victims")
   async createVictim(@Body() dto: CreateVictimDto) {
     return this.memorialService.createVictim(dto);
   }
@@ -89,9 +89,9 @@ export class MemorialController {
    * PATCH /api/v1/memorial/victims/:id
    * Update an existing victim record
    */
-  @Patch('victims/:id')
+  @Patch("victims/:id")
   async updateVictim(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param("id", ParseUUIDPipe) id: string,
     @Body() dto: UpdateVictimDto,
   ) {
     return this.memorialService.updateVictim(id, dto);
@@ -101,9 +101,9 @@ export class MemorialController {
    * DELETE /api/v1/memorial/victims/:id
    * Delete a victim record
    */
-  @Delete('victims/:id')
+  @Delete("victims/:id")
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteVictim(@Param('id', ParseUUIDPipe) id: string) {
+  async deleteVictim(@Param("id", ParseUUIDPipe) id: string) {
     await this.memorialService.deleteVictim(id);
   }
 
@@ -113,7 +113,7 @@ export class MemorialController {
    * GET /api/v1/memorial/prisoners
    * Get all political prisoners with filtering and pagination
    */
-  @Get('prisoners')
+  @Get("prisoners")
   async findAllPrisoners(@Query() query: PoliticalPrisonerQueryDto) {
     return this.memorialService.findAllPrisoners(query);
   }
@@ -122,7 +122,7 @@ export class MemorialController {
    * GET /api/v1/memorial/prisoners/statistics
    * Get political prisoner statistics
    */
-  @Get('prisoners/statistics')
+  @Get("prisoners/statistics")
   async getPrisonerStatistics() {
     return this.memorialService.getPrisonerStatistics();
   }
@@ -131,8 +131,8 @@ export class MemorialController {
    * GET /api/v1/memorial/prisoners/:id
    * Get a single political prisoner by ID
    */
-  @Get('prisoners/:id')
-  async findOnePrisoner(@Param('id', ParseUUIDPipe) id: string) {
+  @Get("prisoners/:id")
+  async findOnePrisoner(@Param("id", ParseUUIDPipe) id: string) {
     return this.memorialService.findOnePrisoner(id);
   }
 
@@ -140,7 +140,7 @@ export class MemorialController {
    * POST /api/v1/memorial/prisoners
    * Create a new political prisoner record
    */
-  @Post('prisoners')
+  @Post("prisoners")
   async createPrisoner(@Body() dto: CreatePoliticalPrisonerDto) {
     return this.memorialService.createPrisoner(dto);
   }
@@ -149,9 +149,9 @@ export class MemorialController {
    * PATCH /api/v1/memorial/prisoners/:id
    * Update an existing political prisoner record
    */
-  @Patch('prisoners/:id')
+  @Patch("prisoners/:id")
   async updatePrisoner(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param("id", ParseUUIDPipe) id: string,
     @Body() dto: UpdatePoliticalPrisonerDto,
   ) {
     return this.memorialService.updatePrisoner(id, dto);
@@ -161,9 +161,9 @@ export class MemorialController {
    * DELETE /api/v1/memorial/prisoners/:id
    * Delete a political prisoner record
    */
-  @Delete('prisoners/:id')
+  @Delete("prisoners/:id")
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deletePrisoner(@Param('id', ParseUUIDPipe) id: string) {
+  async deletePrisoner(@Param("id", ParseUUIDPipe) id: string) {
     await this.memorialService.deletePrisoner(id);
   }
 
@@ -173,7 +173,7 @@ export class MemorialController {
    * GET /api/v1/memorial/exiles
    * Get all exile stories with filtering and pagination
    */
-  @Get('exiles')
+  @Get("exiles")
   async findAllExileStories(@Query() query: ExileStoryQueryDto) {
     return this.memorialService.findAllExileStories(query);
   }
@@ -182,7 +182,7 @@ export class MemorialController {
    * GET /api/v1/memorial/exiles/statistics
    * Get exile statistics
    */
-  @Get('exiles/statistics')
+  @Get("exiles/statistics")
   async getExileStatistics() {
     return this.memorialService.getExileStatistics();
   }
@@ -191,8 +191,8 @@ export class MemorialController {
    * GET /api/v1/memorial/exiles/:id
    * Get a single exile story by ID
    */
-  @Get('exiles/:id')
-  async findOneExileStory(@Param('id', ParseUUIDPipe) id: string) {
+  @Get("exiles/:id")
+  async findOneExileStory(@Param("id", ParseUUIDPipe) id: string) {
     return this.memorialService.findOneExileStory(id);
   }
 
@@ -200,7 +200,7 @@ export class MemorialController {
    * POST /api/v1/memorial/exiles
    * Create a new exile story
    */
-  @Post('exiles')
+  @Post("exiles")
   async createExileStory(@Body() dto: CreateExileStoryDto) {
     return this.memorialService.createExileStory(dto);
   }
@@ -209,9 +209,9 @@ export class MemorialController {
    * PATCH /api/v1/memorial/exiles/:id
    * Update an existing exile story
    */
-  @Patch('exiles/:id')
+  @Patch("exiles/:id")
   async updateExileStory(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param("id", ParseUUIDPipe) id: string,
     @Body() dto: UpdateExileStoryDto,
   ) {
     return this.memorialService.updateExileStory(id, dto);
@@ -221,9 +221,9 @@ export class MemorialController {
    * DELETE /api/v1/memorial/exiles/:id
    * Delete an exile story
    */
-  @Delete('exiles/:id')
+  @Delete("exiles/:id")
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteExileStory(@Param('id', ParseUUIDPipe) id: string) {
+  async deleteExileStory(@Param("id", ParseUUIDPipe) id: string) {
     await this.memorialService.deleteExileStory(id);
   }
 }

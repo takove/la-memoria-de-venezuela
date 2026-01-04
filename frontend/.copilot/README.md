@@ -27,16 +27,19 @@ This file provides additional context for GitHub Copilot when working on the Sve
 
 ```typescript
 // src/lib/api.ts
-import { PUBLIC_API_URL } from '$env/static/public';
+import { PUBLIC_API_URL } from "$env/static/public";
 
-const API_URL = PUBLIC_API_URL || 'http://localhost:3000/api/v1';
+const API_URL = PUBLIC_API_URL || "http://localhost:3000/api/v1";
 
-async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+async function fetchAPI<T>(
+  endpoint: string,
+  options: RequestInit = {},
+): Promise<T> {
   const url = `${API_URL}${endpoint}`;
-  
+
   const response = await fetch(url, {
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...options.headers,
     },
     ...options,
@@ -51,9 +54,9 @@ async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): Promise
 
 export async function getOfficials(params = {}) {
   const searchParams = new URLSearchParams();
-  if (params.page) searchParams.set('page', params.page.toString());
-  if (params.limit) searchParams.set('limit', params.limit.toString());
-  
+  if (params.page) searchParams.set("page", params.page.toString());
+  if (params.limit) searchParams.set("limit", params.limit.toString());
+
   return fetchAPI(`/officials?${searchParams}`);
 }
 ```
@@ -65,12 +68,12 @@ export async function getOfficials(params = {}) {
   import { onMount } from 'svelte';
   import type { Official } from '$lib/types';
   import { api } from '$lib/api';
-  
+
   // State
   let officials: Official[] = [];
   let loading = true;
   let error = '';
-  
+
   // Functions
   async function loadOfficials() {
     try {
@@ -85,7 +88,7 @@ export async function getOfficials(params = {}) {
       loading = false;
     }
   }
-  
+
   // Lifecycle
   onMount(() => {
     loadOfficials();
@@ -95,7 +98,7 @@ export async function getOfficials(params = {}) {
 <!-- Template with loading states -->
 <div class="container mx-auto px-4 py-8">
   <h1 class="text-3xl font-bold mb-6">Funcionarios</h1>
-  
+
   {#if loading}
     <p class="text-gray-600">Cargando...</p>
   {:else if error}
@@ -105,7 +108,7 @@ export async function getOfficials(params = {}) {
   {:else}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {#each officials as official}
-        <a href="/officials/{official.id}" 
+        <a href="/officials/{official.id}"
            class="block p-6 bg-white rounded-lg shadow hover:shadow-lg transition">
           <h3 class="text-xl font-semibold mb-2">{official.fullName}</h3>
           <span class="text-sm text-gray-600">{official.status}</span>
@@ -126,7 +129,7 @@ export interface Official {
   fullNameEs?: string;
   biography?: string;
   biographyEs?: string;
-  status: 'active' | 'inactive' | 'deceased';
+  status: "active" | "inactive" | "deceased";
   confidenceLevel: number; // 1-5
   createdAt: string;
   updatedAt: string;
@@ -138,7 +141,7 @@ export interface Official {
 export interface Sanction {
   id: string;
   officialId: string;
-  type: 'ofac_sdn' | 'ofac_ns_plc' | 'eu' | 'canada' | 'uk' | 'other';
+  type: "ofac_sdn" | "ofac_ns_plc" | "eu" | "canada" | "uk" | "other";
   programName: string;
   programCode?: string;
   ofacId?: string;
@@ -146,7 +149,7 @@ export interface Sanction {
   reasonEs?: string;
   imposedDate: string;
   liftedDate?: string;
-  status: 'active' | 'lifted' | 'modified';
+  status: "active" | "lifted" | "modified";
   sourceUrl?: string;
   official?: Official;
 }
@@ -156,14 +159,27 @@ export interface Case {
   caseNumber: string;
   title: string;
   titleEs?: string;
-  type: 'indictment' | 'criminal' | 'civil' | 'iachr' | 'icc' | 'other';
-  jurisdiction: 'usa' | 'venezuela' | 'spain' | 'colombia' | 'iachr' | 'icc' | 'other';
+  type: "indictment" | "criminal" | "civil" | "iachr" | "icc" | "other";
+  jurisdiction:
+    | "usa"
+    | "venezuela"
+    | "spain"
+    | "colombia"
+    | "iachr"
+    | "icc"
+    | "other";
   court?: string;
   description?: string;
   descriptionEs?: string;
   filingDate?: string;
   resolutionDate?: string;
-  status: 'open' | 'closed' | 'pending' | 'dismissed' | 'conviction' | 'acquittal';
+  status:
+    | "open"
+    | "closed"
+    | "pending"
+    | "dismissed"
+    | "conviction"
+    | "acquittal";
   documentUrl?: string;
   sourceUrl?: string;
   involvements?: CaseInvolvement[];
@@ -173,7 +189,7 @@ export interface CaseInvolvement {
   id: string;
   officialId: string;
   caseId: string;
-  role: 'defendant' | 'witness' | 'accused' | 'convicted' | 'mentioned';
+  role: "defendant" | "witness" | "accused" | "convicted" | "mentioned";
   details?: string;
   detailsEs?: string;
   official?: Official;
@@ -220,28 +236,32 @@ export interface CaseInvolvement {
 ```typescript
 // Format date in Spanish
 function formatDate(dateString: string | null): string {
-  if (!dateString) return 'N/A';
-  return new Date(dateString).toLocaleDateString('es-VE', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+  if (!dateString) return "N/A";
+  return new Date(dateString).toLocaleDateString("es-VE", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 }
 
 // Get status badge color
 function getStatusClass(status: string): string {
   switch (status) {
-    case 'active': return 'bg-red-100 text-red-800';
-    case 'inactive': return 'bg-gray-100 text-gray-800';
-    case 'lifted': return 'bg-green-100 text-green-800';
-    default: return 'bg-gray-100 text-gray-800';
+    case "active":
+      return "bg-red-100 text-red-800";
+    case "inactive":
+      return "bg-gray-100 text-gray-800";
+    case "lifted":
+      return "bg-green-100 text-green-800";
+    default:
+      return "bg-gray-100 text-gray-800";
   }
 }
 
 // Truncate text
 function truncate(text: string, length: number): string {
   if (text.length <= length) return text;
-  return text.substring(0, length) + '...';
+  return text.substring(0, length) + "...";
 }
 ```
 
@@ -262,7 +282,7 @@ PUBLIC_API_URL=http://localhost:3000/api/v1
       <a href="/" class="text-xl font-bold">
         🇻🇪 La Memoria
       </a>
-      
+
       <div class="flex gap-6">
         <a href="/" class="hover:text-blue-600">Inicio</a>
         <a href="/officials" class="hover:text-blue-600">Funcionarios</a>
@@ -270,7 +290,7 @@ PUBLIC_API_URL=http://localhost:3000/api/v1
         <a href="/cases" class="hover:text-blue-600">Casos</a>
         <a href="/about" class="hover:text-blue-600">Acerca de</a>
       </div>
-      
+
       <a href="/search">
         <img src="/search-icon.svg" alt="Search" class="w-5 h-5" />
       </a>
@@ -323,21 +343,21 @@ Always provide content in both Spanish and English:
 ## Testing Pattern (Vitest - Coming Soon)
 
 ```typescript
-import { render, screen } from '@testing-library/svelte';
-import OfficialCard from './OfficialCard.svelte';
+import { render, screen } from "@testing-library/svelte";
+import OfficialCard from "./OfficialCard.svelte";
 
-test('renders official name', () => {
-  render(OfficialCard, { 
-    props: { 
-      official: { 
-        id: '123',
-        fullName: 'Test Official', 
-        status: 'active' 
-      } 
-    } 
+test("renders official name", () => {
+  render(OfficialCard, {
+    props: {
+      official: {
+        id: "123",
+        fullName: "Test Official",
+        status: "active",
+      },
+    },
   });
-  
-  expect(screen.getByText('Test Official')).toBeInTheDocument();
+
+  expect(screen.getByText("Test Official")).toBeInTheDocument();
 });
 ```
 

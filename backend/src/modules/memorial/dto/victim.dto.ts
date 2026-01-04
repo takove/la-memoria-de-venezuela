@@ -11,13 +11,19 @@ import {
   ValidateNested,
   Length,
   IsUrl,
-} from 'class-validator';
-import { Type } from 'class-transformer';
-import { VictimCategory } from '../../../entities/victim.entity';
+} from "class-validator";
+import { Type } from "class-transformer";
+import { VictimCategory } from "../../../entities/victim.entity";
 
 class EvidenceSourceDto {
   @IsString()
-  type: 'official_record' | 'ngo_report' | 'news_article' | 'witness' | 'video' | 'photo';
+  type:
+    | "official_record"
+    | "ngo_report"
+    | "news_article"
+    | "witness"
+    | "video"
+    | "photo";
 
   @IsString()
   @Length(1, 500)
@@ -46,7 +52,7 @@ class EvidenceSourceDto {
 
 class MemorialDto {
   @IsString()
-  type: 'physical' | 'virtual' | 'mural' | 'monument' | 'ceremony';
+  type: "physical" | "virtual" | "mural" | "monument" | "ceremony";
 
   @IsString()
   @Length(1, 200)
@@ -421,9 +427,9 @@ export class VictimQueryDto {
 
   @IsOptional()
   @IsString()
-  sortBy?: 'fullName' | 'dateOfDeath' | 'createdAt' | 'category';
+  sortBy?: "fullName" | "dateOfDeath" | "createdAt" | "category";
 
   @IsOptional()
   @IsString()
-  sortOrder?: 'ASC' | 'DESC';
+  sortOrder?: "ASC" | "DESC";
 }

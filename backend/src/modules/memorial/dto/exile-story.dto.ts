@@ -11,13 +11,16 @@ import {
   ValidateNested,
   Length,
   IsUrl,
-} from 'class-validator';
-import { Type } from 'class-transformer';
-import { ExileReason, JourneyRoute } from '../../../entities/exile-story.entity';
+} from "class-validator";
+import { Type } from "class-transformer";
+import {
+  ExileReason,
+  JourneyRoute,
+} from "../../../entities/exile-story.entity";
 
 class EvidenceSourceDto {
   @IsString()
-  type: 'interview' | 'document' | 'photo' | 'video' | 'organization';
+  type: "interview" | "document" | "photo" | "video" | "organization";
 
   @IsString()
   @Length(1, 500)
@@ -498,9 +501,9 @@ export class ExileStoryQueryDto {
 
   @IsOptional()
   @IsString()
-  sortBy?: 'yearLeft' | 'destination' | 'createdAt';
+  sortBy?: "yearLeft" | "destination" | "createdAt";
 
   @IsOptional()
   @IsString()
-  sortOrder?: 'ASC' | 'DESC';
+  sortOrder?: "ASC" | "DESC";
 }

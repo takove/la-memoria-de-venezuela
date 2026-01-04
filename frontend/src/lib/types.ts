@@ -11,7 +11,7 @@ export interface Official {
   nationality?: string;
   cedula?: string;
   passportNumber?: string;
-  status: 'active' | 'inactive' | 'deceased' | 'exiled' | 'imprisoned';
+  status: "active" | "inactive" | "deceased" | "exiled" | "imprisoned";
   photoUrl?: string;
   biography?: string;
   biographyEs?: string;
@@ -25,7 +25,7 @@ export interface Official {
 export interface Sanction {
   id: string;
   officialId: string;
-  type: 'ofac_sdn' | 'ofac_ns_plc' | 'eu' | 'canada' | 'uk' | 'other';
+  type: "ofac_sdn" | "ofac_ns_plc" | "eu" | "canada" | "uk" | "other";
   programCode: string;
   programName: string;
   ofacId?: string;
@@ -33,7 +33,7 @@ export interface Sanction {
   reasonEs?: string;
   imposedDate: string;
   liftedDate?: string;
-  status: 'active' | 'lifted' | 'modified';
+  status: "active" | "lifted" | "modified";
   sourceUrl?: string;
   treasuryPressRelease?: string;
   official?: Official;
@@ -44,8 +44,15 @@ export interface Case {
   caseNumber: string;
   title: string;
   titleEs?: string;
-  type: 'indictment' | 'criminal' | 'civil' | 'iachr' | 'icc' | 'other';
-  jurisdiction: 'usa' | 'venezuela' | 'spain' | 'colombia' | 'iachr' | 'icc' | 'other';
+  type: "indictment" | "criminal" | "civil" | "iachr" | "icc" | "other";
+  jurisdiction:
+    | "usa"
+    | "venezuela"
+    | "spain"
+    | "colombia"
+    | "iachr"
+    | "icc"
+    | "other";
   court?: string;
   description?: string;
   descriptionEs?: string;
@@ -53,7 +60,13 @@ export interface Case {
   chargesEs?: string[];
   filingDate?: string;
   resolutionDate?: string;
-  status: 'open' | 'closed' | 'pending' | 'dismissed' | 'conviction' | 'acquittal';
+  status:
+    | "open"
+    | "closed"
+    | "pending"
+    | "dismissed"
+    | "conviction"
+    | "acquittal";
   documentUrl?: string;
   sourceUrl?: string;
   involvements?: CaseInvolvement[];
@@ -63,7 +76,7 @@ export interface CaseInvolvement {
   id: string;
   officialId: string;
   caseId: string;
-  role: 'defendant' | 'witness' | 'accused' | 'convicted' | 'mentioned';
+  role: "defendant" | "witness" | "accused" | "convicted" | "mentioned";
   details?: string;
   detailsEs?: string;
   official?: Official;
@@ -77,7 +90,14 @@ export interface Position {
   titleEs?: string;
   organization?: string;
   organizationEs?: string;
-  branch: 'executive' | 'legislative' | 'judicial' | 'military' | 'intelligence' | 'state_enterprise' | 'other';
+  branch:
+    | "executive"
+    | "legislative"
+    | "judicial"
+    | "military"
+    | "intelligence"
+    | "state_enterprise"
+    | "other";
   startDate?: string;
   endDate?: string;
   isCurrent: boolean;
@@ -85,55 +105,62 @@ export interface Position {
 
 // ==================== MEMORIAL TYPES ====================
 
-export type VictimCategory = 
-  | 'protest'
-  | 'political_execution'
-  | 'torture'
-  | 'detention'
-  | 'healthcare'
-  | 'hunger'
-  | 'violence'
-  | 'blackout'
-  | 'exodus'
-  | 'other';
+export type VictimCategory =
+  | "protest"
+  | "political_execution"
+  | "torture"
+  | "detention"
+  | "healthcare"
+  | "hunger"
+  | "violence"
+  | "blackout"
+  | "exodus"
+  | "other";
 
-export type PrisonerStatus = 
-  | 'imprisoned'
-  | 'released'
-  | 'exiled'
-  | 'house_arrest'
-  | 'disappeared'
-  | 'deceased'
-  | 'unknown';
+export type PrisonerStatus =
+  | "imprisoned"
+  | "released"
+  | "exiled"
+  | "house_arrest"
+  | "disappeared"
+  | "deceased"
+  | "unknown";
 
-export type FacilityType = 
-  | 'sebin_helicoide'
-  | 'sebin_plaza'
-  | 'dgcim'
-  | 'cicpc'
-  | 'gnb'
-  | 'prison'
-  | 'military_base'
-  | 'unknown';
+export type FacilityType =
+  | "sebin_helicoide"
+  | "sebin_plaza"
+  | "dgcim"
+  | "cicpc"
+  | "gnb"
+  | "prison"
+  | "military_base"
+  | "unknown";
 
-export type ExileReason = 
-  | 'political_persecution'
-  | 'economic'
-  | 'healthcare'
-  | 'violence'
-  | 'family_reunification'
-  | 'professional'
-  | 'mixed';
+export type ExileReason =
+  | "political_persecution"
+  | "economic"
+  | "healthcare"
+  | "violence"
+  | "family_reunification"
+  | "professional"
+  | "mixed";
 
-export type JourneyRoute = 
-  | 'legal'
-  | 'darien_gap'
-  | 'border_crossing'
-  | 'maritime'
-  | 'mixed';
+export type JourneyRoute =
+  | "legal"
+  | "darien_gap"
+  | "border_crossing"
+  | "maritime"
+  | "mixed";
 
 export interface EvidenceSource {
-  type: 'document' | 'testimony' | 'news' | 'report' | 'video' | 'photo' | 'social_media';
+  type:
+    | "document"
+    | "testimony"
+    | "news"
+    | "report"
+    | "video"
+    | "photo"
+    | "social_media";
   title: string;
   url?: string;
   date?: string;
@@ -142,7 +169,7 @@ export interface EvidenceSource {
 }
 
 export interface Memorial {
-  type: 'physical' | 'virtual' | 'art' | 'documentary' | 'book';
+  type: "physical" | "virtual" | "art" | "documentary" | "book";
   name: string;
   location?: string;
   url?: string;
@@ -177,7 +204,12 @@ export interface Victim {
   confidenceLevel: number;
   anonymous: boolean;
   familyConsent: boolean;
-  justiceStatus?: 'none' | 'investigation' | 'prosecution' | 'conviction' | 'international';
+  justiceStatus?:
+    | "none"
+    | "investigation"
+    | "prosecution"
+    | "conviction"
+    | "international";
   createdAt: string;
   updatedAt: string;
 }

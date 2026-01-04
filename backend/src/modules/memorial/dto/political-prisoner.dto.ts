@@ -11,13 +11,16 @@ import {
   ValidateNested,
   Length,
   IsUrl,
-} from 'class-validator';
-import { Type } from 'class-transformer';
-import { PrisonerStatus, FacilityType } from '../../../entities/political-prisoner.entity';
+} from "class-validator";
+import { Type } from "class-transformer";
+import {
+  PrisonerStatus,
+  FacilityType,
+} from "../../../entities/political-prisoner.entity";
 
 class EvidenceSourceDto {
   @IsString()
-  type: 'foro_penal' | 'un_report' | 'amnesty' | 'hrw' | 'news' | 'testimony';
+  type: "foro_penal" | "un_report" | "amnesty" | "hrw" | "news" | "testimony";
 
   @IsString()
   @Length(1, 500)
@@ -478,9 +481,14 @@ export class PoliticalPrisonerQueryDto {
 
   @IsOptional()
   @IsString()
-  sortBy?: 'fullName' | 'dateArrested' | 'dateReleased' | 'createdAt' | 'status';
+  sortBy?:
+    | "fullName"
+    | "dateArrested"
+    | "dateReleased"
+    | "createdAt"
+    | "status";
 
   @IsOptional()
   @IsString()
-  sortOrder?: 'ASC' | 'DESC';
+  sortOrder?: "ASC" | "DESC";
 }

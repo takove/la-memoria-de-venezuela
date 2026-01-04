@@ -1,8 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Case, CaseType, CaseStatus, Jurisdiction } from '../../entities/case.entity';
-import { CaseInvolvement } from '../../entities/case-involvement.entity';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import {
+  Case,
+  CaseType,
+  CaseStatus,
+  Jurisdiction,
+} from "../../entities/case.entity";
+import { CaseInvolvement } from "../../entities/case-involvement.entity";
 
 export interface FindCasesOptions {
   page?: number;
@@ -26,24 +31,26 @@ export class CasesService {
     const skip = (page - 1) * limit;
 
     const queryBuilder = this.casesRepository
-      .createQueryBuilder('case')
-      .leftJoinAndSelect('case.involvements', 'involvements')
-      .leftJoinAndSelect('involvements.official', 'official');
+      .createQueryBuilder("case")
+      .leftJoinAndSelect("case.involvements", "involvements")
+      .leftJoinAndSelect("involvements.official", "official");
 
     if (type) {
-      queryBuilder.andWhere('case.type = :type', { type });
+      queryBuilder.andWhere("case.type = :type", { type });
     }
 
     if (status) {
-      queryBuilder.andWhere('case.status = :status', { status });
+      queryBuilder.andWhere("case.status = :status", { status });
     }
 
     if (jurisdiction) {
-      queryBuilder.andWhere('case.jurisdiction = :jurisdiction', { jurisdiction });
+      queryBuilder.andWhere("case.jurisdiction = :jurisdiction", {
+        jurisdiction,
+      });
     }
 
     const [cases, total] = await queryBuilder
-      .orderBy('case.filingDate', 'DESC')
+      .orderBy("case.filingDate", "DESC")
       .skip(skip)
       .take(limit)
       .getManyAndCount();
@@ -62,7 +69,7 @@ export class CasesService {
   async findOne(id: string) {
     const caseEntity = await this.casesRepository.findOne({
       where: { id },
-      relations: ['involvements', 'involvements.official'],
+      relations: ["involvements", "involvements.official"],
     });
 
     if (!caseEntity) {
@@ -75,8 +82,8 @@ export class CasesService {
   async findByOfficial(officialId: string) {
     return this.involvementsRepository.find({
       where: { officialId },
-      relations: ['case'],
-      order: { createdAt: 'DESC' },
+      relations: ["case"],
+      order: { createdAt: "DESC" },
     });
   }
 
@@ -85,7 +92,11 @@ export class CasesService {
     return this.casesRepository.save(caseEntity);
   }
 
-  async addInvolvement(caseId: string, officialId: string, data: Partial<CaseInvolvement>) {
+  async addInvolvement(
+    caseId: string,
+    officialId: string,
+    data: Partial<CaseInvolvement>,
+  ) {
     const involvement = this.involvementsRepository.create({
       ...data,
       caseId,
@@ -98,24 +109,24 @@ export class CasesService {
     const total = await this.casesRepository.count();
 
     const byType = await this.casesRepository
-      .createQueryBuilder('case')
-      .select('case.type', 'type')
-      .addSelect('COUNT(*)', 'count')
-      .groupBy('case.type')
+      .createQueryBuilder("case")
+      .select("case.type", "type")
+      .addSelect("COUNT(*)", "count")
+      .groupBy("case.type")
       .getRawMany();
 
     const byJurisdiction = await this.casesRepository
-      .createQueryBuilder('case')
-      .select('case.jurisdiction', 'jurisdiction')
-      .addSelect('COUNT(*)', 'count')
-      .groupBy('case.jurisdiction')
+      .createQueryBuilder("case")
+      .select("case.jurisdiction", "jurisdiction")
+      .addSelect("COUNT(*)", "count")
+      .groupBy("case.jurisdiction")
       .getRawMany();
 
     const byStatus = await this.casesRepository
-      .createQueryBuilder('case')
-      .select('case.status', 'status')
-      .addSelect('COUNT(*)', 'count')
-      .groupBy('case.status')
+      .createQueryBuilder("case")
+      .select("case.status", "status")
+      .addSelect("COUNT(*)", "count")
+      .groupBy("case.status")
       .getRawMany();
 
     return {

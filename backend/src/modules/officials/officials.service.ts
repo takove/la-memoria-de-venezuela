@@ -1,7 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, ILike } from 'typeorm';
-import { Official, OfficialStatus } from '../../entities/official.entity';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository, ILike } from "typeorm";
+import { Official, OfficialStatus } from "../../entities/official.entity";
 
 export interface FindOfficialsOptions {
   page?: number;
@@ -22,24 +22,24 @@ export class OfficialsService {
     const skip = (page - 1) * limit;
 
     const queryBuilder = this.officialsRepository
-      .createQueryBuilder('official')
-      .leftJoinAndSelect('official.sanctions', 'sanctions')
-      .leftJoinAndSelect('official.caseInvolvements', 'involvements')
-      .leftJoinAndSelect('involvements.case', 'case');
+      .createQueryBuilder("official")
+      .leftJoinAndSelect("official.sanctions", "sanctions")
+      .leftJoinAndSelect("official.caseInvolvements", "involvements")
+      .leftJoinAndSelect("involvements.case", "case");
 
     if (search) {
       queryBuilder.andWhere(
-        '(official.fullName ILIKE :search OR official.aliases::text ILIKE :search)',
+        "(official.fullName ILIKE :search OR official.aliases::text ILIKE :search)",
         { search: `%${search}%` },
       );
     }
 
     if (status) {
-      queryBuilder.andWhere('official.status = :status', { status });
+      queryBuilder.andWhere("official.status = :status", { status });
     }
 
     const [officials, total] = await queryBuilder
-      .orderBy('official.lastName', 'ASC')
+      .orderBy("official.lastName", "ASC")
       .skip(skip)
       .take(limit)
       .getManyAndCount();
@@ -58,11 +58,7 @@ export class OfficialsService {
   async findOne(id: string) {
     const official = await this.officialsRepository.findOne({
       where: { id },
-      relations: [
-        'sanctions',
-        'caseInvolvements',
-        'caseInvolvements.case',
-      ],
+      relations: ["sanctions", "caseInvolvements", "caseInvolvements.case"],
     });
 
     if (!official) {
@@ -79,7 +75,7 @@ export class OfficialsService {
         { firstName: ILike(`%${name}%`) },
         { lastName: ILike(`%${name}%`) },
       ],
-      relations: ['sanctions'],
+      relations: ["sanctions"],
     });
   }
 
@@ -103,16 +99,16 @@ export class OfficialsService {
   async getStatistics() {
     const total = await this.officialsRepository.count();
     const byStatus = await this.officialsRepository
-      .createQueryBuilder('official')
-      .select('official.status', 'status')
-      .addSelect('COUNT(*)', 'count')
-      .groupBy('official.status')
+      .createQueryBuilder("official")
+      .select("official.status", "status")
+      .addSelect("COUNT(*)", "count")
+      .groupBy("official.status")
       .getRawMany();
 
     const sanctioned = await this.officialsRepository
-      .createQueryBuilder('official')
-      .innerJoin('official.sanctions', 'sanction')
-      .where('sanction.status = :status', { status: 'active' })
+      .createQueryBuilder("official")
+      .innerJoin("official.sanctions", "sanction")
+      .where("sanction.status = :status", { status: "active" })
       .getCount();
 
     return {
