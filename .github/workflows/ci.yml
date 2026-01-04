@@ -42,11 +42,14 @@ jobs:
       - name: Lint frontend
         run: pnpm --dir frontend lint
 
+      - name: Sync SvelteKit types
+        run: pnpm --filter frontend exec svelte-kit sync
+
       - name: Build frontend (generate .svelte-kit/)
         run: pnpm --filter frontend build
 
       - name: Test frontend
-        run: pnpm --dir frontend test:ci
+        run: pnpm --filter frontend test:ci
 
       - name: Upload backend coverage
         if: always()
