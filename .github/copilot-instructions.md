@@ -9,8 +9,11 @@ La Memoria de Venezuela is a comprehensive accountability database documenting V
 - **Backend**: NestJS v10 + TypeORM + PostgreSQL (Supabase)
 - **Frontend**: SvelteKit v2 + Tailwind CSS
 - **Database**: Supabase (Session Pooler for IPv4/IPv6 compatibility)
-- **Testing**: Jest (backend) + Vitest (frontend) - TBD
-- **CI/CD**: GitHub Actions - TBD
+- **Testing**: Jest (backend, coverage required) + Vitest (frontend, coverage with @vitest/coverage-v8)
+- **Linting**: ESLint 9.x (flat config) + Prettier 3.x
+  - **Backend**: ESLint 8.x with legacy .eslintrc.js
+  - **Frontend**: ESLint 9.x with flat config (eslint.config.js), svelte-eslint-parser, typescript-eslint
+- **CI/CD**: GitHub Actions (Node 20, pnpm v9, coverage artifact upload)
 
 ## Five-Tier Framework
 
@@ -289,6 +292,22 @@ perf: optimize officials query with indexes
 10. ✅ Update documentation when needed
 11. ✅ **NEVER start servers** — they run continuously in watch mode. NestJS (port 3000) and SvelteKit (port 5173) are always running. Do not attempt `pnpm start:dev` or similar.
 
+### Test Script Commands
+
+Use these commands for testing (do NOT use watch mode in CI):
+
+**Local Development:**
+- `pnpm --dir backend test` - Watch mode for backend tests
+- `pnpm --dir frontend test` - Watch mode for frontend tests (requires pressing `q` to exit)
+
+**CI/Automation (Non-watch mode):**
+- `pnpm --dir backend test:cov --runInBand` - Backend tests with coverage, single-threaded (for CI reliability)
+- `pnpm --dir frontend test:ci` - Frontend tests with coverage, exits cleanly (no manual input needed)
+
+**Coverage & Coverage Reports:**
+- `pnpm --dir backend test:cov` - Backend coverage report
+- `pnpm --dir frontend test:cov` - Frontend coverage report (watch mode)
+
 ## Common Patterns
 
 ### Adding a New Entity
@@ -318,6 +337,41 @@ perf: optimize officials query with indexes
 - **Connection String**: `postgresql://postgres.gxepalgxlyohcgxzxcur:PASSWORD@aws-1-us-east-1.pooler.supabase.com:5432/postgres`
 - **API Base URL**: `http://localhost:3000/api/v1` (dev)
 - **Frontend URL**: `http://localhost:5173` (dev)
+
+## Maintaining This Document
+
+This file evolves continuously with the codebase. Follow these practices to keep it accurate and valuable:
+
+### When to Update This File
+- After merging significant architectural decisions or pattern changes
+- When introducing new tech stack components or dependencies
+- After discovering issues with current patterns (document the fix)
+- When test/CI/CD workflows change
+- When project structure or naming conventions are standardized
+
+### How to Update (Low-Friction Workflow)
+1. **During PR development**: Note any instruction updates needed in your PR description under "Copilot Instructions Updates"
+2. **Post-merge**: Add a follow-up commit to update this file based on your notes (can be same day)
+3. **Keep it concise**: Focus on **project-specific knowledge** that Copilot cannot infer from code alone
+4. **Avoid redundancy**: Don't document language syntax or framework basics—focus on your project's patterns
+
+### Sections Worth Updating
+- **Tech Stack**: When upgrading frameworks (e.g., ESLint 8→9, NestJS versions)
+- **Code Quality Standards**: When establishing new patterns (e.g., testing thresholds, validation libraries)
+- **Build/Test Scripts**: When adding new npm scripts or CI jobs
+- **Project-Specific Notes**: New environment variables, deployment changes, database migration patterns
+- **Git Commit Conventions**: Add new commit types as needed
+
+### Example: Recent Updates
+- ✅ Added ESLint 9 flat config setup with Svelte parser requirements
+- ✅ Documented `test:ci` vs `test` (watch mode) distinction for scripts
+- ✅ Updated CI/CD to use `test:cov --runInBand` for reliable backend tests and `test:ci` for frontend
+
+### Testing Updates Work
+After updating this file, run a test with Copilot to ensure instructions are accurate:
+- Ask Copilot to implement a new feature following the patterns documented
+- If it deviates, refine the instructions to be clearer
+- This iterative validation keeps the file in sync with reality
 
 ## Resources
 
