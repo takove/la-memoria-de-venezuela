@@ -32,7 +32,7 @@ import {
  * API endpoints for the victims memorial.
  * Every name here represents a Venezuelan who suffered.
  */
-@Controller('api/v1/memorial')
+@Controller('memorial')
 export class MemorialController {
   constructor(private readonly memorialService: MemorialService) {}
 

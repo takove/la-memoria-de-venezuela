@@ -287,6 +287,7 @@ perf: optimize officials query with indexes
 8. ✅ Follow the existing code patterns
 9. ✅ Test with sample data before committing
 10. ✅ Update documentation when needed
+11. ✅ **NEVER start servers** — they run continuously in watch mode. NestJS (port 3000) and SvelteKit (port 5173) are always running. Do not attempt `pnpm start:dev` or similar.
 
 ## Common Patterns
 
