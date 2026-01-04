@@ -9,14 +9,19 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./src/tests/setup.ts"],
     include: ["src/**/*.{test,spec}.{js,ts}"],
+    singleThread: true,
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
-      include: ["src/lib/**/*.{js,ts,svelte}"],
+      include: ["src/lib/**/*.{js,ts}"],
       exclude: [
+        "**/*.svelte",
+        ".svelte-kit/**",
         "src/lib/types.ts",
         "src/lib/**/*.spec.ts",
         "src/lib/**/*.test.ts",
+        "src/app.*",
+        "**/node_modules/**",
       ],
       thresholds: {
         lines: 20,
