@@ -11,6 +11,7 @@
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write .",
     "test": "vitest",
+    "test:ci": "vitest --run --coverage",
     "test:ui": "vitest --ui",
     "test:cov": "vitest --coverage"
   },

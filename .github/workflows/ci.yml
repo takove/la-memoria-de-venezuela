@@ -43,7 +43,7 @@ jobs:
         run: pnpm --dir frontend lint
 
       - name: Test frontend
-        run: pnpm --dir frontend test -- --runInBand --coverage
+        run: pnpm --dir frontend test:ci
 
       - name: Upload backend coverage
         if: always()
