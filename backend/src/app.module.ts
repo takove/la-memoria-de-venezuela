@@ -5,6 +5,7 @@ import { OfficialsModule } from './modules/officials/officials.module';
 import { SanctionsModule } from './modules/sanctions/sanctions.module';
 import { CasesModule } from './modules/cases/cases.module';
 import { SearchModule } from './modules/search/search.module';
+import { MemorialModule } from './modules/memorial/memorial.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { SearchModule } from './modules/search/search.module';
     SanctionsModule,
     CasesModule,
     SearchModule,
+    MemorialModule, // "This is why we exist" - Victims Memorial
   ],
 })
 export class AppModule {}

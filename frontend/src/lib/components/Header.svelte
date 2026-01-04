@@ -3,6 +3,7 @@
 
   const navLinks = [
     { href: '/', label: 'Inicio' },
+    { href: '/memorial', label: '🕯️ Memorial' },
     { href: '/officials', label: 'Funcionarios' },
     { href: '/sanctions', label: 'Sanciones' },
     { href: '/cases', label: 'Casos' },

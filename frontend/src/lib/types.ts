@@ -83,6 +83,200 @@ export interface Position {
   isCurrent: boolean;
 }
 
+// ==================== MEMORIAL TYPES ====================
+
+export type VictimCategory = 
+  | 'protest'
+  | 'political_execution'
+  | 'torture'
+  | 'detention'
+  | 'healthcare'
+  | 'hunger'
+  | 'violence'
+  | 'blackout'
+  | 'exodus'
+  | 'other';
+
+export type PrisonerStatus = 
+  | 'imprisoned'
+  | 'released'
+  | 'exiled'
+  | 'house_arrest'
+  | 'disappeared'
+  | 'deceased'
+  | 'unknown';
+
+export type FacilityType = 
+  | 'sebin_helicoide'
+  | 'sebin_plaza'
+  | 'dgcim'
+  | 'cicpc'
+  | 'gnb'
+  | 'prison'
+  | 'military_base'
+  | 'unknown';
+
+export type ExileReason = 
+  | 'political_persecution'
+  | 'economic'
+  | 'healthcare'
+  | 'violence'
+  | 'family_reunification'
+  | 'professional'
+  | 'mixed';
+
+export type JourneyRoute = 
+  | 'legal'
+  | 'darien_gap'
+  | 'border_crossing'
+  | 'maritime'
+  | 'mixed';
+
+export interface EvidenceSource {
+  type: 'document' | 'testimony' | 'news' | 'report' | 'video' | 'photo' | 'social_media';
+  title: string;
+  url?: string;
+  date?: string;
+  description?: string;
+  confidenceLevel: number;
+}
+
+export interface Memorial {
+  type: 'physical' | 'virtual' | 'art' | 'documentary' | 'book';
+  name: string;
+  location?: string;
+  url?: string;
+  description?: string;
+}
+
+export interface Victim {
+  id: string;
+  fullName: string;
+  age?: number;
+  dateOfBirth?: string;
+  dateOfDeath?: string;
+  placeOfDeath?: string;
+  placeOfDeathEs?: string;
+  category: VictimCategory;
+  photoUrl?: string;
+  biography?: string;
+  biographyEs?: string;
+  dreams?: string;
+  dreamsEs?: string;
+  familyTestimony?: string;
+  familyTestimonyEs?: string;
+  circumstances?: string;
+  circumstancesEs?: string;
+  eventName?: string;
+  eventNameEs?: string;
+  responsibleOfficial?: Official;
+  chainOfCommand?: string[];
+  evidenceSources?: EvidenceSource[];
+  internationalReports?: string[];
+  memorials?: Memorial[];
+  confidenceLevel: number;
+  anonymous: boolean;
+  familyConsent: boolean;
+  justiceStatus?: 'none' | 'investigation' | 'prosecution' | 'conviction' | 'international';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PoliticalPrisoner {
+  id: string;
+  fullName: string;
+  dateOfBirth?: string;
+  occupation?: string;
+  occupationEs?: string;
+  photoUrl?: string;
+  status: PrisonerStatus;
+  dateArrested?: string;
+  dateReleased?: string;
+  daysDetained?: number;
+  primaryFacilityType?: FacilityType;
+  facilities?: string[];
+  charges?: string[];
+  chargesEs?: string[];
+  torture: boolean;
+  tortureDescription?: string;
+  solitaryConfinement: boolean;
+  medicalAttentionDenied: boolean;
+  familyVisitsDenied: boolean;
+  biography?: string;
+  biographyEs?: string;
+  testimony?: string;
+  testimonyEs?: string;
+  foroPenalCaseId?: string;
+  arrestingOfficial?: Official;
+  evidenceSources?: EvidenceSource[];
+  confidenceLevel: number;
+  anonymous: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ExileStory {
+  id: string;
+  fullName?: string;
+  displayName?: string;
+  cityOfOrigin?: string;
+  stateOfOrigin?: string;
+  occupation?: string;
+  occupationEs?: string;
+  photoUrl?: string;
+  yearLeft?: number;
+  destination?: string;
+  reason: ExileReason;
+  journeyRoute?: JourneyRoute;
+  countriesCrossed?: string[];
+  journeyDays?: number;
+  journeyDescription?: string;
+  journeyDescriptionEs?: string;
+  whatTheyLeft?: string;
+  whatTheyLeftEs?: string;
+  familySeparated: boolean;
+  familySituation?: string;
+  familySituationEs?: string;
+  careerLost: boolean;
+  careerDescription?: string;
+  story?: string;
+  storyEs?: string;
+  messageToVenezuela?: string;
+  messageToVenezuelaEs?: string;
+  hopesForFuture?: string;
+  hopesForFutureEs?: string;
+  anonymous: boolean;
+  verified: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface MemorialStatistics {
+  victims: {
+    total: number;
+    byCategory: Array<{ category: VictimCategory; count: number }>;
+    byYear: Array<{ year: number; count: number }>;
+  };
+  politicalPrisoners: {
+    total: number;
+    currentlyDetained: number;
+    tortured: number;
+    byStatus: Array<{ status: PrisonerStatus; count: number }>;
+    byFacility: Array<{ facility: FacilityType; count: number }>;
+  };
+  exiles: {
+    totalStories: number;
+    byDestination: Array<{ destination: string; count: number }>;
+    byYear: Array<{ year: number; count: number }>;
+    byReason: Array<{ reason: ExileReason; count: number }>;
+    familySeparated: number;
+    darienCrossings: number;
+    officialEstimate: number;
+  };
+  message: string;
+  messageEs: string;
+}
+
 export interface PaginatedResponse<T> {
   data: T[];
   meta: {
