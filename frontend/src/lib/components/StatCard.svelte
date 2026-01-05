@@ -11,8 +11,8 @@
   };
 </script>
 
-<div class="card p-6 text-center hover:shadow-md transition-shadow">
-  <div class="text-4xl mb-3">{iconMap[icon] || '📊'}</div>
-  <div class="text-3xl font-bold text-primary-600 mb-1">{value}</div>
-  <div class="text-gray-600">{label}</div>
+<div class="card p-4 sm:p-6 text-center hover:shadow-md transition-shadow">
+  <div class="text-3xl sm:text-4xl mb-2 sm:mb-3">{iconMap[icon] || '📊'}</div>
+  <div class="text-2xl sm:text-3xl font-bold text-primary-600 mb-1">{value}</div>
+  <div class="text-gray-600 text-sm sm:text-base">{label}</div>
 </div>
