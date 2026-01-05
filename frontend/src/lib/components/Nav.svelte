@@ -25,6 +25,17 @@
   function closeDrawer() {
     isDrawerOpen = false;
   }
+
+  function handleOverlayClick() {
+    closeDrawer();
+  }
+
+  function handleOverlayKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeDrawer();
+    }
+  }
 </script>
 
 <nav class="bg-white shadow-sm sticky top-0 z-50">
@@ -94,15 +105,20 @@
     <!-- Overlay -->
     <div 
       class="fixed inset-0 bg-black/50 z-40 md:hidden"
-      on:click={closeDrawer}
-      on:keydown={(e) => e.key === 'Escape' && closeDrawer()}
+      on:click={handleOverlayClick}
+      on:keydown={handleOverlayKeydown}
       role="button"
       tabindex="0"
       aria-label="Cerrar menú"
     ></div>
     
     <!-- Drawer -->
-    <div class="fixed top-16 left-0 right-0 bottom-0 bg-white z-50 md:hidden overflow-y-auto">
+    <div 
+      class="fixed top-16 left-0 right-0 bottom-0 bg-white z-50 md:hidden overflow-y-auto"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Menú de navegación"
+    >
       <div class="px-4 py-8 space-y-2">
         {#each navLinks as link}
           <a 

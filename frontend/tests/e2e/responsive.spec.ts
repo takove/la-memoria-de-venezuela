@@ -28,7 +28,7 @@ test.describe("Mobile-First Responsive Design", () => {
 
       // Take screenshot
       await page.screenshot({
-        path: `/tmp/screenshot-${viewport.name}-homepage.png`,
+        path: `test-results/screenshots/${viewport.name}-homepage.png`,
         fullPage: true,
       });
     });
@@ -53,7 +53,7 @@ test.describe("Mobile-First Responsive Design", () => {
 
         // Take screenshot with drawer open
         await page.screenshot({
-          path: `/tmp/screenshot-${viewport.name}-nav-open.png`,
+          path: `test-results/screenshots/${viewport.name}-nav-open.png`,
           fullPage: false,
         });
 
