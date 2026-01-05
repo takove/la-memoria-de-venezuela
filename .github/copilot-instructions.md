@@ -310,17 +310,17 @@ Use these commands for testing (do NOT use watch mode in CI):
 
 ### Pre-Commit Testing Requirements
 
-**CRITICAL: Always run full test suite before committing changes.** This prevents broken builds in CI/CD and maintains code quality.
+**CRITICAL: Always run linting and full test suite before committing changes.** This prevents broken builds in CI/CD and maintains code quality.
 
 ```bash
-# Run all tests before committing (backend + frontend)
-pnpm --dir backend test:cov --runInBand && pnpm --dir frontend test:ci
+# Run lint and all tests before committing (backend + frontend)
+pnpm --dir backend lint && pnpm --dir frontend lint && pnpm --dir backend test:cov --runInBand && pnpm --dir frontend test:ci
 ```
 
-If either test suite fails:
-1. Fix the failing tests or code
-2. Re-run the full test suite
-3. Do NOT commit until all tests pass
+If linting or test suite fails:
+1. Fix the linting errors, failing tests, or code
+2. Re-run the full lint and test suite
+3. Do NOT commit until all checks pass
 
 **Why this matters:**
 - Broken tests in main branch block all CI/CD pipelines
