@@ -21,7 +21,8 @@
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "migration:generate": "pnpm typeorm migration:generate -d src/config/typeorm.config.ts",
     "migration:run": "pnpm typeorm migration:run -d src/config/typeorm.config.ts",
-    "migration:revert": "pnpm typeorm migration:revert -d src/config/typeorm.config.ts"
+    "migration:revert": "pnpm typeorm migration:revert -d src/config/typeorm.config.ts",
+    "seed:businesses": "ts-node -r tsconfig-paths/register src/scripts/seed-businesses.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",
