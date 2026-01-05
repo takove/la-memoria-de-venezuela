@@ -156,12 +156,12 @@ describe("TestaferrosService", () => {
     it("should throw BadRequestException when fullName is missing", async () => {
       const createDto = {
         category: TestaferroCategory.MONEY_LAUNDERER,
-      } as any;
+      };
 
-      await expect(service.create(createDto)).rejects.toThrow(
+      await expect(service.create(createDto as any)).rejects.toThrow(
         BadRequestException,
       );
-      await expect(service.create(createDto)).rejects.toThrow(
+      await expect(service.create(createDto as any)).rejects.toThrow(
         "Full name is required",
       );
     });
@@ -169,12 +169,12 @@ describe("TestaferrosService", () => {
     it("should throw BadRequestException when category is missing", async () => {
       const createDto = {
         fullName: "Test Testaferro",
-      } as any;
+      };
 
-      await expect(service.create(createDto)).rejects.toThrow(
+      await expect(service.create(createDto as any)).rejects.toThrow(
         BadRequestException,
       );
-      await expect(service.create(createDto)).rejects.toThrow(
+      await expect(service.create(createDto as any)).rejects.toThrow(
         "Category is required",
       );
     });

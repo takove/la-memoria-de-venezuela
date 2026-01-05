@@ -61,9 +61,8 @@ export class CreateTestaferroDto {
   @IsString()
   relationshipToOfficialEs?: string;
 
-  @IsOptional()
   @IsEnum(TestaferroCategory)
-  category?: TestaferroCategory;
+  category: TestaferroCategory;
 
   @IsOptional()
   @IsEnum(TestaferroStatus)

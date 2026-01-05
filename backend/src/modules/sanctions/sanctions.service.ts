@@ -99,7 +99,16 @@ export class SanctionsService {
 
   async update(id: string, data: UpdateSanctionDto) {
     const sanction = await this.findOne(id);
-    Object.assign(sanction, data);
+
+    // Apply updates with proper defaults for undefined optional fields
+    const updates = {
+      ...data,
+      // Preserve existing values for fields not provided in update
+      confidenceLevel: data.confidenceLevel ?? sanction.confidenceLevel,
+      sources: data.sources !== undefined ? data.sources : sanction.sources,
+    };
+
+    Object.assign(sanction, updates);
     return this.sanctionsRepository.save(sanction);
   }
 

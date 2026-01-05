@@ -18,6 +18,7 @@ export class AddSourcesAndConfidence1736086800000 implements MigrationInterface 
         name: "confidence_level",
         type: "integer",
         default: 3,
+        isNullable: false,
       }),
     );
 
@@ -37,6 +38,7 @@ export class AddSourcesAndConfidence1736086800000 implements MigrationInterface 
         name: "confidence_level",
         type: "integer",
         default: 3,
+        isNullable: false,
       }),
     );
 
@@ -69,6 +71,7 @@ export class AddSourcesAndConfidence1736086800000 implements MigrationInterface 
         name: "confidence_level",
         type: "integer",
         default: 3,
+        isNullable: false,
       }),
     );
 
@@ -96,6 +99,7 @@ export class AddSourcesAndConfidence1736086800000 implements MigrationInterface 
           name: "confidence_level",
           type: "integer",
           default: 3,
+          isNullable: false,
         }),
       );
     }
@@ -170,6 +174,7 @@ export class AddSourcesAndConfidence1736086800000 implements MigrationInterface 
         name: "confidence_level",
         type: "integer",
         default: 1,
+        isNullable: false,
       }),
     );
 
