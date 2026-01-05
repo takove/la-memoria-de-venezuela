@@ -2,8 +2,10 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { GET } from "../+server";
 
 // Mock SvelteKit modules
-vi.mock("$env/static/public", () => ({
-  PUBLIC_API_URL: "http://localhost:3000/api/v1",
+vi.mock("$env/dynamic/public", () => ({
+  env: {
+    PUBLIC_API_URL: "http://localhost:3000/api/v1",
+  },
 }));
 
 vi.mock("@sveltejs/kit", () => ({

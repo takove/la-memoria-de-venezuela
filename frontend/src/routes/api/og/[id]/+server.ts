@@ -1,8 +1,8 @@
 import { error } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
-import { PUBLIC_API_URL } from "$env/static/public";
+import { env } from "$env/dynamic/public";
 
-const API_URL = PUBLIC_API_URL || "http://localhost:3000/api/v1";
+const API_URL = env.PUBLIC_API_URL || "http://localhost:3000/api/v1";
 
 // Simple SVG-based OG image generator
 function generateOGImage(official: {
