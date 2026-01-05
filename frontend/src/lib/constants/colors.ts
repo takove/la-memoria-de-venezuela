@@ -36,27 +36,27 @@ export const COLOR_CONTRAST = {
   DANGER_RED: {
     background: COLORS.DANGER_RED,
     text: "#FFFFFF",
-    contrastRatio: 7.36, // Exceeds WCAG AA (4.5:1)
+    contrastRatio: 5.86, // Exceeds WCAG AA (4.5:1)
   },
   INSTITUTIONAL_BLUE: {
     background: COLORS.INSTITUTIONAL_BLUE,
     text: "#FFFFFF",
-    contrastRatio: 8.59, // Exceeds WCAG AA
+    contrastRatio: 6.87, // Exceeds WCAG AA
   },
   JUSTICE_GREEN: {
     background: COLORS.JUSTICE_GREEN,
     text: "#FFFFFF",
-    contrastRatio: 7.28, // Exceeds WCAG AA
+    contrastRatio: 4.98, // Exceeds WCAG AA
   },
   WARNING_AMBER: {
     background: COLORS.WARNING_AMBER,
     text: "#000000",
-    contrastRatio: 10.89, // Exceeds WCAG AAA (7:1)
+    contrastRatio: 9.46, // Exceeds WCAG AAA (7:1)
   },
   NEUTRAL_GRAY: {
     background: COLORS.NEUTRAL_GRAY,
     text: "#000000",
-    contrastRatio: 4.61, // Meets WCAG AA
+    contrastRatio: 7.37, // Exceeds WCAG AAA (7:1)
   },
 } as const;
 
