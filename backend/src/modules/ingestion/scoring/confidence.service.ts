@@ -47,7 +47,7 @@ export class ConfidenceService {
     }
 
     // Component scores (1-5 scale)
-    const sourceReliability = this.scoreSourceReliability(node);
+    const sourceReliability = this.scoreSourceReliability();
     const extractionQuality = this.scoreExtractionQuality(node);
     const matchQuality = this.scoreMatchQuality(node);
     const evidenceStrength = await this.scoreEvidenceStrength(node);
@@ -91,7 +91,7 @@ export class ConfidenceService {
    * Score source reliability based on article metadata.
    * TODO: Implement based on article source (OFAC, DOJ, reputable news, etc.)
    */
-  private scoreSourceReliability(node: StgNode): number {
+  private scoreSourceReliability(): number {
     // Placeholder: default to credible news source
     // In production, check article.source and map to confidence levels
     return ConfidenceLevel.CREDIBLE;

@@ -12,7 +12,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Tier1Official } from '../../../entities/tier1-official.entity';
-import * as https from 'https';
 
 interface OfacSdnEntry {
   uid: string;
