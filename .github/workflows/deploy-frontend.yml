@@ -1,5 +1,9 @@
 name: Deploy Frontend (Vercel)
 
+# NOTE: Vercel auto-deploys on every push to main (production) and creates
+# preview deployments for PRs. This workflow is for manual deployments only
+# (e.g., rollbacks, specific commit deploys, or when Vercel dashboard is unavailable).
+
 on:
   workflow_dispatch:
     inputs:
