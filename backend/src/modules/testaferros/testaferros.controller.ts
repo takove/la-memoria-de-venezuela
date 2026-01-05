@@ -10,7 +10,7 @@ import {
   ParseIntPipe,
 } from "@nestjs/common";
 import { TestaferrosService } from "./testaferros.service";
-import { Testaferro, TestaferroCategory, TestaferroStatus } from "../entities";
+import { Testaferro, TestaferroCategory, TestaferroStatus } from "../../entities";
 
 @Controller("api/v1/testaferros")
 export class TestaferrosController {

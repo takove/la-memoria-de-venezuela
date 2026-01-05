@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { Testaferro } from "../entities";
+import { Testaferro } from "../../entities";
 import { TestaferrosService } from "./testaferros.service";
 import { TestaferrosController } from "./testaferros.controller";
 
