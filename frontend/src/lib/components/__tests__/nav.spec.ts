@@ -29,7 +29,9 @@ describe("Nav", () => {
   it("renders logo and navigation links", () => {
     render(Nav);
 
-    expect(screen.getByLabelText("La Memoria de Venezuela - Inicio")).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("La Memoria de Venezuela - Inicio"),
+    ).toBeInTheDocument();
     expect(screen.getByText("🇻🇪")).toBeInTheDocument();
   });
 
@@ -51,9 +53,11 @@ describe("Nav", () => {
     // Click to open drawer
     await fireEvent.click(hamburgerButton);
 
-    // Check if drawer is visible
-    const drawer = screen.getByRole("button", { name: "Cerrar menú" });
-    expect(drawer).toBeInTheDocument();
+    // Check if close button is visible - use getAllByLabelText since there are two elements
+    const closeElements = screen.getAllByLabelText("Cerrar menú");
+    const closeButton = closeElements.find((el) => el.tagName === "BUTTON");
+    expect(closeButton).toBeInTheDocument();
+    expect(closeButton).toHaveAttribute("aria-expanded", "true");
   });
 
   it("has touch-friendly targets (min 44x44px)", () => {
