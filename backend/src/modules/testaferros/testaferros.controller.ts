@@ -10,7 +10,11 @@ import {
   ParseIntPipe,
 } from "@nestjs/common";
 import { TestaferrosService } from "./testaferros.service";
-import { Testaferro, TestaferroCategory, TestaferroStatus } from "../../entities";
+import {
+  Testaferro,
+  TestaferroCategory,
+  TestaferroStatus,
+} from "../../entities";
 
 @Controller("api/v1/testaferros")
 export class TestaferrosController {
@@ -28,7 +32,7 @@ export class TestaferrosController {
     @Query("status") status?: TestaferroStatus,
     @Query("country") country?: string,
     @Query("minConfidence", new ParseIntPipe({ optional: true }))
-    minConfidence?: number
+    minConfidence?: number,
   ) {
     return this.testaferrosService.findAll(page || 1, limit || 20, {
       category,
@@ -68,12 +72,12 @@ export class TestaferrosController {
   async findByOfficial(
     @Param("officialId") officialId: string,
     @Query("page", new ParseIntPipe({ optional: true })) page?: number,
-    @Query("limit", new ParseIntPipe({ optional: true })) limit?: number
+    @Query("limit", new ParseIntPipe({ optional: true })) limit?: number,
   ) {
     return this.testaferrosService.findByOfficialId(
       officialId,
       page || 1,
-      limit || 20
+      limit || 20,
     );
   }
 
@@ -100,10 +104,7 @@ export class TestaferrosController {
    * Update a testaferro
    */
   @Patch(":id")
-  async update(
-    @Param("id") id: string,
-    @Body() data: Partial<Testaferro>
-  ) {
+  async update(@Param("id") id: string, @Body() data: Partial<Testaferro>) {
     return this.testaferrosService.update(id, data);
   }
 

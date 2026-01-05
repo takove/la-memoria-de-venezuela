@@ -5,10 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  OneToMany,
   Index,
-  ManyToMany,
-  JoinTable,
 } from "typeorm";
 import { Official } from "./official.entity";
 

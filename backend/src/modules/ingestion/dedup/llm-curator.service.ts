@@ -1,6 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { StgEntity } from 'src/entities';
+import { Injectable, Logger } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { StgEntity } from "src/entities";
 
 /**
  * LLM Curator Service
@@ -26,21 +26,21 @@ import { StgEntity } from 'src/entities';
 @Injectable()
 export class LlmCuratorService {
   private readonly logger = new Logger(LlmCuratorService.name);
-  private apiKey: string = '';
+  private apiKey: string = "";
   private enabled: boolean;
-  private readonly baseUrl = 'https://api.together.xyz/v1';
-  private readonly model = 'meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo';
+  private readonly baseUrl = "https://api.together.xyz/v1";
+  private readonly model = "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo";
 
   constructor(private configService: ConfigService) {
-    const key = this.configService.get<string>('TOGETHER_API_KEY');
-    this.apiKey = key || '';
-    this.enabled = !!key && key !== 'your-together-api-key-here';
+    const key = this.configService.get<string>("TOGETHER_API_KEY");
+    this.apiKey = key || "";
+    this.enabled = !!key && key !== "your-together-api-key-here";
 
     if (this.enabled) {
-      this.logger.log('LLM Curator enabled (Llama 3.1 70B via Together.AI)');
+      this.logger.log("LLM Curator enabled (Llama 3.1 70B via Together.AI)");
     } else {
       this.logger.warn(
-        'LLM Curator disabled: TOGETHER_API_KEY not configured. Set it in .env to enable Llama curation.',
+        "LLM Curator disabled: TOGETHER_API_KEY not configured. Set it in .env to enable Llama curation.",
       );
     }
   }
@@ -63,7 +63,7 @@ export class LlmCuratorService {
     confidenceScore: number,
     articleContext: string,
   ): Promise<{
-    recommendation: 'approve' | 'flag' | 'investigate';
+    recommendation: "approve" | "flag" | "investigate";
     confidence: number;
     explanation: string;
     suggestedCategory?: string;
@@ -73,9 +73,9 @@ export class LlmCuratorService {
     // If LLM is disabled, return neutral suggestion
     if (!this.enabled) {
       return {
-        recommendation: 'flag',
+        recommendation: "flag",
         confidence: 0,
-        explanation: 'LLM Curator disabled. Requires human review.',
+        explanation: "LLM Curator disabled. Requires human review.",
       };
     }
 
@@ -92,16 +92,16 @@ export class LlmCuratorService {
 
       // Call Together.AI API (OpenAI-compatible)
       const response = await fetch(`${this.baseUrl}/chat/completions`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${this.apiKey}`,
         },
         body: JSON.stringify({
           model: this.model,
           messages: [
             {
-              role: 'user',
+              role: "user",
               content: prompt,
             },
           ],
@@ -118,10 +118,10 @@ export class LlmCuratorService {
       }
 
       const data = await response.json();
-      const responseText = data.choices?.[0]?.message?.content || '';
+      const responseText = data.choices?.[0]?.message?.content || "";
 
       if (!responseText) {
-        throw new Error('Empty response from Together.AI');
+        throw new Error("Empty response from Together.AI");
       }
 
       const parsed = this.parseReview(responseText);
@@ -138,7 +138,7 @@ export class LlmCuratorService {
 
       // On error, flag for human review
       return {
-        recommendation: 'flag',
+        recommendation: "flag",
         confidence: 0,
         explanation: `LLM review failed: ${error.message}. Requires human judgment.`,
       };
@@ -222,23 +222,21 @@ Remember: We would rather miss 10 guilty people than wrongly accuse 1 innocent p
   /**
    * Parse Llama's structured response
    */
-  private parseReview(
-    response: string,
-  ): {
-    recommendation: 'approve' | 'flag' | 'investigate';
+  private parseReview(response: string): {
+    recommendation: "approve" | "flag" | "investigate";
     confidence: number;
     explanation: string;
     suggestedCategory?: string;
     potentialDuplicates?: string[];
   } {
     const result: {
-      recommendation: 'approve' | 'flag' | 'investigate';
+      recommendation: "approve" | "flag" | "investigate";
       confidence: number;
       explanation: string;
       suggestedCategory?: string;
       potentialDuplicates?: string[];
     } = {
-      recommendation: 'flag',
+      recommendation: "flag",
       confidence: 0,
       explanation: response,
     };
@@ -249,9 +247,9 @@ Remember: We would rather miss 10 guilty people than wrongly accuse 1 innocent p
     );
     if (recMatch) {
       result.recommendation = recMatch[1].toLowerCase() as
-        | 'approve'
-        | 'flag'
-        | 'investigate';
+        | "approve"
+        | "flag"
+        | "investigate";
     }
 
     // Extract CONFIDENCE
@@ -274,9 +272,9 @@ Remember: We would rather miss 10 guilty people than wrongly accuse 1 innocent p
 
     // Extract ISSUES (potential duplicates/concerns)
     const issuesMatch = response.match(/ISSUES:\s*(.+?)(?:\n|$)/i);
-    if (issuesMatch && issuesMatch[1] !== 'None') {
+    if (issuesMatch && issuesMatch[1] !== "None") {
       result.potentialDuplicates = issuesMatch[1]
-        .split(',')
+        .split(",")
         .map((s) => s.trim());
     }
 
@@ -287,11 +285,11 @@ Remember: We would rather miss 10 guilty people than wrongly accuse 1 innocent p
    * Map numeric confidence to human-readable level
    */
   private getConfidenceLevel(score: number): string {
-    if (score <= 1) return 'RUMOR (unverified claim)';
-    if (score <= 2) return 'UNVERIFIED (weak evidence)';
-    if (score <= 3) return 'CREDIBLE (moderate evidence)';
-    if (score <= 4) return 'VERIFIED (strong evidence)';
-    return 'OFFICIAL (government/court document)';
+    if (score <= 1) return "RUMOR (unverified claim)";
+    if (score <= 2) return "UNVERIFIED (weak evidence)";
+    if (score <= 3) return "CREDIBLE (moderate evidence)";
+    if (score <= 4) return "VERIFIED (strong evidence)";
+    return "OFFICIAL (government/court document)";
   }
 
   /**
@@ -307,7 +305,7 @@ Remember: We would rather miss 10 guilty people than wrongly accuse 1 innocent p
   getStats(): { enabled: boolean; model: string; reviewsProcessed: number } {
     return {
       enabled: this.enabled,
-      model: 'meta-llama/Llama-3.1-70b-Instruct-Turbo (Together.AI)',
+      model: "meta-llama/Llama-3.1-70b-Instruct-Turbo (Together.AI)",
       reviewsProcessed: 0, // TODO: implement stats tracking
     };
   }

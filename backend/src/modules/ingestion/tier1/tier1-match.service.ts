@@ -1,56 +1,56 @@
 /**
  * Fuzzy Matching Service for Tier 1 Officials
- * 
+ *
  * Uses fuzzball (fuzzywuzzy port) to match NER-extracted entities against
  * verified Tier 1 sanctions lists.
- * 
+ *
  * Scoring:
  * - >95: Confidence 5 (OFFICIAL) - Auto-approve
  * - 85-95: Confidence 4 (VERIFIED) - Auto-approve with LLM confirmation
  * - <85: Flag for LLM/human review
- * 
+ *
  * Spanish name handling:
  * - Strip accents (José → Jose)
  * - Expand nicknames (Nicolás → Nicolas, Nico)
  * - Normalize capitalization
  */
 
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Tier1Official } from '../../../entities/tier1-official.entity';
-import * as fuzzball from 'fuzzball';
+import { Injectable, Logger } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Tier1Official } from "../../../entities/tier1-official.entity";
+import * as fuzzball from "fuzzball";
 
 export interface Tier1Match {
   official: Tier1Official;
   score: number; // 0-100
-  matchType: 'exact' | 'alias' | 'fuzzy';
+  matchType: "exact" | "alias" | "fuzzy";
   matchedOn: string; // Which name/alias matched
 }
 
 @Injectable()
 export class Tier1MatchService {
   private readonly logger = new Logger(Tier1MatchService.name);
-  
+
   // Minimum score for fuzzy match consideration
   private readonly FUZZY_THRESHOLD = 85;
-  
+
   // High confidence threshold (auto-approve)
   private readonly HIGH_CONFIDENCE_THRESHOLD = 95;
 
   // Spanish nickname/alias mappings
   private readonly SPANISH_NICKNAMES: Record<string, string[]> = {
-    Nicolás: ['Nicolas', 'Nico'],
-    José: ['Jose', 'Pepe'],
-    María: ['Maria'],
-    Jesús: ['Jesus', 'Chucho'],
-    Francisco: ['Pancho', 'Paco'],
-    Alejandro: ['Alex'],
-    Antonio: ['Tony'],
-    Carlos: ['Charlie'],
-    Luis: ['Lucho'],
-    Rafael: ['Rafa'],
-    Miguel: ['Mike'],
+    Nicolás: ["Nicolas", "Nico"],
+    José: ["Jose", "Pepe"],
+    María: ["Maria"],
+    Jesús: ["Jesus", "Chucho"],
+    Francisco: ["Pancho", "Paco"],
+    Alejandro: ["Alex"],
+    Antonio: ["Tony"],
+    Carlos: ["Charlie"],
+    Luis: ["Lucho"],
+    Rafael: ["Rafa"],
+    Miguel: ["Mike"],
   };
 
   constructor(
@@ -60,14 +60,14 @@ export class Tier1MatchService {
 
   /**
    * Match entity against Tier 1 officials using fuzzy matching
-   * 
+   *
    * @param entityName - Name extracted by NER
    * @param entityType - PERSON or ORGANIZATION
    * @returns Best match if score > threshold, else null
    */
   async matchTier1(
     entityName: string,
-    entityType: 'PERSON' | 'ORGANIZATION',
+    entityType: "PERSON" | "ORGANIZATION",
   ): Promise<Tier1Match | null> {
     const normalized = this.normalizeSpanish(entityName);
 
@@ -93,7 +93,7 @@ export class Tier1MatchService {
         return {
           official,
           score: 100,
-          matchType: 'exact',
+          matchType: "exact",
           matchedOn: official.fullName,
         };
       }
@@ -101,12 +101,13 @@ export class Tier1MatchService {
       // Check exact match on aliases
       for (const alias of official.aliases || []) {
         if (
-          this.normalizeSpanish(alias).toLowerCase() === normalized.toLowerCase()
+          this.normalizeSpanish(alias).toLowerCase() ===
+          normalized.toLowerCase()
         ) {
           return {
             official,
             score: 100,
-            matchType: 'alias',
+            matchType: "alias",
             matchedOn: alias,
           };
         }
@@ -123,7 +124,7 @@ export class Tier1MatchService {
         bestMatch = {
           official,
           score: nameScore,
-          matchType: 'fuzzy',
+          matchType: "fuzzy",
           matchedOn: official.fullName,
         };
       }
@@ -140,7 +141,7 @@ export class Tier1MatchService {
           bestMatch = {
             official,
             score: aliasScore,
-            matchType: 'fuzzy',
+            matchType: "fuzzy",
             matchedOn: alias,
           };
         }
@@ -169,8 +170,8 @@ export class Tier1MatchService {
    */
   private normalizeSpanish(text: string): string {
     return text
-      .normalize('NFD') // Decompose accented characters
-      .replace(/[\u0300-\u036f]/g, '') // Remove diacritical marks
+      .normalize("NFD") // Decompose accented characters
+      .replace(/[\u0300-\u036f]/g, "") // Remove diacritical marks
       .trim();
   }
 
@@ -179,7 +180,7 @@ export class Tier1MatchService {
    * Example: "Nicolás Maduro" → ["Nicolas Maduro", "Nico Maduro"]
    */
   private expandNicknames(name: string): string[] {
-    const parts = name.split(' ');
+    const parts = name.split(" ");
     const variants: string[] = [name];
 
     parts.forEach((part, index) => {
@@ -188,7 +189,7 @@ export class Tier1MatchService {
         nicknames.forEach((nickname) => {
           const variant = [...parts];
           variant[index] = nickname;
-          variants.push(variant.join(' '));
+          variants.push(variant.join(" "));
         });
       }
     });

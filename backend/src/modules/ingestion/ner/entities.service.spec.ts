@@ -1,7 +1,12 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { EntitiesService } from "./entities.service";
-import { StgArticle, StgEntity, StgRelation, StgEntityType } from "../../../entities";
+import {
+  StgArticle,
+  StgEntity,
+  StgRelation,
+  StgEntityType,
+} from "../../../entities";
 
 describe("EntitiesService", () => {
   let service: EntitiesService;
@@ -84,9 +89,9 @@ describe("EntitiesService", () => {
     it("should throw if article not found", async () => {
       mockArticleRepository.findOne.mockResolvedValueOnce(null);
 
-      await expect(
-        service.storeEntities("invalid-id", []),
-      ).rejects.toThrow("Article invalid-id not found");
+      await expect(service.storeEntities("invalid-id", [])).rejects.toThrow(
+        "Article invalid-id not found",
+      );
     });
   });
 

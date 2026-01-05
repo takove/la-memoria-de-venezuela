@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Patch, Delete, Param, Query, Body, HttpCode } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Delete,
+  Param,
+  Query,
+  Body,
+  HttpCode,
+} from "@nestjs/common";
 import { BusinessesService } from "./businesses.service";
 import { Business, BusinessCategory } from "../../entities";
 
@@ -12,9 +22,15 @@ export class BusinessesController {
     @Query("limit") limit: number = 20,
     @Query("category") category?: BusinessCategory,
     @Query("country") country?: string,
-    @Query("minConfidence") minConfidence?: number
+    @Query("minConfidence") minConfidence?: number,
   ) {
-    return this.businessesService.findAll(page, limit, category, country, minConfidence);
+    return this.businessesService.findAll(
+      page,
+      limit,
+      category,
+      country,
+      minConfidence,
+    );
   }
 
   @Get("search")
@@ -36,7 +52,7 @@ export class BusinessesController {
   async getBusinessesByOfficial(
     @Param("officialId") officialId: string,
     @Query("page") page: number = 1,
-    @Query("limit") limit: number = 20
+    @Query("limit") limit: number = 20,
   ) {
     return this.businessesService.findByOfficialId(officialId, page, limit);
   }
@@ -48,7 +64,10 @@ export class BusinessesController {
   }
 
   @Patch(":id")
-  async updateBusiness(@Param("id") id: string, @Body() data: Partial<Business>) {
+  async updateBusiness(
+    @Param("id") id: string,
+    @Body() data: Partial<Business>,
+  ) {
     return this.businessesService.update(id, data);
   }
 

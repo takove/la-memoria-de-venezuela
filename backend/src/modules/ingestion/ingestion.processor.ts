@@ -1,13 +1,13 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Processor, WorkerHost } from '@nestjs/bullmq';
-import { Queue, Job } from 'bullmq';
-import { InjectQueue } from '@nestjs/bullmq';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { StgEntity } from 'src/entities';
-import { IngestionOrchestrator } from './ingestion.orchestrator';
-import { ReviewQueueService } from './dedup/review-queue.service';
-import { ArticlesService } from './fetcher/articles.service';
+import { Injectable, Logger } from "@nestjs/common";
+import { Processor, WorkerHost } from "@nestjs/bullmq";
+import { Queue, Job } from "bullmq";
+import { InjectQueue } from "@nestjs/bullmq";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { StgEntity } from "src/entities";
+import { IngestionOrchestrator } from "./ingestion.orchestrator";
+import { ReviewQueueService } from "./dedup/review-queue.service";
+import { ArticlesService } from "./fetcher/articles.service";
 
 interface IngestionJobData {
   title: string;
@@ -30,13 +30,13 @@ interface IngestionJobData {
  *
  * This processor runs continuously and processes jobs as they arrive.
  */
-@Processor('ingestion')
+@Processor("ingestion")
 @Injectable()
 export class IngestionProcessor extends WorkerHost {
   private readonly logger = new Logger(IngestionProcessor.name);
 
   constructor(
-    @InjectQueue('ingestion') private ingestionQueue: Queue,
+    @InjectQueue("ingestion") private ingestionQueue: Queue,
     @InjectRepository(StgEntity)
     private entitiesRepository: Repository<StgEntity>,
     private orchestrator: IngestionOrchestrator,
@@ -68,10 +68,10 @@ export class IngestionProcessor extends WorkerHost {
     try {
       // Step 1: Create article record in staging (reuse service to keep dedup logic consistent)
       const article = await this.articlesService.ingestArticle({
-        outlet: job.data.source || 'Unknown',
+        outlet: job.data.source || "Unknown",
         title: job.data.title,
         url: job.data.sourceUrl,
-        lang: job.data.language || 'es',
+        lang: job.data.language || "es",
         rawHtml: job.data.content,
         cleanText: job.data.content,
       });
@@ -81,7 +81,7 @@ export class IngestionProcessor extends WorkerHost {
       // Step 2-4: Run full orchestrator pipeline (NER → scoring → dedup)
       const results = await this.orchestrator.processPipeline(1);
       if (results.length === 0) {
-        throw new Error('No results returned from orchestrator');
+        throw new Error("No results returned from orchestrator");
       }
 
       const result = results[0];
@@ -120,7 +120,7 @@ export class IngestionProcessor extends WorkerHost {
         edges: result.edgesCreated,
         tier1Match: result.tier1Match,
         entitiesQueuedForReview,
-        status: 'completed',
+        status: "completed",
       };
     } catch (error) {
       this.logger.error(
@@ -129,9 +129,7 @@ export class IngestionProcessor extends WorkerHost {
       );
 
       // Move job to failed queue with error details
-      throw new Error(
-        `Ingestion failed: ${error.message || 'Unknown error'}`,
-      );
+      throw new Error(`Ingestion failed: ${error.message || "Unknown error"}`);
     }
   }
 }

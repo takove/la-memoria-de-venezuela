@@ -7,10 +7,10 @@ import { LlmCuratorService } from "./llm-curator.service";
 import { Tier1MatchService, Tier1Match } from "../tier1/tier1-match.service";
 
 export enum ReviewQueueStatus {
-  PENDING = "pending",      // Awaiting human review
-  APPROVED = "approved",    // Curator approved
-  REJECTED = "rejected",    // Curator rejected (won't be added to graph)
-  MERGED = "merged",        // Merged into another entity
+  PENDING = "pending", // Awaiting human review
+  APPROVED = "approved", // Curator approved
+  REJECTED = "rejected", // Curator rejected (won't be added to graph)
+  MERGED = "merged", // Merged into another entity
   AUTO_APPROVED = "auto_approved", // Auto-approved (high confidence)
 }
 
@@ -58,18 +58,19 @@ export class ReviewQueueService {
     let tier1Match: Tier1Match | null = null;
     try {
       // Map StgEntityType to Tier1 entity type
-      const tier1EntityType = entity.type === 'PERSON' ? 'PERSON' : 'ORGANIZATION';
-      
+      const tier1EntityType =
+        entity.type === "PERSON" ? "PERSON" : "ORGANIZATION";
+
       tier1Match = await this.tier1MatchService.matchTier1(
         entity.rawText,
         tier1EntityType,
       );
-      
+
       if (tier1Match) {
         this.logger.log(
           `[Tier 1] Match found: "${entity.rawText}" → "${tier1Match.official.fullName}" (${tier1Match.score}%)`,
         );
-        
+
         // High confidence Tier 1 match (>95%) = Auto-approve
         if (tier1Match.score >= 95) {
           return this.createAutoApprovedItemWithTier1(entity, tier1Match);
@@ -108,9 +109,7 @@ export class ReviewQueueService {
 
     // Run LLM curator review asynchronously (non-blocking)
     this.runLlmReview(entity, item).catch((error) => {
-      this.logger.error(
-        `LLM review failed for ${entity.id}: ${error.message}`,
-      );
+      this.logger.error(`LLM review failed for ${entity.id}: ${error.message}`);
     });
 
     return item;
@@ -128,7 +127,7 @@ export class ReviewQueueService {
 
     // Build enhanced context with Tier 1 match info
     let articleContext = `${entity.rawText} from article context`;
-    
+
     if (queueItem.tier1Match) {
       const match = queueItem.tier1Match;
       articleContext = `
@@ -138,10 +137,10 @@ export class ReviewQueueService {
 - Matched official: ${match.official.fullName}
 - Match score: ${match.score}% (${match.matchType} match)
 - Matched on: ${match.matchedOn}
-- Sanctions programs: ${match.official.sanctionsPrograms.join(', ')}
-- Aliases: ${match.official.aliases.join(', ')}
+- Sanctions programs: ${match.official.sanctionsPrograms.join(", ")}
+- Aliases: ${match.official.aliases.join(", ")}
 - Source: ${match.official.source}
-- Notes: ${match.official.notes || 'N/A'}
+- Notes: ${match.official.notes || "N/A"}
 
 Does this entity match the sanctioned official? Consider:
 1. Name variations (full name vs alias)
@@ -170,21 +169,19 @@ Does this entity match the sanctioned official? Consider:
     // If LLM says "APPROVE" with high confidence (>0.85), auto-approve
     // Also auto-approve if Tier 1 match + LLM approval
     if (
-      review.recommendation === 'approve' &&
+      review.recommendation === "approve" &&
       review.confidence > 0.85 &&
       queueItem.status === ReviewQueueStatus.PENDING
     ) {
       this.logger.log(
         `[LLM] Auto-approving "${entity.rawText}" (confidence: ${review.confidence}, tier1: ${!!queueItem.tier1Match})`,
       );
-      await this.approveEntity(entity.id, 'llm-curator', review.explanation);
+      await this.approveEntity(entity.id, "llm-curator", review.explanation);
     }
 
     // If LLM says "INVESTIGATE", add to issues
-    if (review.recommendation === 'investigate') {
-      queueItem.issues.push(
-        `LLM Alert: ${review.explanation}`,
-      );
+    if (review.recommendation === "investigate") {
+      queueItem.issues.push(`LLM Alert: ${review.explanation}`);
     }
 
     this.reviewQueue.set(entity.id, queueItem);
@@ -294,11 +291,16 @@ Does this entity match the sanctioned official? Consider:
     const items = Array.from(this.reviewQueue.values());
     return {
       total: items.length,
-      pending: items.filter((i) => i.status === ReviewQueueStatus.PENDING).length,
-      approved: items.filter((i) => i.status === ReviewQueueStatus.APPROVED).length,
-      rejected: items.filter((i) => i.status === ReviewQueueStatus.REJECTED).length,
+      pending: items.filter((i) => i.status === ReviewQueueStatus.PENDING)
+        .length,
+      approved: items.filter((i) => i.status === ReviewQueueStatus.APPROVED)
+        .length,
+      rejected: items.filter((i) => i.status === ReviewQueueStatus.REJECTED)
+        .length,
       merged: items.filter((i) => i.status === ReviewQueueStatus.MERGED).length,
-      autoApproved: items.filter((i) => i.status === ReviewQueueStatus.AUTO_APPROVED).length,
+      autoApproved: items.filter(
+        (i) => i.status === ReviewQueueStatus.AUTO_APPROVED,
+      ).length,
       topIssues: this.getTopIssues(items),
     };
   }
@@ -306,7 +308,9 @@ Does this entity match the sanctioned official? Consider:
   /**
    * Get most common issues.
    */
-  private getTopIssues(items: ReviewQueueItem[]): Array<{ issue: string; count: number }> {
+  private getTopIssues(
+    items: ReviewQueueItem[],
+  ): Array<{ issue: string; count: number }> {
     const issueCounts = new Map<string, number>();
 
     for (const item of items) {
@@ -347,14 +351,19 @@ Does this entity match the sanctioned official? Consider:
     };
 
     this.reviewQueue.set(entity.id, item);
-    this.logger.debug(`Auto-approved high-confidence entity: "${entity.rawText}"`);
+    this.logger.debug(
+      `Auto-approved high-confidence entity: "${entity.rawText}"`,
+    );
     return item;
   }
 
   /**
    * Private: Create auto-approved item for Tier 1 matched entities.
    */
-  private createAutoApprovedItemWithTier1(entity: StgEntity, tier1Match: Tier1Match): ReviewQueueItem {
+  private createAutoApprovedItemWithTier1(
+    entity: StgEntity,
+    tier1Match: Tier1Match,
+  ): ReviewQueueItem {
     const item: ReviewQueueItem = {
       entityId: entity.id,
       entity,
@@ -362,7 +371,7 @@ Does this entity match the sanctioned official? Consider:
       issues: [],
       duplicates: [],
       tier1Match,
-      approvedBy: 'tier1-auto-match',
+      approvedBy: "tier1-auto-match",
       approvedAt: new Date(),
       notes: `Auto-approved via Tier 1 match: ${tier1Match.official.fullName} (${tier1Match.score}% ${tier1Match.matchType})`,
       createdAt: new Date(),

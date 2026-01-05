@@ -1,18 +1,18 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
-import { Queue } from 'bullmq';
-import { InjectQueue } from '@nestjs/bullmq';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { StgArticle } from 'src/entities';
-import * as https from 'https';
-import * as http from 'http';
-import * as xml2js from 'xml2js';
+import { Injectable, Logger } from "@nestjs/common";
+import { Cron, CronExpression } from "@nestjs/schedule";
+import { Queue } from "bullmq";
+import { InjectQueue } from "@nestjs/bullmq";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { StgArticle } from "src/entities";
+import * as https from "https";
+import * as http from "http";
+import * as xml2js from "xml2js";
 
 interface RssFeed {
   url: string;
   name: string;
-  language: 'es' | 'en';
+  language: "es" | "en";
 }
 
 /**
@@ -35,25 +35,25 @@ export class RssService {
   // RSS feeds to monitor (add more sources as needed)
   private readonly feeds: RssFeed[] = [
     {
-      url: 'https://www.reuters.com/finance/sanctions',
-      name: 'Reuters Sanctions',
-      language: 'en',
+      url: "https://www.reuters.com/finance/sanctions",
+      name: "Reuters Sanctions",
+      language: "en",
     },
     {
-      url: 'https://www.bbc.com/news/world/latin_america',
-      name: 'BBC Latin America',
-      language: 'en',
+      url: "https://www.bbc.com/news/world/latin_america",
+      name: "BBC Latin America",
+      language: "en",
     },
     // Add Spanish-language sources
     {
-      url: 'https://www.elpais.com.uy/internacional',
-      name: 'El País Internacional',
-      language: 'es',
+      url: "https://www.elpais.com.uy/internacional",
+      name: "El País Internacional",
+      language: "es",
     },
   ];
 
   constructor(
-    @InjectQueue('ingestion') private ingestionQueue: Queue,
+    @InjectQueue("ingestion") private ingestionQueue: Queue,
     @InjectRepository(StgArticle)
     private articlesRepository: Repository<StgArticle>,
   ) {}
@@ -64,7 +64,7 @@ export class RssService {
    */
   @Cron(CronExpression.EVERY_10_MINUTES)
   async pollFeeds() {
-    this.logger.log('[RSS] Starting feed poll cycle...');
+    this.logger.log("[RSS] Starting feed poll cycle...");
 
     const results = {
       checked: 0,
@@ -91,7 +91,7 @@ export class RssService {
           if (!existing) {
             // Queue new article for ingestion
             await this.ingestionQueue.add(
-              'ingest-article',
+              "ingest-article",
               {
                 title: article.title,
                 sourceUrl: article.source_url,
@@ -103,7 +103,7 @@ export class RssService {
               {
                 attempts: 3,
                 backoff: {
-                  type: 'exponential',
+                  type: "exponential",
                   delay: 2000,
                 },
               },
@@ -134,9 +134,7 @@ export class RssService {
    * @param feed RSS feed configuration
    * @returns Array of parsed articles with title, URL, content, published date
    */
-  private async fetchFeedArticles(
-    feed: RssFeed,
-  ): Promise<
+  private async fetchFeedArticles(feed: RssFeed): Promise<
     Array<{
       title: string;
       source_url: string;
@@ -145,16 +143,16 @@ export class RssService {
     }>
   > {
     return new Promise((resolve, reject) => {
-      const protocol = feed.url.startsWith('https') ? https : http;
+      const protocol = feed.url.startsWith("https") ? https : http;
 
       const req = protocol.get(feed.url, { timeout: 5000 }, async (res) => {
-        let data = '';
+        let data = "";
 
-        res.on('data', (chunk) => {
+        res.on("data", (chunk) => {
           data += chunk;
         });
 
-        res.on('end', async () => {
+        res.on("end", async () => {
           try {
             const parsed = await this.xmlParser.parseStringPromise(data);
 
@@ -164,9 +162,9 @@ export class RssService {
               const articles = items
                 .slice(0, 10) // Limit to last 10 items per feed
                 .map((item: any) => ({
-                  title: item.title?.[0] || 'No title',
+                  title: item.title?.[0] || "No title",
                   source_url: item.link?.[0] || feed.url,
-                  content: item.description?.[0] || '',
+                  content: item.description?.[0] || "",
                   published_at: item.pubDate?.[0]
                     ? new Date(item.pubDate[0])
                     : new Date(),
@@ -181,12 +179,10 @@ export class RssService {
               const articles = entries
                 .slice(0, 10) // Limit to last 10 items
                 .map((entry: any) => ({
-                  title: entry.title?.[0]?._ || entry.title?.[0] || 'No title',
+                  title: entry.title?.[0]?._ || entry.title?.[0] || "No title",
                   source_url:
-                    entry.link?.[0]?.$.href ||
-                    entry.link?.[0] ||
-                    feed.url,
-                  content: entry.summary?.[0]?._ || entry.summary?.[0] || '',
+                    entry.link?.[0]?.$.href || entry.link?.[0] || feed.url,
+                  content: entry.summary?.[0]?._ || entry.summary?.[0] || "",
                   published_at: entry.published?.[0]
                     ? new Date(entry.published[0])
                     : new Date(),
@@ -202,13 +198,13 @@ export class RssService {
         });
       });
 
-      req.on('error', (error) => {
+      req.on("error", (error) => {
         reject(new Error(`Failed to fetch RSS: ${error.message}`));
       });
 
-      req.on('timeout', () => {
+      req.on("timeout", () => {
         req.destroy();
-        reject(new Error('RSS feed request timeout'));
+        reject(new Error("RSS feed request timeout"));
       });
     });
   }
@@ -228,26 +224,26 @@ export class RssService {
     source?: string;
   }): Promise<string> {
     const job = await this.ingestionQueue.add(
-      'ingest-article',
+      "ingest-article",
       {
         title: article.title,
         sourceUrl: article.sourceUrl,
         content: article.content,
-        language: article.language || 'es',
-        source: article.source || 'Manual Submission',
+        language: article.language || "es",
+        source: article.source || "Manual Submission",
       },
       {
         attempts: 3,
         backoff: {
-          type: 'exponential',
+          type: "exponential",
           delay: 2000,
         },
       },
     );
 
     this.logger.log(
-      `[RSS] Manually enqueued article "${article.title}" (Job ID: ${job.id || 'unknown'})`,
+      `[RSS] Manually enqueued article "${article.title}" (Job ID: ${job.id || "unknown"})`,
     );
-    return job.id || '';
+    return job.id || "";
   }
 }

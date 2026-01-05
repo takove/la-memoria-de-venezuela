@@ -39,7 +39,8 @@ const BUSINESS_SEEDS: Partial<Business>[] = [
         date: "2016-01-15",
         awardedBy: "Ministerio de Alimentación de Venezuela",
         status: "fraudulent",
-        description: "Inflated pricing for basic food items. Estimated overcharge 60-70%.",
+        description:
+          "Inflated pricing for basic food items. Estimated overcharge 60-70%.",
       },
     ],
     sanctions: [
@@ -58,7 +59,8 @@ const BUSINESS_SEEDS: Partial<Business>[] = [
         archiveUrl: "https://web.archive.org/web/*/justice.gov/usao-sdny*",
         publisher: "US Department of Justice",
         publicationDate: "2020-03-17",
-        description: "Federal indictment detailing food import fraud and money laundering",
+        description:
+          "Federal indictment detailing food import fraud and money laundering",
       },
       {
         type: "advisory",
@@ -169,7 +171,8 @@ const BUSINESS_SEEDS: Partial<Business>[] = [
         archiveUrl: "https://web.archive.org/web/20190503000000*/fincen.gov*",
         publisher: "Financial Crimes Enforcement Network",
         publicationDate: "2019-05-03",
-        description: "Names Bladex as facilitator of Venezuelan regime transactions",
+        description:
+          "Names Bladex as facilitator of Venezuelan regime transactions",
       },
     ],
   },
@@ -224,7 +227,8 @@ const BUSINESS_SEEDS: Partial<Business>[] = [
         archiveUrl: "https://web.archive.org/web/*/justice.gov/opa*",
         publisher: "US Department of Justice",
         publicationDate: "2016-12-21",
-        description: "Plea deal documenting billions in bribes across Latin America",
+        description:
+          "Plea deal documenting billions in bribes across Latin America",
       },
     ],
   },
@@ -315,7 +319,7 @@ async function seedBusinesses() {
       .getRawOne();
 
     console.log(
-      `\n💰 Total estimated theft: $${parseFloat(totalTheft.total || 0).toLocaleString()}`
+      `\n💰 Total estimated theft: $${parseFloat(totalTheft.total || 0).toLocaleString()}`,
     );
   } catch (error) {
     console.error("❌ Seeding failed:", error);

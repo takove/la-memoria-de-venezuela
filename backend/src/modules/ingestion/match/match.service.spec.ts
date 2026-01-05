@@ -1,7 +1,14 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { MatchService } from "./match.service";
-import { Official, StgNode, StgEdge, StgEntity, StgNodeType, StgEdgeType } from "../../../entities";
+import {
+  Official,
+  StgNode,
+  StgEdge,
+  StgEntity,
+  StgNodeType,
+  StgEdgeType,
+} from "../../../entities";
 
 describe("MatchService", () => {
   let service: MatchService;
@@ -157,7 +164,9 @@ describe("MatchService", () => {
       const result = await service.matchTier1ByName("Nicolas Maduro");
 
       expect(result?.id).toBe("official-id");
-      expect(mockOfficialRepository.createQueryBuilder).toHaveBeenCalledWith("o");
+      expect(mockOfficialRepository.createQueryBuilder).toHaveBeenCalledWith(
+        "o",
+      );
     });
 
     it("should return null if no match found", async () => {
@@ -179,7 +188,11 @@ describe("MatchService", () => {
   describe("fuzzyMatchTier1", () => {
     it("should find official by fuzzy match with shared words", async () => {
       const officials = [
-        { id: "1", fullName: "Nicolas Maduro Moros", nationality: "Venezuelan" } as any,
+        {
+          id: "1",
+          fullName: "Nicolas Maduro Moros",
+          nationality: "Venezuelan",
+        } as any,
       ];
 
       const mockQb = {

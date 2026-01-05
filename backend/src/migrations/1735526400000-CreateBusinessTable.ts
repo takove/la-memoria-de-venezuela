@@ -1,4 +1,10 @@
-import { MigrationInterface, QueryRunner, Table, TableForeignKey, TableIndex } from "typeorm";
+import {
+  MigrationInterface,
+  QueryRunner,
+  Table,
+  TableForeignKey,
+  TableIndex,
+} from "typeorm";
 
 export class CreateBusinessTable1735526400000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -153,7 +159,7 @@ export class CreateBusinessTable1735526400000 implements MigrationInterface {
           },
         ],
       }),
-      true
+      true,
     );
 
     // Create foreign key to officials
@@ -164,7 +170,7 @@ export class CreateBusinessTable1735526400000 implements MigrationInterface {
         referencedColumnNames: ["id"],
         referencedTableName: "officials",
         onDelete: "SET NULL",
-      })
+      }),
     );
 
     // Create indexes
@@ -172,56 +178,56 @@ export class CreateBusinessTable1735526400000 implements MigrationInterface {
       "businesses",
       new TableIndex({
         columnNames: ["name"],
-      })
+      }),
     );
 
     await queryRunner.createIndex(
       "businesses",
       new TableIndex({
         columnNames: ["registration_number"],
-      })
+      }),
     );
 
     await queryRunner.createIndex(
       "businesses",
       new TableIndex({
         columnNames: ["country"],
-      })
+      }),
     );
 
     await queryRunner.createIndex(
       "businesses",
       new TableIndex({
         columnNames: ["category"],
-      })
+      }),
     );
 
     await queryRunner.createIndex(
       "businesses",
       new TableIndex({
         columnNames: ["confidence_level"],
-      })
+      }),
     );
 
     await queryRunner.createIndex(
       "businesses",
       new TableIndex({
         columnNames: ["beneficial_owner_id"],
-      })
+      }),
     );
 
     await queryRunner.createIndex(
       "businesses",
       new TableIndex({
         columnNames: ["estimated_contract_value"],
-      })
+      }),
     );
 
     await queryRunner.createIndex(
       "businesses",
       new TableIndex({
         columnNames: ["estimated_theft_amount"],
-      })
+      }),
     );
   }
 

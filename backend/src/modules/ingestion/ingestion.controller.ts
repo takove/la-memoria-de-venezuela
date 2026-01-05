@@ -48,7 +48,9 @@ export class IngestionController {
   @ApiResponse({
     status: 201,
     description: "Article ingested",
-    schema: { example: { id: "uuid", url: "https://...", outlet: "armando.info" } },
+    schema: {
+      example: { id: "uuid", url: "https://...", outlet: "armando.info" },
+    },
   })
   async ingestArticle(@Body() dto: ArticleIngestDto) {
     return this.articlesService.ingestArticle(dto);
@@ -63,15 +65,17 @@ export class IngestionController {
     status: 200,
     description: "Pipeline execution results",
     schema: {
-      type: 'array',
-      example: [{
-        articleId: "uuid-123",
-        articleTitle: "Shell Company Article",
-        entityCount: 5,
-        relationCount: 3,
-        tier1Match: true,
-        errors: [],
-      }],
+      type: "array",
+      example: [
+        {
+          articleId: "uuid-123",
+          articleTitle: "Shell Company Article",
+          entityCount: 5,
+          relationCount: 3,
+          tier1Match: true,
+          errors: [],
+        },
+      ],
     },
   })
   async runPipeline() {
@@ -245,11 +249,15 @@ export class IngestionController {
           ingestedArticles.push(ingested);
           this.logger.debug(`Ingested: ${article.title}`);
         } catch (error) {
-          this.logger.error(`Failed to ingest ${article.title}: ${error instanceof Error ? error.message : String(error)}`);
+          this.logger.error(
+            `Failed to ingest ${article.title}: ${error instanceof Error ? error.message : String(error)}`,
+          );
         }
       }
 
-      this.logger.log(`Running pipeline on ${ingestedArticles.length} articles...`);
+      this.logger.log(
+        `Running pipeline on ${ingestedArticles.length} articles...`,
+      );
       const pipelineResults = await this.orchestrator.processPipeline(50);
 
       return {
@@ -258,10 +266,17 @@ export class IngestionController {
         pipelineResults,
         summary: {
           totalProcessed: pipelineResults.length,
-          successful: pipelineResults.filter((r) => r.errors.length === 0).length,
+          successful: pipelineResults.filter((r) => r.errors.length === 0)
+            .length,
           withErrors: pipelineResults.filter((r) => r.errors.length > 0).length,
-          totalEntitiesExtracted: pipelineResults.reduce((sum, r) => sum + r.entityCount, 0),
-          totalRelationsExtracted: pipelineResults.reduce((sum, r) => sum + r.relationCount, 0),
+          totalEntitiesExtracted: pipelineResults.reduce(
+            (sum, r) => sum + r.entityCount,
+            0,
+          ),
+          totalRelationsExtracted: pipelineResults.reduce(
+            (sum, r) => sum + r.relationCount,
+            0,
+          ),
           tier1Matches: pipelineResults.filter((r) => r.tier1Match).length,
         },
       };
@@ -290,7 +305,8 @@ export class IngestionController {
           matchQuality: 5,
           evidenceStrength: 3,
         },
-        reasoning: "Matched to verified Tier1 official (OFAC/ICC), from reputable news source, with moderate evidence",
+        reasoning:
+          "Matched to verified Tier1 official (OFAC/ICC), from reputable news source, with moderate evidence",
       },
     },
   })
@@ -313,7 +329,8 @@ export class IngestionController {
           matchQuality: 3,
           evidenceStrength: 2,
         },
-        reasoning: "Relationship between MEXICO and BRASIL with 60% extraction confidence",
+        reasoning:
+          "Relationship between MEXICO and BRASIL with 60% extraction confidence",
       },
     },
   })
@@ -331,9 +348,16 @@ export class IngestionController {
         pending: [
           {
             entityId: "uuid-123",
-            entity: { id: "uuid-123", rawText: "UTILIZ", normText: "UTILIZ", type: "PERSON" },
+            entity: {
+              id: "uuid-123",
+              rawText: "UTILIZ",
+              normText: "UTILIZ",
+              type: "PERSON",
+            },
             status: "pending",
-            issues: ["Likely not a person name: \"UTILIZ\" detected as PERSON (NER error)"],
+            issues: [
+              'Likely not a person name: "UTILIZ" detected as PERSON (NER error)',
+            ],
             duplicates: [{ entityId: "uuid-456", similarity: 0.92 }],
             createdAt: "2026-01-04T12:00:00Z",
           },
@@ -390,7 +414,9 @@ export class IngestionController {
 
   @Post("review-queue/reject/:entityId")
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: "Curator rejects an entity (won't be added to graph)" })
+  @ApiOperation({
+    summary: "Curator rejects an entity (won't be added to graph)",
+  })
   @ApiParam({ name: "entityId", type: "string", description: "Entity UUID" })
   @ApiBody({
     schema: {
@@ -423,7 +449,10 @@ export class IngestionController {
     schema: {
       type: "object",
       properties: {
-        primaryId: { type: "string", description: "Primary entity UUID (keeps this)" },
+        primaryId: {
+          type: "string",
+          description: "Primary entity UUID (keeps this)",
+        },
         duplicateIds: {
           type: "array",
           items: { type: "string" },
@@ -462,10 +491,22 @@ export class IngestionController {
     description: "List of potential duplicates with similarity scores",
     schema: {
       example: {
-        entity: { id: "uuid-123", rawText: "Juan Pérez", normText: "JUAN PEREZ" },
+        entity: {
+          id: "uuid-123",
+          rawText: "Juan Pérez",
+          normText: "JUAN PEREZ",
+        },
         duplicates: [
-          { entityIds: ["uuid-123", "uuid-456"], similarity: 0.95, reason: "Same normalized name" },
-          { entityIds: ["uuid-123", "uuid-789"], similarity: 0.88, reason: "Variant spelling" },
+          {
+            entityIds: ["uuid-123", "uuid-456"],
+            similarity: 0.95,
+            reason: "Same normalized name",
+          },
+          {
+            entityIds: ["uuid-123", "uuid-789"],
+            similarity: 0.88,
+            reason: "Variant spelling",
+          },
         ],
       },
     },
@@ -542,7 +583,11 @@ export class IngestionController {
     schema: {
       example: {
         entityId: "uuid-123",
-        entity: { id: "uuid-123", rawText: "Nicolas Maduro", normText: "NICOLAS MADURO" },
+        entity: {
+          id: "uuid-123",
+          rawText: "Nicolas Maduro",
+          normText: "NICOLAS MADURO",
+        },
         review: {
           recommendation: "approve",
           confidence: 0.95,
@@ -576,5 +621,3 @@ export class IngestionController {
     };
   }
 }
-
-

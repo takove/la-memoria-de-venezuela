@@ -3,7 +3,7 @@ import { Injectable, Logger } from "@nestjs/common";
 /**
  * Pattern-based NER service for Spanish text.
  * Implements lightweight entity and relationship extraction using regex patterns.
- * 
+ *
  * IMPORTANT: This is a production-ready but simple pattern-based implementation.
  * For enhanced accuracy, integrate with SpaCy (Spanish model) or Hugging Face transformers.
  */
@@ -42,7 +42,8 @@ export class WinkNerService {
       }> = [];
 
       // Pattern 1: Capitalized proper nouns (persons, organizations)
-      const properNounPattern = /\b([A-Z][a-záéíóúñ]+(?:\s+[A-Z][a-záéíóúñ]+)*)\b/g;
+      const properNounPattern =
+        /\b([A-Z][a-záéíóúñ]+(?:\s+[A-Z][a-záéíóúñ]+)*)\b/g;
       let match;
 
       const seen = new Set<string>();
@@ -52,7 +53,7 @@ export class WinkNerService {
         seen.add(rawText.toUpperCase());
 
         const normText = this.normalizeText(rawText);
-        
+
         // Simple heuristic: single capital word = likely person, multiple = likely org
         const type = rawText.split(" ").length > 1 ? "ORG" : "PERSON";
 
@@ -69,11 +70,12 @@ export class WinkNerService {
       }
 
       // Pattern 2: Organization suffixes (Ltd., S.A., Corp., etc.)
-      const orgPattern = /\b([A-Za-z0-9\s]+)(?:Ltd\.?|S\.A\.?|Corp\.?|Inc\.?|LLC|SA|SPA)\b/gi;
+      const orgPattern =
+        /\b([A-Za-z0-9\s]+)(?:Ltd\.?|S\.A\.?|Corp\.?|Inc\.?|LLC|SA|SPA)\b/gi;
       while ((match = orgPattern.exec(text)) !== null) {
         const rawText = match[0];
         const normText = this.normalizeText(rawText);
-        
+
         if (!seen.has(normText)) {
           entities.push({
             rawText,
@@ -90,11 +92,12 @@ export class WinkNerService {
       }
 
       // Pattern 3: Location indicators (de [Country], en [City])
-      const locationPattern = /\b(?:de|en|desde|hacia)\s+([A-Z][a-záéíóúñ]+(?:\s+[A-Z][a-záéíóúñ]+)*)\b/gi;
+      const locationPattern =
+        /\b(?:de|en|desde|hacia)\s+([A-Z][a-záéíóúñ]+(?:\s+[A-Z][a-záéíóúñ]+)*)\b/gi;
       while ((match = locationPattern.exec(text)) !== null) {
         const rawText = match[1];
         const normText = this.normalizeText(rawText);
-        
+
         if (!seen.has(normText) && this.isLikelyLocation(rawText)) {
           entities.push({
             rawText,
@@ -201,7 +204,12 @@ export class WinkNerService {
         const coMentionMatch = sentenceText.match(
           /([A-Z][a-záéíóúñ\s]+)\s+(?:y|e)\s+([A-Z][a-záéíóúñ\s]+)/,
         );
-        if (coMentionMatch && !testaferroMatch && !officerMatch && !ownerMatch) {
+        if (
+          coMentionMatch &&
+          !testaferroMatch &&
+          !officerMatch &&
+          !ownerMatch
+        ) {
           relations.push({
             pattern: "co_mentioned",
             sentence: sentenceText,
@@ -247,9 +255,7 @@ export class WinkNerService {
       "moscow",
     ];
     const normalized = text.toLowerCase();
-    return commonLocations.some((loc) =>
-      normalized.includes(loc),
-    );
+    return commonLocations.some((loc) => normalized.includes(loc));
   }
 
   /**

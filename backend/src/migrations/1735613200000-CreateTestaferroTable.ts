@@ -136,8 +136,7 @@ export class CreateTestaferroTable1735613200000 implements MigrationInterface {
             name: "known_residencies",
             type: "text",
             isNullable: true,
-            comment:
-              "JSON: [{country, period, role}]",
+            comment: "JSON: [{country, period, role}]",
           },
 
           // Wealth & Assets
@@ -264,7 +263,7 @@ export class CreateTestaferroTable1735613200000 implements MigrationInterface {
           },
         ],
       }),
-      true
+      true,
     );
 
     // Create indexes for fast searches
@@ -273,7 +272,7 @@ export class CreateTestaferroTable1735613200000 implements MigrationInterface {
       new TableIndex({
         name: "idx_testaferros_full_name",
         columnNames: ["full_name"],
-      })
+      }),
     );
 
     await queryRunner.createIndex(
@@ -281,7 +280,7 @@ export class CreateTestaferroTable1735613200000 implements MigrationInterface {
       new TableIndex({
         name: "idx_testaferros_identification",
         columnNames: ["identification_number"],
-      })
+      }),
     );
 
     await queryRunner.createIndex(
@@ -289,7 +288,7 @@ export class CreateTestaferroTable1735613200000 implements MigrationInterface {
       new TableIndex({
         name: "idx_testaferros_category_status",
         columnNames: ["category", "status"],
-      })
+      }),
     );
 
     await queryRunner.createIndex(
@@ -297,7 +296,7 @@ export class CreateTestaferroTable1735613200000 implements MigrationInterface {
       new TableIndex({
         name: "idx_testaferros_beneficial_owner",
         columnNames: ["beneficial_owner_id"],
-      })
+      }),
     );
 
     await queryRunner.createIndex(
@@ -305,7 +304,7 @@ export class CreateTestaferroTable1735613200000 implements MigrationInterface {
       new TableIndex({
         name: "idx_testaferros_confidence",
         columnNames: ["confidence_level"],
-      })
+      }),
     );
 
     await queryRunner.createIndex(
@@ -313,7 +312,7 @@ export class CreateTestaferroTable1735613200000 implements MigrationInterface {
       new TableIndex({
         name: "idx_testaferros_country",
         columnNames: ["country"],
-      })
+      }),
     );
 
     await queryRunner.createIndex(
@@ -321,7 +320,7 @@ export class CreateTestaferroTable1735613200000 implements MigrationInterface {
       new TableIndex({
         name: "idx_testaferros_wealth",
         columnNames: ["estimated_wealth_amount"],
-      })
+      }),
     );
 
     await queryRunner.createIndex(
@@ -329,7 +328,7 @@ export class CreateTestaferroTable1735613200000 implements MigrationInterface {
       new TableIndex({
         name: "idx_testaferros_created",
         columnNames: ["created_at"],
-      })
+      }),
     );
   }
 

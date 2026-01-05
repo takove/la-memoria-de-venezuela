@@ -39,7 +39,9 @@ export class IngestionOrchestrator {
         const result = await this.processArticle(article.id);
         results.push(result);
       } catch (error) {
-        this.logger.error(`Pipeline error for article ${article.id}: ${error.message}`);
+        this.logger.error(
+          `Pipeline error for article ${article.id}: ${error.message}`,
+        );
         results.push({
           articleId: article.id,
           entityCount: 0,
@@ -123,7 +125,9 @@ export class IngestionOrchestrator {
 
         if (tier1) {
           tier1Match = tier1.id;
-          this.logger.log(`Matched person ${entity.rawText} to Tier 1 ${tier1.fullName}`);
+          this.logger.log(
+            `Matched person ${entity.rawText} to Tier 1 ${tier1.fullName}`,
+          );
         }
       }
 
@@ -154,7 +158,9 @@ export class IngestionOrchestrator {
       );
     } catch (error) {
       errors.push(error.message);
-      this.logger.error(`Error processing article ${articleId}: ${error.message}`);
+      this.logger.error(
+        `Error processing article ${articleId}: ${error.message}`,
+      );
     }
 
     return {
@@ -168,4 +174,3 @@ export class IngestionOrchestrator {
     };
   }
 }
-

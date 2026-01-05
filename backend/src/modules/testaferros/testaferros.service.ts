@@ -5,13 +5,17 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Testaferro, TestaferroCategory, TestaferroStatus } from "../../entities";
+import {
+  Testaferro,
+  TestaferroCategory,
+  TestaferroStatus,
+} from "../../entities";
 
 @Injectable()
 export class TestaferrosService {
   constructor(
     @InjectRepository(Testaferro)
-    private testaferrosRepository: Repository<Testaferro>
+    private testaferrosRepository: Repository<Testaferro>,
   ) {}
 
   /**
@@ -25,7 +29,7 @@ export class TestaferrosService {
       status?: TestaferroStatus;
       country?: string;
       minConfidence?: number;
-    }
+    },
   ) {
     const query = this.testaferrosRepository.createQueryBuilder("t");
 
@@ -76,9 +80,7 @@ export class TestaferrosService {
     });
 
     if (!testaferro) {
-      throw new NotFoundException(
-        `Testaferro with ID ${id} not found`
-      );
+      throw new NotFoundException(`Testaferro with ID ${id} not found`);
     }
 
     return testaferro;
@@ -103,7 +105,7 @@ export class TestaferrosService {
   async findByOfficialId(
     officialId: string,
     page: number = 1,
-    limit: number = 20
+    limit: number = 20,
   ) {
     const [data, total] = await this.testaferrosRepository
       .createQueryBuilder("t")
@@ -155,10 +157,7 @@ export class TestaferrosService {
 
       this.testaferrosRepository
         .createQueryBuilder("t")
-        .select(
-          "SUM(CAST(t.estimatedWealthAmount AS NUMERIC))",
-          "totalWealth"
-        )
+        .select("SUM(CAST(t.estimatedWealthAmount AS NUMERIC))", "totalWealth")
         .getRawOne(),
     ]);
 
@@ -190,10 +189,7 @@ export class TestaferrosService {
   /**
    * Update a testaferro
    */
-  async update(
-    id: string,
-    data: Partial<Testaferro>
-  ): Promise<Testaferro> {
+  async update(id: string, data: Partial<Testaferro>): Promise<Testaferro> {
     const testaferro = await this.findOne(id);
     Object.assign(testaferro, data);
     return this.testaferrosRepository.save(testaferro);

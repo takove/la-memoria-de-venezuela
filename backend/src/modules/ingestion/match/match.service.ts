@@ -50,7 +50,8 @@ export class MatchService {
     // Ensure altNames is a clean string[] (Postgres text[] cannot accept JSON string literals)
     const sanitizeAltNames = (input?: string[] | string | null): string[] => {
       if (!input) return [];
-      if (Array.isArray(input)) return input.map((n) => n.trim()).filter(Boolean);
+      if (Array.isArray(input))
+        return input.map((n) => n.trim()).filter(Boolean);
       if (typeof input === "string") {
         try {
           const parsed = JSON.parse(input);
@@ -91,11 +92,12 @@ export class MatchService {
             where: { id: dto.tier1Id },
           })
         : null;
-      
+
       node = new StgNode();
       node.type = dto.type;
       node.canonicalName = normalized;
-      node.altNames = incomingAltNames.length > 0 ? incomingAltNames : undefined;
+      node.altNames =
+        incomingAltNames.length > 0 ? incomingAltNames : undefined;
       node.sourceIds = dto.sourceIds;
       if (tier1) node.tier1 = tier1;
     }
@@ -164,7 +166,10 @@ export class MatchService {
    * Fuzzy match: Jaro-Winkler similarity >= threshold.
    * Simplified placeholder using substring matching.
    */
-  async fuzzyMatchTier1(name: string, threshold = 0.92): Promise<Official | null> {
+  async fuzzyMatchTier1(
+    name: string,
+    threshold = 0.92,
+  ): Promise<Official | null> {
     const normalized = this.normalizeText(name);
     const words = normalized.split(/\s+/);
 
@@ -182,8 +187,11 @@ export class MatchService {
 
     for (const official of officials) {
       const officialWords = this.normalizeText(official.fullName).split(/\s+/);
-      const commonWords = words.filter((w) => officialWords.some((ow) => ow.includes(w)));
-      const score = commonWords.length / Math.max(words.length, officialWords.length);
+      const commonWords = words.filter((w) =>
+        officialWords.some((ow) => ow.includes(w)),
+      );
+      const score =
+        commonWords.length / Math.max(words.length, officialWords.length);
 
       if (score > bestScore && score >= threshold) {
         bestScore = score;

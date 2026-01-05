@@ -4,22 +4,22 @@ import { Repository } from "typeorm";
 import { StgNode, StgEdge } from "../../../entities";
 
 export enum ConfidenceLevel {
-  RUMOR = 1,        // Unverified social media, single source
-  UNVERIFIED = 2,   // Multiple social media, blogs
-  CREDIBLE = 3,     // Reputable journalism, verified sources
-  VERIFIED = 4,     // Multiple reputable sources, official statements
-  OFFICIAL = 5,     // OFAC, DOJ, ICC, official government documents
+  RUMOR = 1, // Unverified social media, single source
+  UNVERIFIED = 2, // Multiple social media, blogs
+  CREDIBLE = 3, // Reputable journalism, verified sources
+  VERIFIED = 4, // Multiple reputable sources, official statements
+  OFFICIAL = 5, // OFAC, DOJ, ICC, official government documents
 }
 
 export interface ConfidenceScore {
-  overall: number;        // 1-5 final score
+  overall: number; // 1-5 final score
   components: {
-    sourceReliability: number;   // 1-5 based on article source
-    extractionQuality: number;   // 1-5 based on NER confidence
-    matchQuality: number;        // 1-5 based on Tier1 match type
-    evidenceStrength: number;    // 1-5 based on # of mentions
+    sourceReliability: number; // 1-5 based on article source
+    extractionQuality: number; // 1-5 based on NER confidence
+    matchQuality: number; // 1-5 based on Tier1 match type
+    evidenceStrength: number; // 1-5 based on # of mentions
   };
-  reasoning: string;      // Human-readable explanation
+  reasoning: string; // Human-readable explanation
 }
 
 @Injectable()
@@ -62,9 +62,9 @@ export class ConfidenceService {
 
     const overall = Math.round(
       sourceReliability * weights.sourceReliability +
-      extractionQuality * weights.extractionQuality +
-      matchQuality * weights.matchQuality +
-      evidenceStrength * weights.evidenceStrength,
+        extractionQuality * weights.extractionQuality +
+        matchQuality * weights.matchQuality +
+        evidenceStrength * weights.evidenceStrength,
     );
 
     const reasoning = this.buildReasoning(
@@ -126,7 +126,7 @@ export class ConfidenceService {
    */
   private async scoreEvidenceStrength(node: StgNode): Promise<number> {
     const mentionCount = (node.altNames?.length || 0) + 1; // +1 for canonical name
-    
+
     if (mentionCount >= 10) return ConfidenceLevel.OFFICIAL;
     if (mentionCount >= 5) return ConfidenceLevel.VERIFIED;
     if (mentionCount >= 3) return ConfidenceLevel.CREDIBLE;
@@ -192,7 +192,7 @@ export class ConfidenceService {
 
     // Use lowest node confidence (chain is as weak as weakest link)
     const nodeConfidence = Math.min(srcScore.overall, dstScore.overall);
-    
+
     // Weight from relation extraction (0-1 scale)
     const relationWeight = edge.weight || 0.5;
     const relationConfidence = Math.ceil(relationWeight * 5);
@@ -206,7 +206,10 @@ export class ConfidenceService {
         sourceReliability: srcScore.components.sourceReliability,
         extractionQuality: relationConfidence,
         matchQuality: nodeConfidence,
-        evidenceStrength: Math.min(srcScore.components.evidenceStrength, dstScore.components.evidenceStrength),
+        evidenceStrength: Math.min(
+          srcScore.components.evidenceStrength,
+          dstScore.components.evidenceStrength,
+        ),
       },
       reasoning: `Relationship between ${edge.srcNode.canonicalName} and ${edge.dstNode.canonicalName} with ${(relationWeight * 100).toFixed(0)}% extraction confidence`,
     };

@@ -68,7 +68,9 @@ describe("IngestionOrchestrator", () => {
         cleanText: "Juan Pérez es testaferro de Nicolás Maduro",
       };
 
-      mockArticlesService.findUnprocessedArticles.mockResolvedValueOnce([article]);
+      mockArticlesService.findUnprocessedArticles.mockResolvedValueOnce([
+        article,
+      ]);
       mockArticlesService.findArticleById.mockResolvedValueOnce(article);
       mockWinkNerService.extractEntities.mockResolvedValueOnce([
         {
@@ -114,7 +116,9 @@ describe("IngestionOrchestrator", () => {
         cleanText: "Some article text",
       };
 
-      mockArticlesService.findUnprocessedArticles.mockResolvedValueOnce([article]);
+      mockArticlesService.findUnprocessedArticles.mockResolvedValueOnce([
+        article,
+      ]);
       mockArticlesService.findArticleById.mockResolvedValueOnce(article);
       mockWinkNerService.extractEntities.mockRejectedValueOnce(
         new Error("NER extraction failed"),

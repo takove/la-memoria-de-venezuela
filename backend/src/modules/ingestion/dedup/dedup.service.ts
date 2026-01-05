@@ -73,7 +73,10 @@ export class DedupService {
    * Consolidate duplicate entities by merging them into canonical form.
    * Keeps higher-quality mention, updates references.
    */
-  async mergeEntities(primaryId: string, duplicateId: string): Promise<StgEntity> {
+  async mergeEntities(
+    primaryId: string,
+    duplicateId: string,
+  ): Promise<StgEntity> {
     const primary = await this.entitiesRepository.findOne({
       where: { id: primaryId },
     });
@@ -104,7 +107,10 @@ export class DedupService {
    * Flag suspicious entities for manual review (e.g., locations detected as PERSON).
    * Returns true if entity should be reviewed before graph ingestion.
    */
-  flagForReview(entity: StgEntity): { shouldReview: boolean; issues: string[] } {
+  flagForReview(entity: StgEntity): {
+    shouldReview: boolean;
+    issues: string[];
+  } {
     const issues: string[] = [];
 
     // Check 1: Single character or very short names (likely noise)
@@ -136,7 +142,10 @@ export class DedupService {
       "SEÑALÓ",
     ]);
 
-    if (entity.type === "PERSON" && suspiciousPersonNames.has(entity.normText)) {
+    if (
+      entity.type === "PERSON" &&
+      suspiciousPersonNames.has(entity.normText)
+    ) {
       issues.push(
         `Likely not a person name: "${entity.rawText}" detected as PERSON (NER error)`,
       );
@@ -271,7 +280,9 @@ export class DedupService {
 
     // Check what's similar
     const sameName = entity1.normText === entity2.normText;
-    const lengthDiff = Math.abs(entity1.rawText.length - entity2.rawText.length);
+    const lengthDiff = Math.abs(
+      entity1.rawText.length - entity2.rawText.length,
+    );
     const charOverlap = this.countCommonChars(entity1.rawText, entity2.rawText);
 
     if (sameName) {

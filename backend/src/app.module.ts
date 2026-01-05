@@ -46,8 +46,7 @@ import { Tier1Module } from "./modules/ingestion/tier1/tier1.module";
         const port = configService.get("REDIS_PORT") || 6379;
         const password = configService.get("REDIS_PASSWORD");
         const useTls =
-          (configService.get("REDIS_USE_TLS") || "false").toString() ===
-          "true";
+          (configService.get("REDIS_USE_TLS") || "false").toString() === "true";
 
         return {
           connection: {

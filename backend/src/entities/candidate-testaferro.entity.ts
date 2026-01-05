@@ -43,10 +43,22 @@ export class CandidateTestaferro {
   @Column({ name: "published_at", type: "timestamptz", nullable: true })
   publishedAt?: Date;
 
-  @Column({ name: "recency_score", type: "numeric", precision: 10, scale: 4, nullable: true })
+  @Column({
+    name: "recency_score",
+    type: "numeric",
+    precision: 10,
+    scale: 4,
+    nullable: true,
+  })
   recencyScore?: number;
 
-  @Column({ name: "composite_score", type: "numeric", precision: 10, scale: 4, nullable: true })
+  @Column({
+    name: "composite_score",
+    type: "numeric",
+    precision: 10,
+    scale: 4,
+    nullable: true,
+  })
   compositeScore?: number;
 
   @Column({ name: "confidence_level", type: "int", nullable: true })

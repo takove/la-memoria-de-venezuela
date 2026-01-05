@@ -115,7 +115,9 @@ describe("ArticlesService", () => {
 
       expect(result).toHaveLength(1);
       expect(result[0].id).toBe("uuid-789");
-      expect(mockArticleRepository.createQueryBuilder).toHaveBeenCalledWith("a");
+      expect(mockArticleRepository.createQueryBuilder).toHaveBeenCalledWith(
+        "a",
+      );
     });
   });
 });

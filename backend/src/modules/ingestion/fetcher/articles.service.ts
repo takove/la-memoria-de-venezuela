@@ -63,14 +63,16 @@ export class ArticlesService {
    * Find articles not yet processed by NER.
    */
   async findUnprocessedArticles(limit = 50): Promise<StgArticle[]> {
-    return this.articlesRepository
-      .createQueryBuilder("a")
-      .leftJoinAndSelect("a.entities", "e")
-      .where("e.id IS NULL")
-      // Use entity property name to avoid TypeORM databaseName bug
-      .orderBy("a.retrievedAt", "DESC")
-      .take(limit)
-      .getMany();
+    return (
+      this.articlesRepository
+        .createQueryBuilder("a")
+        .leftJoinAndSelect("a.entities", "e")
+        .where("e.id IS NULL")
+        // Use entity property name to avoid TypeORM databaseName bug
+        .orderBy("a.retrievedAt", "DESC")
+        .take(limit)
+        .getMany()
+    );
   }
 
   /**

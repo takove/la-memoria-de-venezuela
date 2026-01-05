@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, ILike } from "typeorm";
 import { Business, BusinessCategory, BusinessStatus } from "../../entities";
@@ -7,7 +11,7 @@ import { Business, BusinessCategory, BusinessStatus } from "../../entities";
 export class BusinessesService {
   constructor(
     @InjectRepository(Business)
-    private businessRepository: Repository<Business>
+    private businessRepository: Repository<Business>,
   ) {}
 
   async findAll(
@@ -15,7 +19,7 @@ export class BusinessesService {
     limit: number = 20,
     category?: BusinessCategory,
     country?: string,
-    minConfidence?: number
+    minConfidence?: number,
   ) {
     const query = this.businessRepository.createQueryBuilder("business");
 
@@ -68,7 +72,9 @@ export class BusinessesService {
 
   async search(q: string, limit: number = 10) {
     if (!q || q.length < 2) {
-      throw new BadRequestException("Search query must be at least 2 characters");
+      throw new BadRequestException(
+        "Search query must be at least 2 characters",
+      );
     }
 
     return this.businessRepository.find({
@@ -82,7 +88,11 @@ export class BusinessesService {
     });
   }
 
-  async findByOfficialId(officialId: string, page: number = 1, limit: number = 20) {
+  async findByOfficialId(
+    officialId: string,
+    page: number = 1,
+    limit: number = 20,
+  ) {
     const query = this.businessRepository
       .createQueryBuilder("business")
       .where("business.beneficial_owner_id = :officialId", { officialId });
