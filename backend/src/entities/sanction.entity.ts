@@ -28,6 +28,7 @@ export enum SanctionStatus {
 @Entity("sanctions")
 @Index(["type", "status"])
 @Index(["imposedDate"])
+@Index(["confidenceLevel"])
 export class Sanction {
   @PrimaryGeneratedColumn("uuid")
   id: string;
@@ -84,6 +85,23 @@ export class Sanction {
 
   @Column("jsonb", { nullable: true })
   metadata: Record<string, any>;
+
+  @Column({ type: "jsonb", nullable: true, name: "sources" })
+  sources?: Array<{
+    url: string;
+    archiveUrl?: string;
+    type: "media" | "official" | "court" | "academic";
+    publicationDate?: Date;
+    title?: string;
+    accessedDate?: Date;
+  }>;
+
+  @Column({
+    type: "int",
+    default: 3,
+    name: "confidence_level",
+  })
+  confidenceLevel: number;
 
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;

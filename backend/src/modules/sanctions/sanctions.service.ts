@@ -6,6 +6,8 @@ import {
   SanctionType,
   SanctionStatus,
 } from "../../entities/sanction.entity";
+import { CreateSanctionDto } from "./dto/create-sanction.dto";
+import { UpdateSanctionDto } from "./dto/update-sanction.dto";
 
 export interface FindSanctionsOptions {
   page?: number;
@@ -86,8 +88,18 @@ export class SanctionsService {
     });
   }
 
-  async create(data: Partial<Sanction>) {
-    const sanction = this.sanctionsRepository.create(data);
+  async create(data: CreateSanctionDto) {
+    const sanction = this.sanctionsRepository.create({
+      ...data,
+      confidenceLevel: data.confidenceLevel ?? 3,
+      sources: data.sources ?? [],
+    });
+    return this.sanctionsRepository.save(sanction);
+  }
+
+  async update(id: string, data: UpdateSanctionDto) {
+    const sanction = await this.findOne(id);
+    Object.assign(sanction, data);
     return this.sanctionsRepository.save(sanction);
   }
 

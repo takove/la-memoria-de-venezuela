@@ -11,6 +11,8 @@ import {
 import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from "@nestjs/swagger";
 import { OfficialsService, FindOfficialsOptions } from "./officials.service";
 import { OfficialStatus } from "../../entities/official.entity";
+import { CreateOfficialDto } from "./dto/create-official.dto";
+import { UpdateOfficialDto } from "./dto/update-official.dto";
 
 @ApiTags("officials")
 @Controller("officials")
@@ -57,7 +59,7 @@ export class OfficialsController {
   @Post()
   @ApiOperation({ summary: "Create a new official" })
   @ApiResponse({ status: 201, description: "Official created successfully" })
-  create(@Body() data: any) {
+  create(@Body() data: CreateOfficialDto) {
     return this.officialsService.create(data);
   }
 
@@ -65,7 +67,7 @@ export class OfficialsController {
   @ApiOperation({ summary: "Update an official" })
   @ApiResponse({ status: 200, description: "Official updated successfully" })
   @ApiResponse({ status: 404, description: "Official not found" })
-  update(@Param("id", ParseUUIDPipe) id: string, @Body() data: any) {
+  update(@Param("id", ParseUUIDPipe) id: string, @Body() data: UpdateOfficialDto) {
     return this.officialsService.update(id, data);
   }
 }

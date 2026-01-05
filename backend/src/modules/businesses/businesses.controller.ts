@@ -11,6 +11,8 @@ import {
 } from "@nestjs/common";
 import { BusinessesService } from "./businesses.service";
 import { Business, BusinessCategory } from "../../entities";
+import { CreateBusinessDto } from "./dto/create-business.dto";
+import { UpdateBusinessDto } from "./dto/update-business.dto";
 
 @Controller("api/v1/businesses")
 export class BusinessesController {
@@ -59,14 +61,14 @@ export class BusinessesController {
 
   @Post()
   @HttpCode(201)
-  async createBusiness(@Body() data: Partial<Business>) {
+  async createBusiness(@Body() data: CreateBusinessDto) {
     return this.businessesService.create(data);
   }
 
   @Patch(":id")
   async updateBusiness(
     @Param("id") id: string,
-    @Body() data: Partial<Business>,
+    @Body() data: UpdateBusinessDto,
   ) {
     return this.businessesService.update(id, data);
   }
