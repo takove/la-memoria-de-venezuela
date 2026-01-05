@@ -182,7 +182,11 @@ export class TestaferrosService {
       throw new BadRequestException("Category is required");
     }
 
-    const testaferro = this.testaferrosRepository.create(data);
+    const testaferro = this.testaferrosRepository.create({
+      ...data,
+      sources: data.sources === undefined ? [] : data.sources,
+      confidenceLevel: data.confidenceLevel ?? 3,
+    });
     return this.testaferrosRepository.save(testaferro);
   }
 

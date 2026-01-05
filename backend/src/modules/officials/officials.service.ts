@@ -82,6 +82,8 @@ export class OfficialsService {
   async create(data: Partial<Official>) {
     const official = this.officialsRepository.create({
       ...data,
+      sources: data.sources === undefined ? [] : data.sources,
+      confidenceLevel: data.confidenceLevel ?? 3,
       fullName: `${data.firstName} ${data.lastName}`,
     });
     return this.officialsRepository.save(official);

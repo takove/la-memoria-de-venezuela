@@ -8,6 +8,7 @@ import {
   JoinColumn,
   Index,
 } from "typeorm";
+import { IsInt, Max, Min } from "class-validator";
 import { Official } from "./official.entity";
 
 export enum SanctionType {
@@ -84,6 +85,30 @@ export class Sanction {
 
   @Column("jsonb", { nullable: true })
   metadata: Record<string, any>;
+
+  @Column({
+    type: "jsonb",
+    nullable: true,
+    name: "sources",
+    default: () => "'[]'",
+  })
+  sources?: Array<{
+    url: string;
+    archiveUrl?: string;
+    type: "media" | "official" | "court" | "academic";
+    publicationDate?: Date;
+  }>;
+
+  @Column({
+    type: "enum",
+    enum: [1, 2, 3, 4, 5],
+    default: 3,
+    name: "confidence_level",
+  })
+  @IsInt()
+  @Min(1)
+  @Max(5)
+  confidenceLevel: number;
 
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;

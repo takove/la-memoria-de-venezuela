@@ -3,6 +3,9 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { OfficialsService } from "./officials.service";
 import { Official, OfficialStatus } from "../../entities/official.entity";
 import { NotFoundException } from "@nestjs/common";
+import { validate } from "class-validator";
+import { plainToInstance } from "class-transformer";
+import { CreateOfficialDto, SourceType } from "./dto/create-official.dto";
 
 describe("OfficialsService", () => {
   let service: OfficialsService;
@@ -15,6 +18,7 @@ describe("OfficialsService", () => {
     biographyEs: "Biografía de prueba",
     status: OfficialStatus.ACTIVE,
     confidenceLevel: 5,
+    sources: [],
     photoUrl: undefined,
     metadata: undefined,
     createdAt: new Date(),
@@ -145,6 +149,12 @@ describe("OfficialsService", () => {
         lastName: "Official",
         status: OfficialStatus.ACTIVE,
         confidenceLevel: 3,
+        sources: [
+          {
+            url: "https://example.com/report",
+            type: SourceType.MEDIA,
+          },
+        ],
       };
 
       const expectedData = {
@@ -160,6 +170,76 @@ describe("OfficialsService", () => {
       expect(result).toEqual(mockOfficial);
       expect(mockRepository.create).toHaveBeenCalledWith(expectedData);
       expect(mockRepository.save).toHaveBeenCalledWith(mockOfficial);
+    });
+
+    it("should default confidenceLevel and sources when not provided", async () => {
+      const createDto = {
+        firstName: "Test",
+        lastName: "Official",
+      };
+
+      const expectedData = {
+        ...createDto,
+        sources: [],
+        confidenceLevel: 3,
+        fullName: "Test Official",
+      };
+
+      mockRepository.create.mockReturnValue(mockOfficial);
+      mockRepository.save.mockResolvedValue(mockOfficial);
+
+      await service.create(createDto);
+
+      expect(mockRepository.create).toHaveBeenCalledWith(expectedData);
+    });
+  });
+
+  describe("update", () => {
+    it("should update confidence level", async () => {
+      const updatedOfficial = { ...mockOfficial, confidenceLevel: 4 };
+      mockRepository.findOne.mockResolvedValue(mockOfficial);
+      mockRepository.save.mockResolvedValue(updatedOfficial);
+
+      const result = await service.update("uuid-123", { confidenceLevel: 4 });
+
+      expect(result.confidenceLevel).toBe(4);
+      expect(mockRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({ confidenceLevel: 4 }),
+      );
+    });
+  });
+
+  describe("validation", () => {
+    it("should validate sources array entries", async () => {
+      const dto = plainToInstance(CreateOfficialDto, {
+        sources: [
+          {
+            url: "https://example.com/source",
+            type: SourceType.MEDIA,
+          },
+        ],
+      });
+
+      const errors = await validate(dto);
+      expect(errors).toHaveLength(0);
+    });
+
+    it("should reject invalid sources payload", async () => {
+      const dto = plainToInstance(CreateOfficialDto, {
+        sources: "invalid",
+      });
+
+      const errors = await validate(dto);
+      expect(errors.length).toBeGreaterThan(0);
+    });
+
+    it("should allow null sources", async () => {
+      const dto = plainToInstance(CreateOfficialDto, {
+        sources: null,
+      });
+
+      const errors = await validate(dto);
+      expect(errors).toHaveLength(0);
     });
   });
 

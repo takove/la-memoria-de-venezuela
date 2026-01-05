@@ -154,7 +154,11 @@ export class BusinessesService {
   }
 
   async create(data: Partial<Business>) {
-    const business = this.businessRepository.create(data);
+    const business = this.businessRepository.create({
+      ...data,
+      sources: data.sources === undefined ? [] : data.sources,
+      confidenceLevel: data.confidenceLevel ?? 3,
+    });
     return this.businessRepository.save(business);
   }
 

@@ -7,6 +7,7 @@ import {
   ManyToOne,
   Index,
 } from "typeorm";
+import { IsInt, Max, Min } from "class-validator";
 import { Official } from "./official.entity";
 
 export enum BusinessCategory {
@@ -124,7 +125,28 @@ export class Business {
     description?: string;
   }>;
 
-  @Column({ default: 1 })
+  @Column({
+    type: "jsonb",
+    nullable: true,
+    name: "sources",
+    default: () => "'[]'",
+  })
+  sources?: Array<{
+    url: string;
+    archiveUrl?: string;
+    type: "media" | "official" | "court" | "academic";
+    publicationDate?: Date;
+  }>;
+
+  @Column({
+    type: "enum",
+    enum: [1, 2, 3, 4, 5],
+    default: 3,
+    name: "confidence_level",
+  })
+  @IsInt()
+  @Min(1)
+  @Max(5)
   confidenceLevel: number; // 1-5, where 5 is highest confidence
 
   @Column({ default: false })
