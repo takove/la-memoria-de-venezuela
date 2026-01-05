@@ -35,7 +35,6 @@ export class Event {
   description: string;
 
   @Column({ name: "event_date", type: "date" })
-  @Index()
   eventDate: Date;
 
   @Column({
