@@ -20,7 +20,7 @@ test.describe("Officials Page", () => {
 
     // Look for pagination buttons or page indicators
     const pagination = page.locator(
-      "[data-testid='pagination'], .pagination, nav[aria-label*='Page']"
+      "[data-testid='pagination'], .pagination, nav[aria-label*='Page']",
     );
 
     if (await pagination.isVisible()) {
@@ -32,16 +32,16 @@ test.describe("Officials Page", () => {
     await page.goto("/officials");
 
     // Look for filter controls
-    const filterButton = page.locator(
-      'button[aria-label*="filter"], [data-testid="filter-button"]'
-    ).first();
+    const filterButton = page
+      .locator('button[aria-label*="filter"], [data-testid="filter-button"]')
+      .first();
 
     if (await filterButton.isVisible()) {
       await filterButton.click();
 
       // Look for filter options
       const filterOptions = page.locator(
-        'input[type="checkbox"], input[type="radio"]'
+        'input[type="checkbox"], input[type="radio"]',
       );
       const count = await filterOptions.count();
       expect(count).toBeGreaterThanOrEqual(0);
@@ -58,7 +58,7 @@ test.describe("Officials Page", () => {
 
     // Look for official cards
     const cards = page.locator(
-      "[data-testid='official-card'], .official-card, [class*='card']"
+      "[data-testid='official-card'], .official-card, [class*='card']",
     );
 
     if (await cards.first().isVisible()) {
@@ -81,7 +81,7 @@ test.describe("Officials Page", () => {
 
     // Look for clickable official card or link
     const cards = page.locator(
-      'a[href*="/officials/"], [data-testid="official-card"] a'
+      'a[href*="/officials/"], [data-testid="official-card"] a',
     );
 
     if (await cards.first().isVisible()) {
@@ -105,9 +105,9 @@ test.describe("Officials Page", () => {
     await page.waitForLoadState("networkidle");
 
     // Find and click first official link
-    const officialLink = page.locator(
-      'a[href*="/officials/"], [data-testid="official-card"] a'
-    ).first();
+    const officialLink = page
+      .locator('a[href*="/officials/"], [data-testid="official-card"] a')
+      .first();
 
     if (await officialLink.isVisible()) {
       await officialLink.click();
@@ -117,7 +117,7 @@ test.describe("Officials Page", () => {
 
       // Check for detail information
       const detailContent = page.locator(
-        "[data-testid='official-detail'], .detail-section, [class*='detail']"
+        "[data-testid='official-detail'], .detail-section, [class*='detail']",
       );
 
       // Detail page should have some content
@@ -131,9 +131,9 @@ test.describe("Officials Page", () => {
     await page.goto("/officials");
 
     // Navigate to first official
-    const officialLink = page.locator(
-      'a[href*="/officials/"], [data-testid="official-card"] a'
-    ).first();
+    const officialLink = page
+      .locator('a[href*="/officials/"], [data-testid="official-card"] a')
+      .first();
 
     if (await officialLink.isVisible()) {
       await officialLink.click();
@@ -142,7 +142,7 @@ test.describe("Officials Page", () => {
 
       // Look for sanctions section
       const sanctionsSection = page.locator(
-        'section:has-text("Sanction"), section:has-text("sanción"), [data-testid="sanctions"]'
+        'section:has-text("Sanction"), section:has-text("sanción"), [data-testid="sanctions"]',
       );
 
       if (await sanctionsSection.isVisible()) {
@@ -155,9 +155,9 @@ test.describe("Officials Page", () => {
     await page.goto("/officials");
 
     // Navigate to first official
-    const officialLink = page.locator(
-      'a[href*="/officials/"], [data-testid="official-card"] a'
-    ).first();
+    const officialLink = page
+      .locator('a[href*="/officials/"], [data-testid="official-card"] a')
+      .first();
 
     if (await officialLink.isVisible()) {
       await officialLink.click();
@@ -166,7 +166,7 @@ test.describe("Officials Page", () => {
 
       // Look for positions section
       const positionsSection = page.locator(
-        'section:has-text("Position"), section:has-text("posición"), [data-testid="positions"]'
+        'section:has-text("Position"), section:has-text("posición"), [data-testid="positions"]',
       );
 
       if (await positionsSection.isVisible()) {
@@ -179,9 +179,9 @@ test.describe("Officials Page", () => {
     await page.goto("/officials");
 
     // Navigate to first official
-    const officialLink = page.locator(
-      'a[href*="/officials/"], [data-testid="official-card"] a'
-    ).first();
+    const officialLink = page
+      .locator('a[href*="/officials/"], [data-testid="official-card"] a')
+      .first();
 
     if (await officialLink.isVisible()) {
       await officialLink.click();
@@ -189,9 +189,11 @@ test.describe("Officials Page", () => {
       await page.waitForLoadState("networkidle");
 
       // Click back button
-      const backButton = page.locator(
-        'button:has-text("Back"), button:has-text("Atrás"), a[href="/officials"]'
-      ).first();
+      const backButton = page
+        .locator(
+          'button:has-text("Back"), button:has-text("Atrás"), a[href="/officials"]',
+        )
+        .first();
 
       if (await backButton.isVisible()) {
         await backButton.click();
@@ -221,9 +223,11 @@ test.describe("Officials Search and Filter", () => {
     await page.goto("/officials");
 
     // Look for search input
-    const searchInput = page.locator(
-      'input[type="search"], input[placeholder*="search" i], input[placeholder*="buscar" i], [data-testid="search-input"]'
-    ).first();
+    const searchInput = page
+      .locator(
+        'input[type="search"], input[placeholder*="search" i], input[placeholder*="buscar" i], [data-testid="search-input"]',
+      )
+      .first();
 
     if (await searchInput.isVisible()) {
       // Type search query
@@ -241,15 +245,15 @@ test.describe("Officials Search and Filter", () => {
     await page.goto("/officials");
 
     // Look for confidence filter
-    const confidenceFilter = page.locator(
-      'select, input[aria-label*="confidence"]'
-    ).first();
+    const confidenceFilter = page
+      .locator('select, input[aria-label*="confidence"]')
+      .first();
 
     if (await confidenceFilter.isVisible()) {
       await confidenceFilter.click();
 
       // Select an option if available
-      const option = page.locator('option').nth(1);
+      const option = page.locator("option").nth(1);
       if (await option.isVisible()) {
         await option.click();
 
@@ -262,9 +266,9 @@ test.describe("Officials Search and Filter", () => {
     await page.goto("/officials");
 
     // Look for sort control
-    const sortControl = page.locator(
-      'select[aria-label*="sort"], button[aria-label*="sort"]'
-    ).first();
+    const sortControl = page
+      .locator('select[aria-label*="sort"], button[aria-label*="sort"]')
+      .first();
 
     if (await sortControl.isVisible()) {
       await sortControl.click();
@@ -310,7 +314,10 @@ test.describe("Officials Mobile Experience", () => {
     await page.waitForLoadState("networkidle");
 
     // Check viewport meta tag for mobile optimization
-    const viewportMeta = await page.getAttribute('meta[name="viewport"]', 'content');
+    const viewportMeta = await page.getAttribute(
+      'meta[name="viewport"]',
+      "content",
+    );
     expect(viewportMeta).toBeTruthy();
   });
 });

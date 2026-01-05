@@ -18,7 +18,7 @@ test.describe("Sanctions Page", () => {
 
     // Look for sanctions items
     const sanctionItems = page.locator(
-      "[data-testid='sanction-item'], .sanction-item, [class*='sanction']"
+      "[data-testid='sanction-item'], .sanction-item, [class*='sanction']",
     );
 
     if (await sanctionItems.first().isVisible()) {
@@ -30,9 +30,9 @@ test.describe("Sanctions Page", () => {
     await page.goto("/sanctions");
 
     // Look for type filter
-    const typeFilter = page.locator(
-      'select[aria-label*="type"], input[aria-label*="type"]'
-    ).first();
+    const typeFilter = page
+      .locator('select[aria-label*="type"], input[aria-label*="type"]')
+      .first();
 
     if (await typeFilter.isVisible()) {
       await typeFilter.click();
@@ -45,9 +45,9 @@ test.describe("Sanctions Page", () => {
     await page.goto("/sanctions");
 
     // Look for status filter (e.g., active, lifted)
-    const statusFilter = page.locator(
-      'select[aria-label*="status"], input[aria-label*="status"]'
-    ).first();
+    const statusFilter = page
+      .locator('select[aria-label*="status"], input[aria-label*="status"]')
+      .first();
 
     if (await statusFilter.isVisible()) {
       await statusFilter.click();
@@ -62,9 +62,9 @@ test.describe("Sanctions Page", () => {
     await page.waitForLoadState("networkidle");
 
     // Find sanction detail or click on a sanction
-    const sanctionLink = page.locator(
-      'a[href*="/sanctions/"], [data-testid="sanction-item"] a'
-    ).first();
+    const sanctionLink = page
+      .locator('a[href*="/sanctions/"], [data-testid="sanction-item"] a')
+      .first();
 
     if (await sanctionLink.isVisible()) {
       await sanctionLink.click();
@@ -87,9 +87,11 @@ test.describe("Search Page", () => {
   test("should have search input on search page", async ({ page }) => {
     await page.goto("/search");
 
-    const searchInput = page.locator(
-      'input[type="search"], input[placeholder*="search" i], input[placeholder*="buscar" i]'
-    ).first();
+    const searchInput = page
+      .locator(
+        'input[type="search"], input[placeholder*="search" i], input[placeholder*="buscar" i]',
+      )
+      .first();
 
     await expect(searchInput).toBeVisible();
   });
@@ -97,9 +99,11 @@ test.describe("Search Page", () => {
   test("should perform global search", async ({ page }) => {
     await page.goto("/search");
 
-    const searchInput = page.locator(
-      'input[type="search"], input[placeholder*="search" i], input[placeholder*="buscar" i]'
-    ).first();
+    const searchInput = page
+      .locator(
+        'input[type="search"], input[placeholder*="search" i], input[placeholder*="buscar" i]',
+      )
+      .first();
 
     await searchInput.fill("Venezuela");
 
@@ -115,16 +119,20 @@ test.describe("Search Page", () => {
   test("should filter search results by type", async ({ page }) => {
     await page.goto("/search");
 
-    const searchInput = page.locator(
-      'input[type="search"], input[placeholder*="search" i], input[placeholder*="buscar" i]'
-    ).first();
+    const searchInput = page
+      .locator(
+        'input[type="search"], input[placeholder*="search" i], input[placeholder*="buscar" i]',
+      )
+      .first();
 
     await searchInput.fill("test");
 
     // Look for type filter
-    const typeFilter = page.locator(
-      'select[aria-label*="type"], input[aria-label*="type"], button[aria-label*="type"]'
-    ).first();
+    const typeFilter = page
+      .locator(
+        'select[aria-label*="type"], input[aria-label*="type"], button[aria-label*="type"]',
+      )
+      .first();
 
     if (await typeFilter.isVisible()) {
       await typeFilter.click();
@@ -136,9 +144,11 @@ test.describe("Search Page", () => {
   test("should display search result count", async ({ page }) => {
     await page.goto("/search");
 
-    const searchInput = page.locator(
-      'input[type="search"], input[placeholder*="search" i], input[placeholder*="buscar" i]'
-    ).first();
+    const searchInput = page
+      .locator(
+        'input[type="search"], input[placeholder*="search" i], input[placeholder*="buscar" i]',
+      )
+      .first();
 
     await searchInput.fill("person");
 
@@ -146,7 +156,7 @@ test.describe("Search Page", () => {
 
     // Look for result count indicator
     const resultCount = page.locator(
-      'p:has-text("result"), p:has-text("resultados"), [data-testid="result-count"]'
+      'p:has-text("result"), p:has-text("resultados"), [data-testid="result-count"]',
     );
 
     if (await resultCount.isVisible()) {
@@ -158,9 +168,11 @@ test.describe("Search Page", () => {
   test("should handle empty search results", async ({ page }) => {
     await page.goto("/search");
 
-    const searchInput = page.locator(
-      'input[type="search"], input[placeholder*="search" i], input[placeholder*="buscar" i]'
-    ).first();
+    const searchInput = page
+      .locator(
+        'input[type="search"], input[placeholder*="search" i], input[placeholder*="buscar" i]',
+      )
+      .first();
 
     // Search for something unlikely to return results
     await searchInput.fill("xyzunlikelystring123");
@@ -176,18 +188,22 @@ test.describe("Search Page", () => {
   test("should clear search and results", async ({ page }) => {
     await page.goto("/search");
 
-    const searchInput = page.locator(
-      'input[type="search"], input[placeholder*="search" i], input[placeholder*="buscar" i]'
-    ).first();
+    const searchInput = page
+      .locator(
+        'input[type="search"], input[placeholder*="search" i], input[placeholder*="buscar" i]',
+      )
+      .first();
 
     await searchInput.fill("test");
 
     await page.waitForLoadState("networkidle");
 
     // Find clear button
-    const clearButton = page.locator(
-      'button:has-text("Clear"), button[aria-label*="clear"], button:has(svg)'
-    ).first();
+    const clearButton = page
+      .locator(
+        'button:has-text("Clear"), button[aria-label*="clear"], button:has(svg)',
+      )
+      .first();
 
     if (await clearButton.isVisible()) {
       await clearButton.click();
@@ -223,7 +239,7 @@ test.describe("Cases Page (if exists)", () => {
 
     // Look for case items
     const caseItems = page.locator(
-      "[data-testid='case-item'], .case-item, [class*='case']"
+      "[data-testid='case-item'], .case-item, [class*='case']",
     );
 
     if (await caseItems.first().isVisible()) {
@@ -239,9 +255,9 @@ test.describe("Cases Page (if exists)", () => {
     await page.waitForLoadState("networkidle");
 
     // Find case link
-    const caseLink = page.locator(
-      'a[href*="/cases/"], [data-testid="case-item"] a'
-    ).first();
+    const caseLink = page
+      .locator('a[href*="/cases/"], [data-testid="case-item"] a')
+      .first();
 
     if (await caseLink.isVisible()) {
       await caseLink.click();
