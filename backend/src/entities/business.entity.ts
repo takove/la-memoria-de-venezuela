@@ -5,9 +5,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
   Index,
 } from "typeorm";
 import { Official } from "./official.entity";
+import { Event } from "./event.entity";
 
 export enum BusinessCategory {
   PDVSA_CONTRACTOR = "pdvsa_contractor",
@@ -144,4 +146,8 @@ export class Business {
 
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
+
+  // Relations
+  @OneToMany(() => Event, (event) => event.business)
+  events: Event[];
 }

@@ -10,6 +10,7 @@ import {
 import { Sanction } from "./sanction.entity";
 import { CaseInvolvement } from "./case-involvement.entity";
 import { Testaferro } from "./testaferro.entity";
+import { Event } from "./event.entity";
 
 export enum OfficialStatus {
   ACTIVE = "active",
@@ -87,4 +88,7 @@ export class Official {
 
   @OneToMany(() => Testaferro, (testaferro) => testaferro.beneficialOwner)
   testaferros: Testaferro[];
+
+  @OneToMany(() => Event, (event) => event.official)
+  events: Event[];
 }

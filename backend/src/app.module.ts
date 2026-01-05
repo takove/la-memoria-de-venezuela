@@ -11,6 +11,7 @@ import { BusinessesModule } from "./modules/businesses/businesses.module";
 import { TestaferrosModule } from "./modules/testaferros/testaferros.module";
 import { IngestionModule } from "./modules/ingestion/ingestion.module";
 import { Tier1Module } from "./modules/ingestion/tier1/tier1.module";
+import { EventsModule } from "./modules/events/events.module";
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { Tier1Module } from "./modules/ingestion/tier1/tier1.module";
     TestaferrosModule, // TIER 2: Testaferros (money launderers, front men, shell company operators)
     IngestionModule, // Investigative ingestion pipeline with RSS + BullMQ
     Tier1Module, // Tier 1 sanctions list matching (OFAC, OpenSanctions)
+    EventsModule, // Timeline events (sanctions, charges, convictions, position changes)
   ],
 })
 export class AppModule {}

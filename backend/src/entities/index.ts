@@ -16,3 +16,4 @@ export * from "./stg-edge.entity";
 export * from "./stg-score.entity";
 export * from "./candidate-testaferro.entity";
 export * from "./tier1-official.entity";
+export * from "./event.entity";
