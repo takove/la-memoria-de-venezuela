@@ -9,6 +9,7 @@ import {
 } from "typeorm";
 import { Sanction } from "./sanction.entity";
 import { CaseInvolvement } from "./case-involvement.entity";
+import { Testaferro } from "./testaferro.entity";
 
 export enum OfficialStatus {
   ACTIVE = "active",
@@ -83,4 +84,7 @@ export class Official {
 
   @OneToMany(() => CaseInvolvement, (involvement) => involvement.official)
   caseInvolvements: CaseInvolvement[];
+
+  @OneToMany(() => Testaferro, (testaferro) => testaferro.beneficialOwner)
+  testaferros: Testaferro[];
 }

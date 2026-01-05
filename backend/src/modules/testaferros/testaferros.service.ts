@@ -5,7 +5,7 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Testaferro, TestaferroCategory, TestaferroStatus } from "../entities";
+import { Testaferro, TestaferroCategory, TestaferroStatus } from "../../entities";
 
 @Injectable()
 export class TestaferrosService {

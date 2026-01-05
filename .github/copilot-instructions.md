@@ -308,6 +308,32 @@ Use these commands for testing (do NOT use watch mode in CI):
 - `pnpm --dir backend test:cov` - Backend coverage report
 - `pnpm --dir frontend test:cov` - Frontend coverage report (watch mode)
 
+### Pre-Commit Testing Requirements
+
+**CRITICAL: Always run full test suite before committing changes.** This prevents broken builds in CI/CD and maintains code quality.
+
+```bash
+# Run all tests before committing (backend + frontend)
+pnpm --dir backend test:cov --runInBand && pnpm --dir frontend test:ci
+```
+
+If either test suite fails:
+1. Fix the failing tests or code
+2. Re-run the full test suite
+3. Do NOT commit until all tests pass
+
+**Why this matters:**
+- Broken tests in main branch block all CI/CD pipelines
+- TypeScript/compilation errors prevent deployment
+- Relationship errors between entities (like Official ↔ Testaferro) break multiple test suites
+- Frontend and backend are tightly integrated; both must pass
+
+**Common issues to watch for:**
+- Adding new entity relationships without updating reciprocal entities
+- Missing imports in service files (use `src/entities` barrel, not relative imports like `../entities`)
+- TypeScript compilation errors in test files
+- Breaking changes to existing DTOs or API contracts
+
 ## Common Patterns
 
 ### Adding a New Entity
