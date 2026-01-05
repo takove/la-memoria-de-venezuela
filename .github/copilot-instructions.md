@@ -1,5 +1,7 @@
 # GitHub Copilot Instructions for La Memoria de Venezuela
 
+> **For GitHub Copilot Workspace**: When assigned to an issue, you will automatically have access to this file. Follow ALL instructions here precisely. After every push, monitor GitHub Actions and fix failures before creating PRs.
+
 ## Project Overview
 
 La Memoria de Venezuela is a comprehensive accountability database documenting Venezuelan regime officials, testaferros, businesses, and cultural propagandists under international sanctions and legal proceedings. This is **the moral opposite of La Lista Tascón** - we hold the powerful accountable, not persecute citizens.
@@ -321,6 +323,152 @@ If linting or test suite fails:
 1. Fix the linting errors, failing tests, or code
 2. Re-run the full lint and test suite
 3. Do NOT commit until all checks pass
+
+### Post-Push CI/CD Monitoring & Auto-Fix
+
+**CRITICAL: After every `git push`, monitor GitHub Actions and fix any failures immediately.**
+
+#### Step 1: Monitor GitHub Actions After Push
+```bash
+# After pushing, wait 30 seconds then check CI status
+git push origin <branch-name>
+sleep 30
+
+# Check latest workflow run status
+gh run list --limit 1 --branch <branch-name>
+
+# If failed, view the logs
+gh run view --log-failed
+```
+
+#### Step 2: Common CI Failures & Fixes
+
+**Failure: Linting errors**
+```bash
+# CI error: "ESLint found problems"
+# Fix: Run lint with auto-fix locally
+pnpm --dir backend lint --fix
+pnpm --dir frontend lint --fix
+
+# Commit the fixes
+git add .
+git commit -m "fix: resolve linting errors from CI"
+git push origin <branch-name>
+```
+
+**Failure: Test failures**
+```bash
+# CI error: "Tests failed" or "Coverage below threshold"
+# Fix: Run tests locally to reproduce
+pnpm --dir backend test:cov --runInBand
+pnpm --dir frontend test:ci
+
+# Fix the failing tests, then commit
+git add .
+git commit -m "test: fix failing tests from CI"
+git push origin <branch-name>
+```
+
+**Failure: TypeScript compilation errors**
+```bash
+# CI error: "Build failed" or "tsc errors"
+# Fix: Run build locally
+pnpm --dir backend build
+pnpm --dir frontend build
+
+# Fix type errors, then commit
+git add .
+git commit -m "fix: resolve TypeScript compilation errors"
+git push origin <branch-name>
+```
+
+**Failure: Dependency Review (new dependencies)**
+```bash
+# CI error: "Dependency Review failed"
+# This happens when adding new packages
+# Fix: Ensure dependencies are justified and secure
+
+# Check what dependencies were added
+git diff main -- package.json pnpm-lock.yaml
+
+# If legitimate (e.g., adding dotenv for config):
+# - Update PR description to explain why the dependency is needed
+# - Verify no known vulnerabilities: npm audit or pnpm audit
+# - If safe, the Dependency Review can be overridden by maintainers
+
+# If accidental dependency:
+pnpm remove <unwanted-package>
+git add .
+git commit -m "chore: remove unnecessary dependency"
+git push origin <branch-name>
+```
+
+**Failure: Missing files or imports**
+```bash
+# CI error: "Cannot find module" or "File not found"
+# Fix: Ensure all files are committed
+git status  # Check for untracked files
+git add <missing-files>
+git commit -m "fix: add missing files from CI"
+git push origin <branch-name>
+```
+
+#### Step 3: Verify CI Passes Before Creating PR
+
+**Before creating a Pull Request:**
+```bash
+# 1. Ensure all local tests pass
+pnpm --dir backend lint && pnpm --dir backend test:cov --runInBand
+pnpm --dir frontend lint && pnpm --dir frontend test:ci
+
+# 2. Push final changes
+git push origin <branch-name>
+
+# 3. Wait for CI to complete (check GitHub Actions)
+gh run watch
+
+# 4. Only create PR when all checks are green ✅
+gh pr create --title "feat: description" --body "Details..."
+```
+
+#### Step 4: Auto-Fix Workflow (Full Checklist)
+
+When GitHub Actions fails, follow this exact sequence:
+
+1. **View failure logs**:
+   ```bash
+   gh run view --log-failed
+   ```
+
+2. **Identify the failure type**:
+   - Linting → Run `pnpm lint --fix`
+   - Tests → Run `pnpm test:cov --runInBand` or `pnpm test:ci`
+   - Build → Run `pnpm build`
+   - Dependency → Check `package.json` changes
+
+3. **Fix locally** (reproduce the error):
+   ```bash
+   # Always reproduce CI error locally before fixing
+   cd backend && pnpm lint && pnpm test:cov --runInBand && pnpm build
+   cd ../frontend && pnpm lint && pnpm test:ci && pnpm build
+   ```
+
+4. **Commit the fix**:
+   ```bash
+   git add .
+   git commit -m "fix: resolve CI failure - <specific issue>"
+   git push origin <branch-name>
+   ```
+
+5. **Verify CI passes**:
+   ```bash
+   gh run watch  # Wait for checks to complete
+   # Expected: All checks passed ✅
+   ```
+
+6. **If still failing**: Repeat steps 1-5 until all checks pass
+
+**DO NOT create Pull Requests with failing CI checks.** Always fix CI failures before requesting review
 
 **Why this matters:**
 - Broken tests in main branch block all CI/CD pipelines
