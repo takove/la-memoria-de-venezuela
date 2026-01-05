@@ -6,6 +6,7 @@ export * from "./position.entity";
 export * from "./victim.entity";
 export * from "./political-prisoner.entity";
 export * from "./exile-story.entity";
+export * from "./business.entity";
 export * from "./stg-article.entity";
 export * from "./stg-entity.entity";
 export * from "./stg-relation.entity";

@@ -7,6 +7,7 @@ import { SanctionsModule } from "./modules/sanctions/sanctions.module";
 import { CasesModule } from "./modules/cases/cases.module";
 import { SearchModule } from "./modules/search/search.module";
 import { MemorialModule } from "./modules/memorial/memorial.module";
+import { BusinessesModule } from "./modules/businesses/businesses.module";
 import { IngestionModule } from "./modules/ingestion/ingestion.module";
 import { Tier1Module } from "./modules/ingestion/tier1/tier1.module";
 
@@ -64,6 +65,7 @@ import { Tier1Module } from "./modules/ingestion/tier1/tier1.module";
     CasesModule,
     SearchModule,
     MemorialModule, // "This is why we exist" - Victims Memorial
+    BusinessesModule, // TIER 3: Business Enablers (PDVSA contractors, CLAP fraud, shell companies)
     IngestionModule, // Investigative ingestion pipeline with RSS + BullMQ
     Tier1Module, // Tier 1 sanctions list matching (OFAC, OpenSanctions)
   ],
