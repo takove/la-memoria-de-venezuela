@@ -6,6 +6,9 @@
 app = 'backend-black-night-8069'
 primary_region = 'iad'
 
+[env]
+  NODE_OPTIONS = "--max-old-space-size=512"
+
 [build]
 
 [http_service]
@@ -17,6 +20,6 @@ primary_region = 'iad'
   processes = ['app']
 
 [[vm]]
-  memory = '256mb'
+  memory = '1024mb'
   cpus = 1
-  memory_mb = 256
+  memory_mb = 1024
