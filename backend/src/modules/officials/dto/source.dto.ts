@@ -4,9 +4,7 @@ import {
   IsEnum,
   IsUrl,
   IsDateString,
-  ValidateNested,
 } from "class-validator";
-import { Type } from "class-transformer";
 
 export enum SourceType {
   MEDIA = "media",

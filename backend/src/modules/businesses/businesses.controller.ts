@@ -10,7 +10,7 @@ import {
   HttpCode,
 } from "@nestjs/common";
 import { BusinessesService } from "./businesses.service";
-import { Business, BusinessCategory } from "../../entities";
+import { BusinessCategory } from "../../entities";
 import { CreateBusinessDto } from "./dto/create-business.dto";
 import { UpdateBusinessDto } from "./dto/update-business.dto";
 

@@ -67,7 +67,10 @@ export class OfficialsController {
   @ApiOperation({ summary: "Update an official" })
   @ApiResponse({ status: 200, description: "Official updated successfully" })
   @ApiResponse({ status: 404, description: "Official not found" })
-  update(@Param("id", ParseUUIDPipe) id: string, @Body() data: UpdateOfficialDto) {
+  update(
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() data: UpdateOfficialDto,
+  ) {
     return this.officialsService.update(id, data);
   }
 }

@@ -10,11 +10,7 @@ import {
   ParseIntPipe,
 } from "@nestjs/common";
 import { TestaferrosService } from "./testaferros.service";
-import {
-  Testaferro,
-  TestaferroCategory,
-  TestaferroStatus,
-} from "../../entities";
+import { TestaferroCategory, TestaferroStatus } from "../../entities";
 import { CreateTestaferroDto } from "./dto/create-testaferro.dto";
 import { UpdateTestaferroDto } from "./dto/update-testaferro.dto";
 

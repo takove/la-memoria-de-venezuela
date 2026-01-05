@@ -81,7 +81,10 @@ export class SanctionsController {
   @ApiOperation({ summary: "Update a sanction record" })
   @ApiResponse({ status: 200, description: "Sanction updated successfully" })
   @ApiResponse({ status: 404, description: "Sanction not found" })
-  update(@Param("id", ParseUUIDPipe) id: string, @Body() data: UpdateSanctionDto) {
+  update(
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() data: UpdateSanctionDto,
+  ) {
     return this.sanctionsService.update(id, data);
   }
 }
