@@ -54,10 +54,6 @@ describe("IngestionOrchestrator", () => {
     }).compile();
 
     orchestrator = module.get<IngestionOrchestrator>(IngestionOrchestrator);
-    articlesService = module.get<ArticlesService>(ArticlesService);
-    entitiesService = module.get<EntitiesService>(EntitiesService);
-    winkNerService = module.get<WinkNerService>(WinkNerService);
-    matchService = module.get<MatchService>(MatchService);
   });
 
   afterEach(() => {

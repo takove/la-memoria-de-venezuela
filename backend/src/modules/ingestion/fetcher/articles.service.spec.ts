@@ -33,9 +33,6 @@ describe("ArticlesService", () => {
     }).compile();
 
     service = module.get<ArticlesService>(ArticlesService);
-    repository = module.get<Repository<StgArticle>>(
-      getRepositoryToken(StgArticle),
-    );
   });
 
   afterEach(() => {
