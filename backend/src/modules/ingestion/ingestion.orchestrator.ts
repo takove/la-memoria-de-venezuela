@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { ArticlesService } from "./fetcher/articles.service";
-import { EntitiesService, ExtractedEntity, ExtractedRelation } from "./ner/entities.service";
+import { EntitiesService } from "./ner/entities.service";
 import { WinkNerService } from "./ner/wink-ner.service";
 import { MatchService } from "./match/match.service";
 import { StgNodeType, StgEdgeType } from "../../entities";

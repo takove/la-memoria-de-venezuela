@@ -1,6 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
 import { MatchService } from "./match.service";
 import { Official, StgNode, StgEdge, StgEntity, StgNodeType, StgEdgeType } from "../../../entities";
 

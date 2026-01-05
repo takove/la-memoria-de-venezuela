@@ -1,12 +1,10 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
 import { ArticlesService } from "./articles.service";
 import { StgArticle, StgEntity } from "../../../entities";
 
 describe("ArticlesService", () => {
   let service: ArticlesService;
-  let repository: Repository<StgArticle>;
 
   const mockArticleRepository = {
     findOne: jest.fn(),

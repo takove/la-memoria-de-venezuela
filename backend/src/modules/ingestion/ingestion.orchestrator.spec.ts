@@ -7,10 +7,6 @@ import { MatchService } from "./match/match.service";
 
 describe("IngestionOrchestrator", () => {
   let orchestrator: IngestionOrchestrator;
-  let articlesService: ArticlesService;
-  let entitiesService: EntitiesService;
-  let winkNerService: WinkNerService;
-  let matchService: MatchService;
 
   const mockArticlesService = {
     findUnprocessedArticles: jest.fn(),
