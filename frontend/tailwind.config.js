@@ -31,6 +31,20 @@ export default {
           600: "#dc2626",
           700: "#b91c1c",
         },
+        // Design System Colors - La Memoria de Venezuela
+        // Color psychology for accountability and emotional resonance
+        memoria: {
+          // Danger Red - Sanctions and urgent legal matters (OFAC lists)
+          danger: "#C41F2F",
+          // Institutional Blue - Government positions and official records
+          institutional: "#2D5F7F",
+          // Justice Green - Convictions and legal victories
+          justice: "#2D7F3F",
+          // Warning Amber - Investigations and pending actions
+          warning: "#E8A008",
+          // Neutral Gray - Archived and inactive records
+          neutral: "#999999",
+        },
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],

@@ -1,9 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Homepage Navigation", () => {
-  test("should load homepage and display main navigation", async ({
-    page,
-  }) => {
+  test("should load homepage and display main navigation", async ({ page }) => {
     await page.goto("/");
 
     // Check page title
@@ -23,9 +21,9 @@ test.describe("Homepage Navigation", () => {
     await page.goto("/");
 
     // Click on Officials link
-    const officialsLink = page.locator(
-      'a[href="/officials"], a:has-text("Funcionarios")'
-    ).first();
+    const officialsLink = page
+      .locator('a[href="/officials"], a:has-text("Funcionarios")')
+      .first();
     await expect(officialsLink).toBeVisible();
     await officialsLink.click();
 
@@ -38,9 +36,9 @@ test.describe("Homepage Navigation", () => {
     await page.goto("/");
 
     // Click on Sanctions link
-    const sanctionsLink = page.locator(
-      'a[href="/sanctions"], a:has-text("Sanciones")'
-    ).first();
+    const sanctionsLink = page
+      .locator('a[href="/sanctions"], a:has-text("Sanciones")')
+      .first();
     await expect(sanctionsLink).toBeVisible();
     await sanctionsLink.click();
 
@@ -52,9 +50,9 @@ test.describe("Homepage Navigation", () => {
     await page.goto("/");
 
     // Click on Cases link
-    const casesLink = page.locator(
-      'a[href="/cases"], a:has-text("Casos")'
-    ).first();
+    const casesLink = page
+      .locator('a[href="/cases"], a:has-text("Casos")')
+      .first();
     if (await casesLink.isVisible()) {
       await casesLink.click();
       expect(page.url()).toContain("/cases");
@@ -65,9 +63,9 @@ test.describe("Homepage Navigation", () => {
     await page.goto("/");
 
     // Click on Memorial link
-    const memorialLink = page.locator(
-      'a[href="/memorial"], a:has-text("Memorial")'
-    ).first();
+    const memorialLink = page
+      .locator('a[href="/memorial"], a:has-text("Memorial")')
+      .first();
     if (await memorialLink.isVisible()) {
       await memorialLink.click();
       expect(page.url()).toContain("/memorial");
@@ -78,9 +76,9 @@ test.describe("Homepage Navigation", () => {
     await page.goto("/");
 
     // Click on About link
-    const aboutLink = page.locator(
-      'a[href="/about"], a:has-text("Acerca")'
-    ).first();
+    const aboutLink = page
+      .locator('a[href="/about"], a:has-text("Acerca")')
+      .first();
     if (await aboutLink.isVisible()) {
       await aboutLink.click();
       expect(page.url()).toContain("/about");
@@ -93,9 +91,11 @@ test.describe("Language Toggle", () => {
     await page.goto("/");
 
     // Find language toggle button (could be a flag icon or dropdown)
-    const langToggle = page.locator(
-      'button[aria-label*="language"], button[aria-label*="idioma"], [data-testid="language-toggle"]'
-    ).first();
+    const langToggle = page
+      .locator(
+        'button[aria-label*="language"], button[aria-label*="idioma"], [data-testid="language-toggle"]',
+      )
+      .first();
 
     if (await langToggle.isVisible()) {
       const initialLang = page.locator("html").getAttribute("lang");
@@ -110,16 +110,18 @@ test.describe("Language Toggle", () => {
 });
 
 test.describe("Responsive Design", () => {
-  test("should display mobile navigation on small screens", async ({ page }) => {
+  test("should display mobile navigation on small screens", async ({
+    page,
+  }) => {
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 });
 
     await page.goto("/");
 
     // Look for mobile menu trigger (hamburger button)
-    const mobileMenuTrigger = page.locator(
-      'button[aria-label*="menu"], [data-testid="mobile-menu"]'
-    ).first();
+    const mobileMenuTrigger = page
+      .locator('button[aria-label*="menu"], [data-testid="mobile-menu"]')
+      .first();
 
     if (await mobileMenuTrigger.isVisible()) {
       expect(true).toBe(true); // Mobile menu present
@@ -146,9 +148,11 @@ test.describe("Search Functionality", () => {
     await page.goto("/");
 
     // Look for search input
-    const searchInput = page.locator(
-      'input[type="search"], input[placeholder*="search" i], input[placeholder*="buscar" i], [data-testid="search-input"]'
-    ).first();
+    const searchInput = page
+      .locator(
+        'input[type="search"], input[placeholder*="search" i], input[placeholder*="buscar" i], [data-testid="search-input"]',
+      )
+      .first();
 
     if (await searchInput.isVisible()) {
       await expect(searchInput).toBeVisible();
@@ -160,9 +164,11 @@ test.describe("Search Functionality", () => {
     await page.goto("/officials");
 
     // Look for search input
-    const searchInput = page.locator(
-      'input[type="search"], input[placeholder*="search" i], input[placeholder*="buscar" i], [data-testid="search-input"]'
-    ).first();
+    const searchInput = page
+      .locator(
+        'input[type="search"], input[placeholder*="search" i], input[placeholder*="buscar" i], [data-testid="search-input"]',
+      )
+      .first();
 
     if (await searchInput.isVisible()) {
       // Type in search box
@@ -173,7 +179,7 @@ test.describe("Search Functionality", () => {
 
       // Check if results appear
       const results = page.locator(
-        "[data-testid*='card'], [data-testid*='result'], .card, .result"
+        "[data-testid*='card'], [data-testid*='result'], .card, .result",
       );
       const count = await results.count();
 
