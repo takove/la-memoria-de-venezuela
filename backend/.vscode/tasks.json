@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "backend test:cov --runInBand",
+			"type": "shell",
+			"command": "pnpm --dir backend test:cov --runInBand",
+			"args": [],
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}
