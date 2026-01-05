@@ -40,10 +40,8 @@ describe("OG Image Endpoint", () => {
       json: async () => mockOfficial,
     });
 
-    const mockSetHeaders = vi.fn();
     const response = await GET({
       params: { id: "123" },
-      setHeaders: mockSetHeaders,
     } as any);
 
     expect(response.status).toBe(200);
@@ -56,10 +54,8 @@ describe("OG Image Endpoint", () => {
       json: async () => mockOfficial,
     });
 
-    const mockSetHeaders = vi.fn();
     const response = await GET({
       params: { id: "123" },
-      setHeaders: mockSetHeaders,
     } as any);
 
     const cacheControl = response.headers.get("Cache-Control");
@@ -73,10 +69,8 @@ describe("OG Image Endpoint", () => {
       json: async () => mockOfficial,
     });
 
-    const mockSetHeaders = vi.fn();
     const response = await GET({
       params: { id: "123" },
-      setHeaders: mockSetHeaders,
     } as any);
 
     const svgText = await response.text();
@@ -90,10 +84,8 @@ describe("OG Image Endpoint", () => {
       json: async () => mockOfficial,
     });
 
-    const mockSetHeaders = vi.fn();
     const response = await GET({
       params: { id: "123" },
-      setHeaders: mockSetHeaders,
     } as any);
 
     const svgText = await response.text();
@@ -106,10 +98,8 @@ describe("OG Image Endpoint", () => {
       json: async () => mockOfficial,
     });
 
-    const mockSetHeaders = vi.fn();
     const response = await GET({
       params: { id: "123" },
-      setHeaders: mockSetHeaders,
     } as any);
 
     const svgText = await response.text();
@@ -122,10 +112,8 @@ describe("OG Image Endpoint", () => {
       json: async () => mockOfficial,
     });
 
-    const mockSetHeaders = vi.fn();
     const response = await GET({
       params: { id: "123" },
-      setHeaders: mockSetHeaders,
     } as any);
 
     const svgText = await response.text();
@@ -139,10 +127,8 @@ describe("OG Image Endpoint", () => {
       json: async () => officialWithoutSanctions,
     });
 
-    const mockSetHeaders = vi.fn();
     const response = await GET({
       params: { id: "123" },
-      setHeaders: mockSetHeaders,
     } as any);
 
     const svgText = await response.text();
@@ -157,12 +143,9 @@ describe("OG Image Endpoint", () => {
       status: 404,
     });
 
-    const mockSetHeaders = vi.fn();
-
     await expect(
       GET({
         params: { id: "invalid" },
-        setHeaders: mockSetHeaders,
       } as any),
     ).rejects.toThrow();
   });
@@ -173,10 +156,8 @@ describe("OG Image Endpoint", () => {
       json: async () => mockOfficial,
     });
 
-    const mockSetHeaders = vi.fn();
     const response = await GET({
       params: { id: "123" },
-      setHeaders: mockSetHeaders,
     } as any);
 
     const svgText = await response.text();
@@ -200,10 +181,8 @@ describe("OG Image Endpoint", () => {
       json: async () => longNameOfficial,
     });
 
-    const mockSetHeaders = vi.fn();
     const response = await GET({
       params: { id: "123" },
-      setHeaders: mockSetHeaders,
     } as any);
 
     const svgText = await response.text();
@@ -220,10 +199,8 @@ describe("OG Image Endpoint", () => {
         json: async () => official,
       });
 
-      const mockSetHeaders = vi.fn();
       const response = await GET({
         params: { id: "123" },
-        setHeaders: mockSetHeaders,
       } as any);
 
       const svgText = await response.text();

@@ -11,7 +11,7 @@
 
   $: officialId = $page.params.id;
   $: currentUrl = typeof window !== 'undefined' ? window.location.href : '';
-  $: ogImage = official ? `/api/og/${official.id}` : '/images/og-default.png';
+  $: ogImage = official ? `/api/og/${official.id}` : `/api/og/default`;
   $: metaTitle = official ? `${official.fullName} | La Memoria de Venezuela` : 'Funcionario | La Memoria de Venezuela';
   $: metaDescription = official 
     ? `Información sobre ${official.fullName}${official.positions?.[0] ? ` - ${official.positions[0].titleEs || official.positions[0].title}` : ''}. Sanciones, cargos y casos legales documentados.`

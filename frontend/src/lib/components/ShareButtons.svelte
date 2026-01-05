@@ -9,8 +9,11 @@
   let supportsNativeShare = false;
 
   onMount(() => {
-    // Check if native share is available
-    supportsNativeShare = typeof navigator !== 'undefined' && 'share' in navigator;
+    // Check if native share is available (requires secure context)
+    supportsNativeShare = 
+      typeof navigator !== 'undefined' && 
+      'share' in navigator &&
+      (window.isSecureContext ?? true);
   });
 
   function getTwitterUrl(): string {

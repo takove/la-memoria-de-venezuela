@@ -37,8 +37,9 @@ function generateOGImage(official: {
 
   // Confidence badge
   const confidenceBadges = ["🔴", "🟠", "🟡", "🟢", "✅"];
-  const confidenceBadge = confidenceBadges[confidenceLevel - 1] || "⚪";
-  const confidenceText = `Confianza: ${confidenceLevel}/5`;
+  const validConfidence = Math.max(1, Math.min(5, confidenceLevel)); // Clamp to 1-5
+  const confidenceBadge = confidenceBadges[validConfidence - 1] || "⚪";
+  const confidenceText = `Confianza: ${validConfidence}/5`;
 
   // Generate SVG
   const svg = `
@@ -123,7 +124,7 @@ function escapeXml(unsafe: string): string {
   });
 }
 
-export const GET: RequestHandler = async ({ params, setHeaders }) => {
+export const GET: RequestHandler = async ({ params }) => {
   const { id } = params;
 
   try {
@@ -138,12 +139,6 @@ export const GET: RequestHandler = async ({ params, setHeaders }) => {
 
     // Generate SVG
     const svg = generateOGImage(official);
-
-    // Set cache headers
-    setHeaders({
-      "Content-Type": "image/svg+xml",
-      "Cache-Control": "public, max-age=3600, s-maxage=86400",
-    });
 
     return new Response(svg, {
       status: 200,
