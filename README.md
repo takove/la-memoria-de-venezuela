@@ -181,6 +181,11 @@ cd frontend && pnpm test
 
 ### 🚧 Phase 2: Enhanced Features (In Progress)
 - [x] GitHub Copilot instructions
+- [x] Social sharing with OG meta tags
+  - [x] Share buttons (Twitter/X, Facebook, WhatsApp, LinkedIn, Copy, Native)
+  - [x] Dynamic Open Graph meta tags per profile
+  - [x] Auto-generated OG images (1200x630)
+  - [x] Unit tests for components and endpoints
 - [ ] Unit testing (Jest + Vitest)
 - [ ] TIER 2: Testaferros database (200+ individuals)
 - [ ] Business screening API for sanctions check
