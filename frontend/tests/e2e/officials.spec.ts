@@ -116,7 +116,7 @@ test.describe("Officials Page", () => {
       await page.waitForLoadState("networkidle");
 
       // Check for detail information
-      const detailContent = page.locator(
+      page.locator(
         "[data-testid='official-detail'], .detail-section, [class*='detail']",
       );
 

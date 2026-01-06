@@ -1,6 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/svelte";
-import userEvent from "@testing-library/user-event";
+import { describe, it, expect } from "vitest";
 
 /**
  * Layout Component Tests
