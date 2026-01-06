@@ -296,7 +296,8 @@ describe("Internationalization", () => {
 
   it("should provide fallback for missing translations", () => {
     const key = "missingKey";
-    const fallback = translations.en[key as keyof typeof translations.en] || key;
+    const fallback =
+      translations.en[key as keyof typeof translations.en] || key;
 
     expect(fallback).toBe(key);
   });
@@ -324,10 +325,7 @@ describe("Performance", () => {
   });
 
   it("should debounce search input", () => {
-    let searchCount = 0;
-    const mockSearch = vi.fn(() => {
-      searchCount++;
-    });
+    const mockSearch = vi.fn();
 
     // Simulate rapid search inputs
     for (let i = 0; i < 10; i++) {
