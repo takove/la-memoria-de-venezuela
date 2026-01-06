@@ -115,11 +115,6 @@ test.describe("Officials Page", () => {
       // Verify detail page loads
       await page.waitForLoadState("networkidle");
 
-      // Check for detail information
-      const detailContent = page.locator(
-        "[data-testid='official-detail'], .detail-section, [class*='detail']",
-      );
-
       // Detail page should have some content
       expect(page.url()).toContain("/officials/");
     }

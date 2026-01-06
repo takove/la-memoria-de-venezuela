@@ -98,8 +98,6 @@ test.describe("Language Toggle", () => {
       .first();
 
     if (await langToggle.isVisible()) {
-      const initialLang = page.locator("html").getAttribute("lang");
-
       // Click to toggle
       await langToggle.click();
 
@@ -176,12 +174,6 @@ test.describe("Search Functionality", () => {
 
       // Wait for results to load
       await page.waitForLoadState("networkidle");
-
-      // Check if results appear
-      const results = page.locator(
-        "[data-testid*='card'], [data-testid*='result'], .card, .result",
-      );
-      const count = await results.count();
 
       // Results should load (or no results message should appear)
       expect(page.url()).toBeTruthy();
