@@ -1,4 +1,4 @@
-import { expect, afterEach, vi } from "vitest";
+import { afterEach, vi } from "vitest";
 import { render, cleanup } from "@testing-library/svelte";
 import "@testing-library/jest-dom";
 

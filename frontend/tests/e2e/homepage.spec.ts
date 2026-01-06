@@ -98,8 +98,6 @@ test.describe("Language Toggle", () => {
     ).first();
 
     if (await langToggle.isVisible()) {
-      const initialLang = page.locator("html").getAttribute("lang");
-
       // Click to toggle
       await langToggle.click();
 
