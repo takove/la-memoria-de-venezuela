@@ -296,7 +296,8 @@ describe("Internationalization", () => {
 
   it("should provide fallback for missing translations", () => {
     const key = "missingKey";
-    const fallback = translations.en[key as keyof typeof translations.en] || key;
+    const fallback =
+      translations.en[key as keyof typeof translations.en] || key;
 
     expect(fallback).toBe(key);
   });

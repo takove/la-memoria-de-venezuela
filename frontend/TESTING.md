@@ -48,10 +48,12 @@ pnpm test:e2e -- --project=firefox
 ## Test Files
 
 ### Unit Tests
+
 - `tests/unit/components.test.ts` - Component rendering and behavior
 - `tests/unit/integration.test.ts` - Integration tests for stores, API, data flows
 
 ### E2E Tests
+
 - `tests/e2e/homepage.spec.ts` - Homepage navigation, language toggle, responsiveness
 - `tests/e2e/officials.spec.ts` - Officials listing, filtering, detail pages
 - `tests/e2e/pages.spec.ts` - Sanctions, search, cases, memorial, about pages
@@ -72,13 +74,13 @@ import { test, expect } from "@playwright/test";
 test.describe("Feature Name", () => {
   test("should do something specific", async ({ page }) => {
     await page.goto("/path");
-    
+
     const element = page.locator("selector");
     await expect(element).toBeVisible();
-    
+
     await element.click();
     await page.waitForLoadState("networkidle");
-    
+
     expect(page.url()).toContain("/expected-path");
   });
 });
@@ -93,10 +95,10 @@ describe("ComponentName", () => {
   it("should render correctly", () => {
     // Arrange
     const props = { label: "Test" };
-    
+
     // Act
     const result = render(Component, { props });
-    
+
     // Assert
     expect(result).toBeDefined();
   });
@@ -106,6 +108,7 @@ describe("ComponentName", () => {
 ## CI/CD Integration
 
 Tests run automatically on:
+
 - Push to `main` branch
 - Pull requests
 - Pre-commit hook (configured in `.husky`)
@@ -113,6 +116,7 @@ Tests run automatically on:
 ### GitHub Actions
 
 Tests are run in CI with:
+
 - `pnpm test:ci` - Unit tests with coverage
 - `pnpm test:e2e` - E2E tests (runs only on main branch)
 
@@ -129,15 +133,18 @@ Tests are run in CI with:
 ## Common Issues
 
 ### Tests Timeout
+
 - Increase timeout in specific test: `test.setTimeout(10000)`
 - Check if API is actually running: `http://localhost:3000/api/v1/health`
 
 ### Selector Issues
+
 - Use `page.screenshot()` to debug selectors
 - Use `page.pause()` to pause execution
 - Check inspector with `page.locator("selector").isVisible()`
 
 ### API Errors
+
 - Verify backend is running on `http://localhost:3000`
 - Check if database migrations are applied
 - Verify environment variables are set
@@ -145,6 +152,7 @@ Tests are run in CI with:
 ## Debugging Tests
 
 ### Interactive Mode
+
 ```bash
 # Run with Playwright Inspector
 pnpm test:e2e:debug
@@ -154,11 +162,14 @@ pnpm test:e2e:debug
 ```
 
 ### Screenshots & Videos
+
 Playwright automatically captures:
+
 - Screenshots on failure: `test-results/`
 - Videos of test runs: Enable in `playwright.config.ts`
 
 ### View Test Report
+
 ```bash
 # Open HTML report after running tests
 pnpm test:e2e
@@ -168,6 +179,7 @@ npx playwright show-report
 ## Performance Testing
 
 Monitor test execution time:
+
 ```bash
 # Run with timing information
 pnpm test:e2e --reporter=list
@@ -176,6 +188,7 @@ pnpm test:e2e --reporter=list
 ## Accessibility Testing
 
 Each test includes checks for:
+
 - Heading hierarchy (`<h1>`, `<h2>`, etc.)
 - Image alt text
 - ARIA labels on buttons
@@ -195,6 +208,7 @@ open coverage/index.html
 ```
 
 Target coverage levels:
+
 - Statements: 70%+
 - Branches: 65%+
 - Functions: 70%+
@@ -214,6 +228,7 @@ When adding new features:
 ---
 
 For more information, see:
+
 - [Vitest Documentation](https://vitest.dev/)
 - [Playwright Documentation](https://playwright.dev/)
 - [Testing Library](https://testing-library.com/svelte)
