@@ -35,19 +35,19 @@ export class RssService {
   // RSS feeds to monitor (add more sources as needed)
   private readonly feeds: RssFeed[] = [
     {
-      url: "https://www.reuters.com/finance/sanctions",
-      name: "Reuters Sanctions",
+      url: "http://feeds.bloomberg.com/markets/news.rss",
+      name: "Bloomberg Markets",
       language: "en",
     },
     {
-      url: "https://www.bbc.com/news/world/latin_america",
-      name: "BBC Latin America",
+      url: "https://www.cnbc.com/id/100003114/device/rss/rss.html",
+      name: "CNBC International",
       language: "en",
     },
     // Add Spanish-language sources
     {
-      url: "https://www.elpais.com.uy/internacional",
-      name: "El País Internacional",
+      url: "https://feeds.bbci.co.uk/mundo/rss.xml",
+      name: "BBC Mundo",
       language: "es",
     },
   ];
