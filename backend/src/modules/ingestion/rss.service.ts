@@ -4,7 +4,7 @@ import { Queue } from "bullmq";
 import { InjectQueue } from "@nestjs/bullmq";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { StgArticle } from "src/entities";
+import { StgArticle } from "../../entities";
 import * as https from "https";
 import * as http from "http";
 import * as xml2js from "xml2js";
@@ -129,6 +129,49 @@ export class RssService {
   }
 
   /**
+   * Sanitize XML content to fix common malformed entities
+   * Handles unescaped ampersands, nbsp entities, and other common issues
+   *
+   * @param xmlContent Raw XML string
+   * @returns Sanitized XML string
+   */
+  private sanitizeXml(xmlContent: string): string {
+    let sanitized = xmlContent;
+
+    // First, replace invalid HTML entities with their XML numeric equivalents
+    // This must happen BEFORE the unescaped ampersand check
+    sanitized = sanitized.replace(/&nbsp;/g, "&#160;");
+    sanitized = sanitized.replace(/&mdash;/g, "&#8212;");
+    sanitized = sanitized.replace(/&ndash;/g, "&#8211;");
+    sanitized = sanitized.replace(/&ldquo;/g, "&#8220;");
+    sanitized = sanitized.replace(/&rdquo;/g, "&#8221;");
+    sanitized = sanitized.replace(/&lsquo;/g, "&#8216;");
+    sanitized = sanitized.replace(/&rsquo;/g, "&#8217;");
+    sanitized = sanitized.replace(/&hellip;/g, "&#8230;");
+
+    // Then, replace unescaped ampersands that aren't part of valid entities
+    // This regex looks for & not followed by valid entity patterns
+    sanitized = sanitized.replace(
+      /&(?!(amp|lt|gt|quot|apos|#\d+|#x[0-9a-fA-F]+);)/g,
+      "&amp;",
+    );
+
+    return sanitized;
+  }
+
+  /**
+   * Check if content-type indicates HTML instead of XML/RSS
+   *
+   * @param contentType Content-Type header value
+   * @returns true if content appears to be HTML
+   */
+  private isHtmlContent(contentType: string | undefined): boolean {
+    if (!contentType) return false;
+    const lower = contentType.toLowerCase();
+    return lower.includes("text/html") || lower.includes("html");
+  }
+
+  /**
    * Fetch articles from a single RSS feed
    *
    * @param feed RSS feed configuration
@@ -146,6 +189,16 @@ export class RssService {
       const protocol = feed.url.startsWith("https") ? https : http;
 
       const req = protocol.get(feed.url, { timeout: 5000 }, async (res) => {
+        // Check content-type to avoid processing HTML pages
+        const contentType = res.headers["content-type"];
+        if (this.isHtmlContent(contentType)) {
+          this.logger.warn(
+            `[RSS] Feed "${feed.name}" returned HTML content-type, skipping`,
+          );
+          resolve([]);
+          return;
+        }
+
         let data = "";
 
         res.on("data", (chunk) => {
@@ -154,21 +207,58 @@ export class RssService {
 
         res.on("end", async () => {
           try {
-            const parsed = await this.xmlParser.parseStringPromise(data);
+            // Sanitize XML before parsing to handle malformed entities
+            const sanitizedData = this.sanitizeXml(data);
+            const parsed =
+              await this.xmlParser.parseStringPromise(sanitizedData);
+
+            let skippedItems = 0;
 
             // Handle RSS 2.0 format
             if (parsed.rss?.channel?.[0]?.item) {
               const items = parsed.rss.channel[0].item;
               const articles = items
                 .slice(0, 10) // Limit to last 10 items per feed
-                .map((item: any) => ({
-                  title: item.title?.[0] || "No title",
-                  source_url: item.link?.[0] || feed.url,
-                  content: item.description?.[0] || "",
-                  published_at: item.pubDate?.[0]
-                    ? new Date(item.pubDate[0])
-                    : new Date(),
-                }));
+                .map((item: any) => {
+                  try {
+                    return {
+                      title: item.title?.[0] || "No title",
+                      source_url: item.link?.[0] || feed.url,
+                      content: item.description?.[0] || "",
+                      published_at: item.pubDate?.[0]
+                        ? new Date(item.pubDate[0])
+                        : new Date(),
+                    };
+                  } catch (error) {
+                    skippedItems++;
+                    this.logger.warn(
+                      `[RSS] Skipped malformed item from "${feed.name}": ${error.message}`,
+                    );
+                    return null;
+                  }
+                })
+                .filter(
+                  (
+                    article: {
+                      title: string;
+                      source_url: string;
+                      content: string;
+                      published_at: Date;
+                    } | null,
+                  ): article is {
+                    title: string;
+                    source_url: string;
+                    content: string;
+                    published_at: Date;
+                  } => article !== null,
+                );
+
+              if (skippedItems > 0) {
+                this.logger.log(
+                  `[RSS] Skipped ${skippedItems} malformed items from "${feed.name}"`,
+                );
+              }
+
               resolve(articles);
               return;
             }
@@ -178,15 +268,49 @@ export class RssService {
               const entries = parsed.feed.entry;
               const articles = entries
                 .slice(0, 10) // Limit to last 10 items
-                .map((entry: any) => ({
-                  title: entry.title?.[0]?._ || entry.title?.[0] || "No title",
-                  source_url:
-                    entry.link?.[0]?.$.href || entry.link?.[0] || feed.url,
-                  content: entry.summary?.[0]?._ || entry.summary?.[0] || "",
-                  published_at: entry.published?.[0]
-                    ? new Date(entry.published[0])
-                    : new Date(),
-                }));
+                .map((entry: any) => {
+                  try {
+                    return {
+                      title:
+                        entry.title?.[0]?._ || entry.title?.[0] || "No title",
+                      source_url:
+                        entry.link?.[0]?.$.href || entry.link?.[0] || feed.url,
+                      content:
+                        entry.summary?.[0]?._ || entry.summary?.[0] || "",
+                      published_at: entry.published?.[0]
+                        ? new Date(entry.published[0])
+                        : new Date(),
+                    };
+                  } catch (error) {
+                    skippedItems++;
+                    this.logger.warn(
+                      `[RSS] Skipped malformed entry from "${feed.name}": ${error.message}`,
+                    );
+                    return null;
+                  }
+                })
+                .filter(
+                  (
+                    article: {
+                      title: string;
+                      source_url: string;
+                      content: string;
+                      published_at: Date;
+                    } | null,
+                  ): article is {
+                    title: string;
+                    source_url: string;
+                    content: string;
+                    published_at: Date;
+                  } => article !== null,
+                );
+
+              if (skippedItems > 0) {
+                this.logger.log(
+                  `[RSS] Skipped ${skippedItems} malformed entries from "${feed.name}"`,
+                );
+              }
+
               resolve(articles);
               return;
             }
