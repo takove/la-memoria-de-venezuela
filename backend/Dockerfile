@@ -18,6 +18,7 @@ RUN npm install -g pnpm@$PNPM_VERSION
 
 
 # Throw-away build stage to reduce size of final image
+# Multi-stage build for production deployment
 FROM base AS build
 
 # Install packages needed to build node modules
@@ -32,11 +33,15 @@ RUN pnpm install --frozen-lockfile --prod=false
 COPY . .
 
 # Build application
-RUN pnpm run build
+ARG CACHE_BUST
+RUN rm -rf dist && pnpm run build
 
 
 # Final stage for app image
-FROM base
+FROM base AS final
+
+# Force cache bust on COPY operation
+ARG CACHE_BUST2
 
 # Copy built application
 COPY --from=build /app /app
