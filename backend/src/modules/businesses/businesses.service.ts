@@ -6,6 +6,8 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, ILike } from "typeorm";
 import { Business, BusinessCategory, BusinessStatus } from "../../entities";
+import { CreateBusinessDto } from "./dto/create-business.dto";
+import { UpdateBusinessDto } from "./dto/update-business.dto";
 
 @Injectable()
 export class BusinessesService {
@@ -153,12 +155,16 @@ export class BusinessesService {
     };
   }
 
-  async create(data: Partial<Business>) {
-    const business = this.businessRepository.create(data);
+  async create(data: CreateBusinessDto) {
+    const business = this.businessRepository.create({
+      ...data,
+      confidenceLevel: data.confidenceLevel ?? 3,
+      sources: data.sources ?? [],
+    });
     return this.businessRepository.save(business);
   }
 
-  async update(id: string, data: Partial<Business>) {
+  async update(id: string, data: UpdateBusinessDto) {
     const business = await this.findOne(id);
     Object.assign(business, data);
     return this.businessRepository.save(business);

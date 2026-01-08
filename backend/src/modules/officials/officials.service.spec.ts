@@ -3,25 +3,34 @@ import { getRepositoryToken } from "@nestjs/typeorm";
 import { OfficialsService } from "./officials.service";
 import { Official, OfficialStatus } from "../../entities/official.entity";
 import { NotFoundException } from "@nestjs/common";
+import { SourceType } from "./dto/source.dto";
 
 describe("OfficialsService", () => {
   let service: OfficialsService;
 
   const mockOfficial: Official = {
     id: "uuid-123",
+    firstName: "Nicolás",
+    lastName: "Maduro",
     fullName: "Nicolás Maduro Moros",
-    fullNameEs: "Nicolás Maduro Moros",
+    aliases: [],
+    birthDate: undefined,
+    birthPlace: undefined,
+    nationality: "Venezuelan",
+    cedula: undefined,
+    passportNumber: undefined,
     biography: "Test biography",
     biographyEs: "Biografía de prueba",
     status: OfficialStatus.ACTIVE,
     confidenceLevel: 5,
+    sources: [],
     photoUrl: undefined,
     metadata: undefined,
     createdAt: new Date(),
     updatedAt: new Date(),
-    positions: [],
     sanctions: [],
     caseInvolvements: [],
+    testaferros: [],
   } as any;
 
   const mockQueryBuilder = {
@@ -150,6 +159,8 @@ describe("OfficialsService", () => {
       const expectedData = {
         ...createDto,
         fullName: "Test Official",
+        confidenceLevel: 3,
+        sources: [],
       };
 
       mockRepository.create.mockReturnValue(mockOfficial);
@@ -160,6 +171,52 @@ describe("OfficialsService", () => {
       expect(result).toEqual(mockOfficial);
       expect(mockRepository.create).toHaveBeenCalledWith(expectedData);
       expect(mockRepository.save).toHaveBeenCalledWith(mockOfficial);
+    });
+
+    it("should create official with default confidence level of 3", async () => {
+      const createDto = {
+        firstName: "Test",
+        lastName: "Official",
+      };
+
+      mockRepository.create.mockImplementation((data) => data);
+      mockRepository.save.mockResolvedValue(mockOfficial);
+
+      await service.create(createDto);
+
+      expect(mockRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          confidenceLevel: 3,
+          sources: [],
+        }),
+      );
+    });
+
+    it("should create official with sources", async () => {
+      const createDto = {
+        firstName: "Test",
+        lastName: "Official",
+        sources: [
+          {
+            url: "https://ofac.treasury.gov/test",
+            type: SourceType.OFFICIAL,
+            title: "OFAC Sanctions",
+          },
+        ],
+        confidenceLevel: 5,
+      };
+
+      mockRepository.create.mockImplementation((data) => data);
+      mockRepository.save.mockResolvedValue(mockOfficial);
+
+      await service.create(createDto);
+
+      expect(mockRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sources: createDto.sources,
+          confidenceLevel: 5,
+        }),
+      );
     });
   });
 

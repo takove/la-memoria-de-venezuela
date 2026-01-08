@@ -174,7 +174,6 @@ test.describe("Search Functionality", () => {
 
       // Wait for results to load
       await page.waitForLoadState("networkidle");
-
       // Results should load (or no results message should appear)
       expect(page.url()).toBeTruthy();
     }

@@ -2,6 +2,8 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, ILike } from "typeorm";
 import { Official, OfficialStatus } from "../../entities/official.entity";
+import { CreateOfficialDto } from "./dto/create-official.dto";
+import { UpdateOfficialDto } from "./dto/update-official.dto";
 
 export interface FindOfficialsOptions {
   page?: number;
@@ -79,15 +81,17 @@ export class OfficialsService {
     });
   }
 
-  async create(data: Partial<Official>) {
+  async create(data: CreateOfficialDto) {
     const official = this.officialsRepository.create({
       ...data,
       fullName: `${data.firstName} ${data.lastName}`,
+      confidenceLevel: data.confidenceLevel ?? 3,
+      sources: data.sources ?? [],
     });
     return this.officialsRepository.save(official);
   }
 
-  async update(id: string, data: Partial<Official>) {
+  async update(id: string, data: UpdateOfficialDto) {
     const official = await this.findOne(id);
     Object.assign(official, data);
     if (data.firstName || data.lastName) {
