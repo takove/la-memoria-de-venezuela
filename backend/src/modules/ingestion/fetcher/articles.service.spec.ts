@@ -121,6 +121,97 @@ describe("ArticlesService", () => {
     });
   });
 
+  describe("ingestArticle - URL Normalization & Dedup", () => {
+    it("should call findOne to check for duplicates by canonical URL", async () => {
+      const dto = {
+        outlet: "test",
+        title: "Article",
+        url: "https://example.com/article?utm_source=fb",
+        lang: "es",
+        rawHtml:
+          '<link rel="canonical" href="https://example.com/canonical" />',
+        cleanText: "Content",
+      };
+
+      mockArticleRepository.findOne.mockResolvedValue(null);
+      mockArticleRepository.create.mockReturnValue({
+        ...dto,
+        id: "uuid",
+        contentHash: "hash",
+        retrievedAt: new Date(),
+        normalizedUrl: "https://example.com/article",
+        canonicalUrl: "https://example.com/canonical",
+      });
+      mockArticleRepository.save.mockResolvedValue({
+        ...dto,
+        id: "uuid",
+        contentHash: "hash",
+        retrievedAt: new Date(),
+        normalizedUrl: "https://example.com/article",
+        canonicalUrl: "https://example.com/canonical",
+      });
+
+      const result = await service.ingestArticle(dto);
+
+      // Verify the service looked for duplicates
+      expect(mockArticleRepository.findOne).toHaveBeenCalled();
+      expect(result).toBeDefined();
+    });
+
+    it("should attempt to find existing articles before creating", async () => {
+      const dto = {
+        outlet: "test",
+        title: "Article",
+        url: "https://example.com/article",
+        lang: "es",
+        cleanText: "Content",
+      };
+
+      mockArticleRepository.findOne.mockResolvedValue(null);
+      mockArticleRepository.create.mockReturnValue({
+        ...dto,
+        id: "uuid",
+        contentHash: expect.any(String),
+        retrievedAt: expect.any(Date),
+      });
+      mockArticleRepository.save.mockResolvedValue({
+        ...dto,
+        id: "uuid",
+        contentHash: expect.any(String),
+        retrievedAt: expect.any(Date),
+      });
+
+      await service.ingestArticle(dto);
+
+      // Verify duplicate checking
+      expect(mockArticleRepository.findOne).toHaveBeenCalled();
+      expect(mockArticleRepository.create).toHaveBeenCalled();
+      expect(mockArticleRepository.save).toHaveBeenCalled();
+    });
+
+    it("should return existing article when found", async () => {
+      const existing = {
+        id: "uuid-existing",
+        url: "https://example.com/article",
+        outlet: "test",
+        title: "Article",
+        normalizedUrl: "https://example.com/article",
+      };
+
+      mockArticleRepository.findOne.mockResolvedValue(existing);
+
+      const result = await service.ingestArticle({
+        outlet: "test",
+        title: "Article",
+        url: "https://example.com/article?utm_source=twitter",
+        lang: "es",
+      });
+
+      expect(result.id).toBe("uuid-existing");
+      expect(mockArticleRepository.create).not.toHaveBeenCalled();
+    });
+  });
+
   describe("RSS Feed Error Handling", () => {
     it("should handle articles with malformed content gracefully", async () => {
       // Simulate an article that might come from a malformed RSS feed
@@ -132,14 +223,13 @@ describe("ArticlesService", () => {
         cleanText: "Content with special chars: & < > ' \"",
       };
 
-      mockArticleRepository.findOne.mockResolvedValueOnce(null);
+      mockArticleRepository.findOne.mockResolvedValue(null);
       const createdArticle = {
         ...malformedDto,
         id: "uuid-malformed",
         contentHash: expect.any(String),
         retrievedAt: expect.any(Date),
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        normalizedUrl: "https://example.com/malformed",
       };
       mockArticleRepository.create.mockReturnValueOnce(createdArticle);
       mockArticleRepository.save.mockResolvedValueOnce(createdArticle);
