@@ -22,6 +22,7 @@ export enum OfficialStatus {
 @Entity("officials")
 @Index(["lastName", "firstName"])
 @Index(["status"])
+@Index(["confidenceLevel"])
 export class Official {
   @PrimaryGeneratedColumn("uuid")
   id: string;
@@ -71,6 +72,23 @@ export class Official {
 
   @Column("jsonb", { nullable: true })
   metadata: Record<string, any>;
+
+  @Column({ type: "jsonb", nullable: true, name: "sources" })
+  sources?: Array<{
+    url: string;
+    archiveUrl?: string;
+    type: "media" | "official" | "court" | "academic";
+    publicationDate?: Date;
+    title?: string;
+    accessedDate?: Date;
+  }>;
+
+  @Column({
+    type: "int",
+    default: 3,
+    name: "confidence_level",
+  })
+  confidenceLevel: number;
 
   @CreateDateColumn({ name: "created_at" })
   createdAt: Date;

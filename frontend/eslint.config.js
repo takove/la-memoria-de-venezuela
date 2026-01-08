@@ -6,7 +6,7 @@ import svelteParser from "svelte-eslint-parser";
 
 export default ts.config(
   {
-    ignores: [".svelte-kit", "build", "dist", "node_modules"],
+    ignores: [".svelte-kit", "build", "dist", "node_modules", "coverage"],
   },
   js.configs.recommended,
   ...ts.configs.recommended,
