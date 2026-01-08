@@ -33,6 +33,7 @@ RUN pnpm install --frozen-lockfile --prod=false
 COPY . .
 
 # Build application
+ARG CACHE_BUST
 RUN pnpm run build
 
 
