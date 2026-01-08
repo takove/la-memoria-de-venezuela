@@ -123,6 +123,104 @@ This document catalogs all data sources used in La Memoria de Venezuela, includi
 
 ---
 
+## RSS/Atom Feed Sources
+
+### Automated News Ingestion
+
+The platform monitors RSS and Atom feeds from reputable news sources and government agencies for Venezuela-related content. Articles are automatically queued for processing through the NER (Named Entity Recognition) pipeline.
+
+#### Spanish-Language News Sources
+
+1. **CNN Español**
+   - **URL**: https://cnnespanol.cnn.com/feed/
+   - **Format**: RSS 2.0
+   - **Language**: Spanish
+   - **Coverage**: International news, Latin America, Venezuela
+   - **Last Verified**: 2026-01-08
+
+2. **DW Español Internacional**
+   - **URL**: http://rss.dw.com/rdf/rss-sp-inter
+   - **Format**: RSS 2.0
+   - **Language**: Spanish
+   - **Coverage**: International news including Venezuela
+   - **Last Verified**: 2026-01-08
+
+3. **VOA Español (Voice of America)**
+   - **URL**: https://www.vozdeamerica.com/api/zgjqoepvqo
+   - **Format**: RSS 2.0
+   - **Language**: Spanish
+   - **Coverage**: US news, Latin America, Venezuela
+   - **Last Verified**: 2026-01-08
+
+4. **El Nacional Venezuela**
+   - **URL**: http://www.el-nacional.com/feed/
+   - **Format**: RSS 2.0
+   - **Language**: Spanish
+   - **Coverage**: Venezuelan domestic news
+   - **Last Verified**: 2026-01-08
+
+5. **BBC Mundo**
+   - **URL**: https://feeds.bbci.co.uk/mundo/rss.xml
+   - **Format**: RSS 2.0
+   - **Language**: Spanish
+   - **Coverage**: International news, Latin America
+   - **Last Verified**: 2026-01-08
+
+#### English-Language News Sources
+
+6. **Caracas Chronicles**
+   - **URL**: https://www.caracaschronicles.com/feed/
+   - **Format**: RSS 2.0
+   - **Language**: English
+   - **Coverage**: Venezuelan politics, analysis, human rights
+   - **Last Verified**: 2026-01-08
+
+7. **Bloomberg Markets**
+   - **URL**: http://feeds.bloomberg.com/markets/news.rss
+   - **Format**: RSS 2.0
+   - **Language**: English
+   - **Coverage**: Financial news, sanctions impact
+   - **Last Verified**: 2026-01-08
+
+8. **CNBC International**
+   - **URL**: https://www.cnbc.com/id/100003114/device/rss/rss.html
+   - **Format**: RSS 2.0
+   - **Language**: English
+   - **Coverage**: Business, economics, international trade
+   - **Last Verified**: 2026-01-08
+
+#### Official Government Sources
+
+9. **US State Department - Venezuela**
+   - **URL**: https://www.state.gov/rss-feed/venezuela/feed/
+   - **Format**: RSS 2.0
+   - **Language**: English
+   - **Coverage**: US diplomatic statements, sanctions announcements
+   - **Last Verified**: 2026-01-08
+
+10. **UK Foreign, Commonwealth & Development Office**
+    - **URL**: https://www.gov.uk/government/organisations/foreign-commonwealth-development-office.atom
+    - **Format**: Atom 1.0
+    - **Language**: English
+    - **Coverage**: UK foreign policy, sanctions, diplomatic updates
+    - **Last Verified**: 2026-01-08
+
+#### Feed Monitoring Process
+
+1. **Polling Frequency**: Every 10 minutes (via automated cron job)
+2. **Manual Trigger**: Available via `POST /api/v1/ingestion/webhook/poll`
+3. **Article Limit**: Last 10 items per feed per poll cycle
+4. **Deduplication**: Articles are checked against existing URLs before ingestion
+5. **Error Handling**: Malformed XML feeds are logged and skipped; service continues with remaining feeds
+6. **Queue System**: New articles are queued via BullMQ for asynchronous processing
+
+#### Notes on Official Sources
+
+- **OFAC RSS Feed**: As of January 31, 2025, the US Treasury retired the official OFAC RSS feed. Sanctions updates are now available via email subscription at [GovDelivery](https://service.govdelivery.com/service/subscribe.html?code=USTREAS_61) or through the [OFAC Recent Actions](https://ofac.treasury.gov/recent-actions) page.
+- **EU Council Sanctions**: The EU Sanctions Map (https://www.sanctionsmap.eu/) provides structured data but does not offer an official RSS feed. Updates are monitored manually or via third-party aggregators.
+
+---
+
 ## Data Update Procedures
 
 ### OFAC SDN List

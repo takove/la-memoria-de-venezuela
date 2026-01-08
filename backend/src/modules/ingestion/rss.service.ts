@@ -4,7 +4,7 @@ import { Queue } from "bullmq";
 import { InjectQueue } from "@nestjs/bullmq";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { StgArticle } from "src/entities";
+import { StgArticle } from "../../entities";
 import * as https from "https";
 import * as http from "http";
 import * as xml2js from "xml2js";
@@ -44,11 +44,47 @@ export class RssService {
       name: "CNBC International",
       language: "en",
     },
-    // Add Spanish-language sources
+    // Spanish-language sources
     {
       url: "https://feeds.bbci.co.uk/mundo/rss.xml",
       name: "BBC Mundo",
       language: "es",
+    },
+    {
+      url: "https://cnnespanol.cnn.com/feed/",
+      name: "CNN Español",
+      language: "es",
+    },
+    {
+      url: "http://rss.dw.com/rdf/rss-sp-inter",
+      name: "DW Español Internacional",
+      language: "es",
+    },
+    {
+      url: "https://www.vozdeamerica.com/api/zgjqoepvqo",
+      name: "VOA Español",
+      language: "es",
+    },
+    {
+      url: "http://www.el-nacional.com/feed/",
+      name: "El Nacional Venezuela",
+      language: "es",
+    },
+    {
+      url: "https://www.caracaschronicles.com/feed/",
+      name: "Caracas Chronicles",
+      language: "en",
+    },
+    // Official government sources
+    {
+      url: "https://www.state.gov/rss-feed/venezuela/feed/",
+      name: "US State Department - Venezuela",
+      language: "en",
+    },
+    {
+      url: "https://www.gov.uk/government/organisations/foreign-commonwealth-development-office.atom",
+      name: "UK FCDO",
+      language: "en",
     },
   ];
 
