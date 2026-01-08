@@ -120,4 +120,68 @@ describe("ArticlesService", () => {
       );
     });
   });
+
+  describe("RSS Feed Error Handling", () => {
+    it("should handle articles with malformed content gracefully", async () => {
+      // Simulate an article that might come from a malformed RSS feed
+      const malformedDto = {
+        outlet: "test-outlet",
+        title: "Article & Title with &nbsp; entities",
+        url: "https://example.com/malformed",
+        lang: "es",
+        cleanText: "Content with special chars: & < > ' \"",
+      };
+
+      mockArticleRepository.findOne.mockResolvedValueOnce(null);
+      const createdArticle = {
+        ...malformedDto,
+        id: "uuid-malformed",
+        contentHash: expect.any(String),
+        retrievedAt: expect.any(Date),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      mockArticleRepository.create.mockReturnValueOnce(createdArticle);
+      mockArticleRepository.save.mockResolvedValueOnce(createdArticle);
+
+      const result = await service.ingestArticle(malformedDto);
+
+      // Should successfully ingest even with special characters
+      expect(result?.id).toBe("uuid-malformed");
+      expect(mockArticleRepository.save).toHaveBeenCalled();
+    });
+
+    it("should compute different hashes for different content", async () => {
+      const article1 = {
+        outlet: "test",
+        title: "Article 1",
+        url: "https://test.com/1",
+        lang: "es",
+        cleanText: "Content 1",
+      };
+
+      const article2 = {
+        outlet: "test",
+        title: "Article 2",
+        url: "https://test.com/2",
+        lang: "es",
+        cleanText: "Content 2",
+      };
+
+      mockArticleRepository.findOne.mockResolvedValue(null);
+      mockArticleRepository.create.mockImplementation((dto) => ({
+        ...dto,
+        id: `uuid-${dto.url}`,
+      }));
+      mockArticleRepository.save.mockImplementation((article) =>
+        Promise.resolve(article),
+      );
+
+      const result1 = await service.ingestArticle(article1);
+      const result2 = await service.ingestArticle(article2);
+
+      // Different content should produce different hashes
+      expect(result1.contentHash).not.toBe(result2.contentHash);
+    });
+  });
 });

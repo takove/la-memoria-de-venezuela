@@ -280,6 +280,80 @@ describe("RssService", () => {
     });
   });
 
+  describe("XML Sanitization", () => {
+    it("should sanitize unescaped ampersands", () => {
+      const malformedXml = `<?xml version="1.0"?>
+        <rss version="2.0">
+          <channel>
+            <item>
+              <title>Maduro &amp; Corruption</title>
+              <description>Test & Example</description>
+            </item>
+          </channel>
+        </rss>`;
+
+      // Access private method via type assertion for testing
+      const sanitized = (service as any).sanitizeXml(malformedXml);
+
+      // Should convert unescaped & to &amp; but leave already-escaped ones
+      expect(sanitized).toContain("Test &amp; Example");
+      expect(sanitized).toContain("Maduro &amp; Corruption");
+    });
+
+    it("should convert HTML entities to XML numeric entities", () => {
+      const htmlEntities = `<?xml version="1.0"?>
+        <rss>
+          <channel>
+            <item>
+              <title>Test&nbsp;Article</title>
+              <description>Quote: &ldquo;example&rdquo; &mdash; dash &hellip;</description>
+            </item>
+          </channel>
+        </rss>`;
+
+      const sanitized = (service as any).sanitizeXml(htmlEntities);
+
+      // Common HTML entities should be converted to numeric/standard XML
+      expect(sanitized).toContain("&#160;"); // &nbsp;
+      expect(sanitized).toContain("&#8220;"); // &ldquo;
+      expect(sanitized).toContain("&#8221;"); // &rdquo;
+      expect(sanitized).toContain("&#8212;"); // &mdash;
+      expect(sanitized).toContain("&#8230;"); // &hellip;
+    });
+
+    it("should handle mixed malformed and valid entities", () => {
+      const mixedXml = `<?xml version="1.0"?>
+        <rss>
+          <item>
+            <title>Test &amp; &lt; &gt; Example</title>
+            <description>Unescaped & ampersand &nbsp; HTML entity</description>
+          </item>
+        </rss>`;
+
+      const sanitized = (service as any).sanitizeXml(mixedXml);
+
+      // Should preserve valid XML entities
+      expect(sanitized).toContain("&amp;");
+      expect(sanitized).toContain("&lt;");
+      expect(sanitized).toContain("&gt;");
+      // Should convert HTML entities
+      expect(sanitized).toContain("&#160;");
+    });
+  });
+
+  describe("Content-Type Detection", () => {
+    it("should detect HTML content-type", () => {
+      expect((service as any).isHtmlResponse("text/html")).toBe(true);
+      expect((service as any).isHtmlResponse("text/html; charset=utf-8")).toBe(true);
+    });
+
+    it("should not flag XML/RSS content-types as HTML", () => {
+      expect((service as any).isHtmlResponse("application/rss+xml")).toBe(false);
+      expect((service as any).isHtmlResponse("application/xml")).toBe(false);
+      expect((service as any).isHtmlResponse("text/xml")).toBe(false);
+    });
+  });
+
   describe("enqueueArticle", () => {
     it("should enqueue article with provided data", async () => {
       mockQueue.add.mockResolvedValueOnce({ id: "job-123" });
