@@ -7,6 +7,9 @@ import { AppModule } from "./app.module";
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Enable graceful shutdown
+  app.enableShutdownHooks();
+
   // Security
   app.use(helmet());
 
@@ -51,5 +54,16 @@ async function bootstrap() {
   console.log(`🚀 Application running on: http://localhost:${port}`);
   console.log(`📚 API Documentation: http://localhost:${port}/api/docs`);
 }
+
+// Graceful shutdown on signals
+process.on("SIGTERM", async () => {
+  console.log("SIGTERM received, shutting down gracefully...");
+  process.exit(0);
+});
+
+process.on("SIGINT", async () => {
+  console.log("SIGINT received, shutting down gracefully...");
+  process.exit(0);
+});
 
 bootstrap();
