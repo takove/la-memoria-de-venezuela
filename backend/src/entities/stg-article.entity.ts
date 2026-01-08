@@ -13,6 +13,8 @@ import { StgRelation } from "./stg-relation.entity";
 @Entity("stg_articles")
 @Index(["url"], { unique: true })
 @Index(["contentHash"], { unique: true })
+@Index(["normalizedUrl"])
+@Index(["canonicalUrl"])
 @Index(["publishedAt"])
 export class StgArticle {
   @PrimaryGeneratedColumn("uuid")
@@ -26,6 +28,12 @@ export class StgArticle {
 
   @Column({ length: 512 })
   url: string;
+
+  @Column({ name: "normalized_url", length: 512, nullable: true })
+  normalizedUrl?: string;
+
+  @Column({ name: "canonical_url", length: 512, nullable: true })
+  canonicalUrl?: string;
 
   @Column({ length: 2 })
   lang: string;
