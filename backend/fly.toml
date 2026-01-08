@@ -10,6 +10,7 @@ primary_region = 'iad'
   NODE_OPTIONS = "--max-old-space-size=512"
 
 [build]
+  dockerfile = "Dockerfile"
 
 [http_service]
   internal_port = 3000
