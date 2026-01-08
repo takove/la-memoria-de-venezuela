@@ -1,6 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
 import { TestaferroIngestionService } from "./testaferro-ingestion.service";
 import { Testaferro } from "../../entities/testaferro.entity";
 import { Official } from "../../entities/official.entity";
