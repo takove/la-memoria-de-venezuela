@@ -34,7 +34,7 @@ COPY . .
 
 # Build application
 ARG CACHE_BUST
-RUN pnpm run build
+RUN rm -rf dist && pnpm run build
 
 
 # Final stage for app image
