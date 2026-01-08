@@ -3,12 +3,19 @@
   import { page } from '$app/stores';
   import { api } from '$lib/api';
   import type { Official } from '$lib/types';
+  import ShareButtons from '$lib/components/ShareButtons.svelte';
 
   let official: Official | null = null;
   let loading = true;
   let error = '';
 
   $: officialId = $page.params.id;
+  $: currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+  $: ogImage = official ? `/api/og/${official.id}` : `/api/og/default`;
+  $: metaTitle = official ? `${official.fullName} | La Memoria de Venezuela` : 'Funcionario | La Memoria de Venezuela';
+  $: metaDescription = official 
+    ? `Información sobre ${official.fullName}${official.positions?.[0] ? ` - ${official.positions[0].titleEs || official.positions[0].title}` : ''}. Sanciones, cargos y casos legales documentados.`
+    : 'Perfil de funcionario del régimen venezolano';
 
   async function loadOfficial() {
     if (!officialId) return;
@@ -74,7 +81,24 @@
 </script>
 
 <svelte:head>
-  <title>{official?.fullName || 'Funcionario'} | La Memoria de Venezuela</title>
+  <title>{metaTitle}</title>
+  <meta name="description" content={metaDescription} />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="profile" />
+  <meta property="og:url" content={currentUrl} />
+  <meta property="og:title" content={metaTitle} />
+  <meta property="og:description" content={metaDescription} />
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content={currentUrl} />
+  <meta name="twitter:title" content={metaTitle} />
+  <meta name="twitter:description" content={metaDescription} />
+  <meta name="twitter:image" content={ogImage} />
 </svelte:head>
 
 <div class="min-h-screen bg-gray-50 py-8">
@@ -160,6 +184,15 @@
             <p class="text-gray-600">{official.biographyEs || official.biography}</p>
           </div>
         {/if}
+
+        <!-- Share Buttons -->
+        <div class="mt-6 pt-6 border-t border-gray-100">
+          <ShareButtons 
+            url={currentUrl}
+            title={official.fullName}
+            description={metaDescription}
+          />
+        </div>
       </div>
 
       <!-- Positions -->

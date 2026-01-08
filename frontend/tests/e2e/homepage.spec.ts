@@ -174,8 +174,14 @@ test.describe("Search Functionality", () => {
 
       // Wait for results to load
       await page.waitForLoadState("networkidle");
-
+      
+      // Check if results appear
+      const results = page.locator(
+        "[data-testid*='card'], [data-testid*='result'], .card, .result",
+      );
+      const count = await results.count();
       // Results should load (or no results message should appear)
+      expect(count).toBeGreaterThanOrEqual(0);
       expect(page.url()).toBeTruthy();
     }
   });

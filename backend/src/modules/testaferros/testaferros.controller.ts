@@ -10,11 +10,9 @@ import {
   ParseIntPipe,
 } from "@nestjs/common";
 import { TestaferrosService } from "./testaferros.service";
-import {
-  Testaferro,
-  TestaferroCategory,
-  TestaferroStatus,
-} from "../../entities";
+import { TestaferroCategory, TestaferroStatus } from "../../entities";
+import { CreateTestaferroDto } from "./dto/create-testaferro.dto";
+import { UpdateTestaferroDto } from "./dto/update-testaferro.dto";
 
 @Controller("api/v1/testaferros")
 export class TestaferrosController {
@@ -95,7 +93,7 @@ export class TestaferrosController {
    * Create a new testaferro
    */
   @Post()
-  async create(@Body() data: Partial<Testaferro>) {
+  async create(@Body() data: CreateTestaferroDto) {
     return this.testaferrosService.create(data);
   }
 
@@ -104,7 +102,7 @@ export class TestaferrosController {
    * Update a testaferro
    */
   @Patch(":id")
-  async update(@Param("id") id: string, @Body() data: Partial<Testaferro>) {
+  async update(@Param("id") id: string, @Body() data: UpdateTestaferroDto) {
     return this.testaferrosService.update(id, data);
   }
 

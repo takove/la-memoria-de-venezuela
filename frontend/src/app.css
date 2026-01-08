@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Design System CSS Custom Properties */
+:root {
+  /* Color Psychology - La Memoria de Venezuela */
+  --color-danger: #c41f2f;
+  --color-danger-text: #ffffff;
+  --color-institutional: #2d5f7f;
+  --color-institutional-text: #ffffff;
+  --color-justice: #2d7f3f;
+  --color-justice-text: #ffffff;
+  --color-warning: #e8a008;
+  --color-warning-text: #000000;
+  --color-neutral: #999999;
+  --color-neutral-text: #000000;
+}
+
 /* Custom base styles */
 @layer base {
   html {
