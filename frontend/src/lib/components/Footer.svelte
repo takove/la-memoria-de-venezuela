@@ -14,10 +14,34 @@
       <div>
         <h4 class="text-white font-semibold mb-4">Navegación</h4>
         <ul class="space-y-2 text-sm">
-          <li><a href="/officials" class="hover:text-white transition-colors">Funcionarios</a></li>
-          <li><a href="/sanctions" class="hover:text-white transition-colors">Sanciones</a></li>
-          <li><a href="/cases" class="hover:text-white transition-colors">Casos Legales</a></li>
-          <li><a href="/about" class="hover:text-white transition-colors">Acerca de</a></li>
+          <li>
+            <a
+              href="/officials"
+              class="hover:text-white transition-colors focus:outline-none focus:text-white focus:underline"
+              >Funcionarios</a
+            >
+          </li>
+          <li>
+            <a
+              href="/sanctions"
+              class="hover:text-white transition-colors focus:outline-none focus:text-white focus:underline"
+              >Sanciones</a
+            >
+          </li>
+          <li>
+            <a
+              href="/cases"
+              class="hover:text-white transition-colors focus:outline-none focus:text-white focus:underline"
+              >Casos Legales</a
+            >
+          </li>
+          <li>
+            <a
+              href="/about"
+              class="hover:text-white transition-colors focus:outline-none focus:text-white focus:underline"
+              >Acerca de</a
+            >
+          </li>
         </ul>
       </div>
 
@@ -25,9 +49,33 @@
       <div>
         <h4 class="text-white font-semibold mb-4">Fuentes</h4>
         <ul class="space-y-2 text-sm">
-          <li><a href="https://ofac.treasury.gov" target="_blank" rel="noopener" class="hover:text-white transition-colors">OFAC Treasury</a></li>
-          <li><a href="https://www.justice.gov" target="_blank" rel="noopener" class="hover:text-white transition-colors">DOJ</a></li>
-          <li><a href="https://www.oas.org/en/iachr/" target="_blank" rel="noopener" class="hover:text-white transition-colors">IACHR</a></li>
+          <li>
+            <a
+              href="https://ofac.treasury.gov"
+              target="_blank"
+              rel="noopener"
+              class="hover:text-white transition-colors focus:outline-none focus:text-white focus:underline"
+              >OFAC Treasury</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://www.justice.gov"
+              target="_blank"
+              rel="noopener"
+              class="hover:text-white transition-colors focus:outline-none focus:text-white focus:underline"
+              >DOJ</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://www.oas.org/en/iachr/"
+              target="_blank"
+              rel="noopener"
+              class="hover:text-white transition-colors focus:outline-none focus:text-white focus:underline"
+              >IACHR</a
+            >
+          </li>
         </ul>
       </div>
     </div>

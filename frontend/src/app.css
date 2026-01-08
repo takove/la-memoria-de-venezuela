@@ -30,6 +30,19 @@
     line-height: 1.5; /* Required line-height */
   }
 
+  /* Global focus styles for accessibility */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+  }
+
+  a:focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2 rounded-sm;
+  }
+
+  button:focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+  }
+
   h1 {
     @apply font-display font-semibold;
     font-size: 1.5rem; /* 24px on mobile */

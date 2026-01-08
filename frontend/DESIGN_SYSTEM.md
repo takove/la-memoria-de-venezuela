@@ -120,6 +120,124 @@ All color combinations are WCAG AA compliant:
 3. **Test with screen readers** - Ensure badge content is accessible
 4. **Maintain contrast** - Use provided color combinations to ensure readability
 
+### Accessibility Guidelines
+
+La Memoria de Venezuela follows WCAG 2.1 Level AA standards for accessibility.
+
+#### Keyboard Navigation
+
+All interactive elements must be keyboard accessible:
+
+- **Tab**: Navigate forward through interactive elements
+- **Shift+Tab**: Navigate backward through interactive elements
+- **Enter/Space**: Activate buttons and links
+- **Escape**: Close modals, dialogs, and menus
+
+**Mobile Menu Keyboard Support:**
+
+- Press **Enter** or **Space** on hamburger button to open menu
+- Press **Escape** to close menu (focus returns to trigger button)
+- **Tab** and **Shift+Tab** trap focus within open menu
+- Focus automatically moves to first menu item when opened
+
+#### Focus Management
+
+**Visible Focus Indicators:**
+
+- All interactive elements have visible focus states using `focus-visible` pseudo-class
+- Focus ring: 2px primary-500 color with 2px offset
+- Focus styles defined globally in `app.css` and component-specific overrides where needed
+
+**Focus Trapping:**
+
+- Modal dialogs and mobile navigation drawer trap focus
+- Focus returns to trigger element when closed
+- First focusable element receives focus when opened
+
+#### ARIA Labels and Roles
+
+**Navigation Components:**
+
+- Use `role="navigation"` with `aria-label` for main navigation
+- Mobile menu button has `aria-expanded`, `aria-controls`, `aria-haspopup`
+- Mobile drawer uses `role="dialog"` with `aria-modal="true"`
+- Active page links use `aria-current="page"`
+
+**Interactive Elements:**
+
+- All buttons have `type="button"` attribute
+- Icon-only buttons and links have descriptive `aria-label`
+- Decorative icons use `aria-hidden="true"`
+
+**Example:**
+
+```html
+<button
+  type="button"
+  aria-label="Abrir menú de navegación"
+  aria-expanded="false"
+  aria-controls="mobile-menu"
+  aria-haspopup="true"
+>
+  <!-- Icon -->
+</button>
+```
+
+#### Color Contrast
+
+All text and interactive elements meet WCAG AA contrast requirements (4.5:1 minimum):
+
+- **Primary text on white**: 7:1+ contrast ratio
+- **Interactive elements**: Minimum 3:1 against background
+- **Focus indicators**: Minimum 3:1 contrast with adjacent colors
+
+Use the color palette defined in this design system to ensure compliance.
+
+#### Touch Targets
+
+All interactive elements meet minimum touch target sizes:
+
+- **Minimum size**: 44x44 pixels (iOS/Android guidelines)
+- **Input fields**: Minimum 48px height (prevents zoom on mobile)
+- **Adequate spacing**: 8px minimum between interactive elements
+
+Use utility classes:
+
+```html
+<button class="min-h-[44px] min-w-[44px]">...</button>
+<input class="min-h-[48px]" />
+```
+
+#### Screen Reader Support
+
+- Semantic HTML elements (`<nav>`, `<main>`, `<button>`, etc.)
+- Proper heading hierarchy (h1 → h2 → h3)
+- Descriptive link text (avoid "click here")
+- Form labels associated with inputs
+- Skip navigation links for keyboard users
+
+#### Testing Accessibility
+
+**Manual Testing:**
+
+1. Test keyboard navigation through all interactive elements
+2. Verify focus indicators are visible
+3. Test with screen reader (NVDA, JAWS, VoiceOver)
+4. Verify color contrast with browser DevTools
+
+**Automated Testing:**
+
+- Run Lighthouse accessibility audit (target: 100/100)
+- Use axe DevTools browser extension
+- Unit tests verify ARIA attributes presence
+
+**Tools:**
+
+- Chrome DevTools Lighthouse
+- axe DevTools browser extension
+- WAVE browser extension
+- Color contrast analyzers
+
 ## Demo
 
 Visit `/design-system` in the app to see an interactive demo with:
