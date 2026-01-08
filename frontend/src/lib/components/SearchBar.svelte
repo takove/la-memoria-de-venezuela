@@ -26,14 +26,14 @@
       bind:value={searchQuery}
       on:keydown={handleKeydown}
       placeholder="Buscar funcionarios, sanciones, casos..."
-      class="w-full px-6 py-4 pr-14 text-lg rounded-xl border-0 shadow-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-primary-500"
+      class="w-full px-4 sm:px-6 py-3 sm:py-4 pr-14 text-base sm:text-lg rounded-xl border-0 shadow-lg text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-primary-500 min-h-[48px]"
     />
     <button
       on:click={handleSearch}
-      class="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+      class="absolute right-2 top-1/2 -translate-y-1/2 p-2 sm:p-2.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
       aria-label="Buscar"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
       </svg>
     </button>
@@ -46,16 +46,16 @@
         <li>
           <a
             href="/officials/{suggestion.id}"
-            class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+            class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors min-h-[48px]"
           >
-            <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+            <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
               {#if suggestion.photoUrl}
                 <img src={suggestion.photoUrl} alt="" class="w-10 h-10 rounded-full object-cover" />
               {:else}
                 <span class="text-gray-500">👤</span>
               {/if}
             </div>
-            <span class="text-gray-900">{suggestion.name}</span>
+            <span class="text-gray-900 text-base">{suggestion.name}</span>
           </a>
         </li>
       {/each}

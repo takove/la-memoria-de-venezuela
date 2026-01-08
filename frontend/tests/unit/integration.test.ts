@@ -325,10 +325,7 @@ describe("Performance", () => {
   });
 
   it("should debounce search input", () => {
-    let searchCount = 0;
-    const mockSearch = vi.fn(() => {
-      searchCount++;
-    });
+    const mockSearch = vi.fn();
 
     // Simulate rapid search inputs
     for (let i = 0; i < 10; i++) {

@@ -37,7 +37,7 @@
         © {new Date().getFullYear()} La Memoria de Venezuela. 
         Información de dominio público.
       </p>
-      <p class="mt-2 text-xs text-gray-500">
+      <p class="mt-2 text-xs text-gray-400">
         Este sitio documenta información pública de fuentes oficiales gubernamentales.
       </p>
     </div>
