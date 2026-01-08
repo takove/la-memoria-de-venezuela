@@ -38,7 +38,7 @@ RUN pnpm run build
 
 
 # Final stage for app image
-FROM base
+FROM base AS final
 
 # Copy built application
 COPY --from=build /app /app
