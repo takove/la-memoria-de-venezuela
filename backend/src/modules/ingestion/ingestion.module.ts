@@ -13,12 +13,14 @@ import { ReviewQueueService } from "./dedup/review-queue.service";
 import { LlmCuratorService } from "./dedup/llm-curator.service";
 import { RssService } from "./rss.service";
 import { IngestionProcessor } from "./ingestion.processor";
-import { StgNode, StgEdge, StgEntity, StgArticle } from "../../entities";
+import { TestaferroIngestionService } from "./testaferro-ingestion.service";
+import { TestaferroIngestionController } from "./testaferro-ingestion.controller";
+import { StgNode, StgEdge, StgEntity, StgArticle, Testaferro, Official } from "../../entities";
 import { Tier1Module } from "./tier1/tier1.module";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([StgNode, StgEdge, StgEntity, StgArticle]),
+    TypeOrmModule.forFeature([StgNode, StgEdge, StgEntity, StgArticle, Testaferro, Official]),
     BullModule.registerQueue({
       name: "ingestion",
     }),
@@ -28,7 +30,7 @@ import { Tier1Module } from "./tier1/tier1.module";
     MatchModule,
     Tier1Module, // Import for service injection
   ],
-  controllers: [IngestionController],
+  controllers: [IngestionController, TestaferroIngestionController],
   providers: [
     IngestionOrchestrator,
     ConfidenceService,
@@ -37,6 +39,7 @@ import { Tier1Module } from "./tier1/tier1.module";
     LlmCuratorService,
     RssService,
     IngestionProcessor,
+    TestaferroIngestionService,
   ],
   exports: [
     IngestionOrchestrator,
@@ -45,6 +48,7 @@ import { Tier1Module } from "./tier1/tier1.module";
     ReviewQueueService,
     LlmCuratorService,
     RssService,
+    TestaferroIngestionService,
   ],
 })
 export class IngestionModule {}
