@@ -40,6 +40,9 @@ RUN rm -rf dist && pnpm run build
 # Final stage for app image
 FROM base AS final
 
+# Force cache bust on COPY operation
+ARG CACHE_BUST2
+
 # Copy built application
 COPY --from=build /app /app
 
