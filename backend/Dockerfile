@@ -18,6 +18,7 @@ RUN npm install -g pnpm@$PNPM_VERSION
 
 
 # Throw-away build stage to reduce size of final image
+# Multi-stage build for production deployment
 FROM base AS build
 
 # Install packages needed to build node modules
