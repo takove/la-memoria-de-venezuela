@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
   Param,
   Body,
   Query,
@@ -10,6 +11,8 @@ import {
 import { ApiTags, ApiOperation, ApiQuery, ApiResponse } from "@nestjs/swagger";
 import { SanctionsService, FindSanctionsOptions } from "./sanctions.service";
 import { SanctionType, SanctionStatus } from "../../entities/sanction.entity";
+import { CreateSanctionDto } from "./dto/create-sanction.dto";
+import { UpdateSanctionDto } from "./dto/update-sanction.dto";
 
 @ApiTags("sanctions")
 @Controller("sanctions")
@@ -70,7 +73,18 @@ export class SanctionsController {
   @Post()
   @ApiOperation({ summary: "Create a new sanction record" })
   @ApiResponse({ status: 201, description: "Sanction created successfully" })
-  create(@Body() data: any) {
+  create(@Body() data: CreateSanctionDto) {
     return this.sanctionsService.create(data);
+  }
+
+  @Patch(":id")
+  @ApiOperation({ summary: "Update a sanction record" })
+  @ApiResponse({ status: 200, description: "Sanction updated successfully" })
+  @ApiResponse({ status: 404, description: "Sanction not found" })
+  update(
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() data: UpdateSanctionDto,
+  ) {
+    return this.sanctionsService.update(id, data);
   }
 }

@@ -113,18 +113,17 @@ export class Business {
   }>;
 
   // Evidence and sources
-  @Column({ type: "jsonb", nullable: true })
-  evidenceSources: Array<{
-    type: string;
-    title: string;
+  @Column({ type: "jsonb", nullable: true, name: "sources" })
+  sources?: Array<{
     url: string;
     archiveUrl?: string;
-    publisher?: string;
-    publicationDate?: string;
-    description?: string;
+    type: "media" | "official" | "court" | "academic";
+    publicationDate?: Date;
+    title?: string;
+    accessedDate?: Date;
   }>;
 
-  @Column({ default: 1 })
+  @Column({ default: 3, name: "confidence_level" })
   confidenceLevel: number; // 1-5, where 5 is highest confidence
 
   @Column({ default: false })

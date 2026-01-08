@@ -10,6 +10,8 @@ import {
   TestaferroCategory,
   TestaferroStatus,
 } from "../../entities";
+import { CreateTestaferroDto } from "./dto/create-testaferro.dto";
+import { UpdateTestaferroDto } from "./dto/update-testaferro.dto";
 
 @Injectable()
 export class TestaferrosService {
@@ -173,7 +175,7 @@ export class TestaferrosService {
   /**
    * Create a new testaferro
    */
-  async create(data: Partial<Testaferro>): Promise<Testaferro> {
+  async create(data: CreateTestaferroDto): Promise<Testaferro> {
     if (!data.fullName) {
       throw new BadRequestException("Full name is required");
     }
@@ -182,14 +184,18 @@ export class TestaferrosService {
       throw new BadRequestException("Category is required");
     }
 
-    const testaferro = this.testaferrosRepository.create(data);
+    const testaferro = this.testaferrosRepository.create({
+      ...data,
+      confidenceLevel: data.confidenceLevel ?? 3,
+      sources: data.sources ?? [],
+    });
     return this.testaferrosRepository.save(testaferro);
   }
 
   /**
    * Update a testaferro
    */
-  async update(id: string, data: Partial<Testaferro>): Promise<Testaferro> {
+  async update(id: string, data: UpdateTestaferroDto): Promise<Testaferro> {
     const testaferro = await this.findOne(id);
     Object.assign(testaferro, data);
     return this.testaferrosRepository.save(testaferro);

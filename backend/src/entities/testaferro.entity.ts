@@ -167,11 +167,21 @@ export class Testaferro {
   casesInvolvement?: string; // JSON: [{"case_id": "uuid", "role": "defendant", "outcome": "guilty"}]
 
   // CONFIDENCE & VERIFICATION
-  @Column({ type: "int", default: 3 })
+  @Column({ type: "int", default: 3, name: "confidence_level" })
   confidenceLevel: number; // 1=rumor, 2=unverified, 3=credible, 4=verified, 5=official
 
+  @Column({ type: "jsonb", nullable: true, name: "sources" })
+  sources?: Array<{
+    url: string;
+    archiveUrl?: string;
+    type: "media" | "official" | "court" | "academic";
+    publicationDate?: Date;
+    title?: string;
+    accessedDate?: Date;
+  }>;
+
   @Column({ type: "text", nullable: true })
-  evidenceSources?: string; // JSON: sources documenting the testaferro relationship
+  evidenceSources?: string; // JSON: sources documenting the testaferro relationship (legacy field)
 
   // DISPUTE & CORRECTIONS
   @Column({ type: "boolean", default: false })

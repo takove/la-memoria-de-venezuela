@@ -7,6 +7,7 @@ import {
   SanctionStatus,
 } from "../../entities/sanction.entity";
 import { NotFoundException } from "@nestjs/common";
+import { SourceType } from "../officials/dto/source.dto";
 
 describe("SanctionsService", () => {
   let service: SanctionsService;
@@ -26,6 +27,8 @@ describe("SanctionsService", () => {
     treasuryPressRelease: undefined,
     sourceUrl: "https://ofac.treasury.gov",
     metadata: undefined,
+    sources: [],
+    confidenceLevel: 5,
     createdAt: new Date(),
     updatedAt: new Date(),
     official: undefined,
@@ -154,19 +157,56 @@ describe("SanctionsService", () => {
       const createDto = {
         officialId: "official-uuid",
         type: SanctionType.OFAC_SDN,
+        programCode: "VENEZUELA",
         programName: "Test Program",
         reason: "Test reason",
-        imposedDate: new Date("2020-01-01"),
+        imposedDate: "2020-01-01",
       } as any;
 
-      mockRepository.create.mockReturnValue(mockSanction);
+      mockRepository.create.mockImplementation((data) => data);
       mockRepository.save.mockResolvedValue(mockSanction);
 
       const result = await service.create(createDto);
 
       expect(result).toEqual(mockSanction);
-      expect(mockRepository.create).toHaveBeenCalledWith(createDto);
-      expect(mockRepository.save).toHaveBeenCalledWith(mockSanction);
+      expect(mockRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          confidenceLevel: 3,
+          sources: [],
+        }),
+      );
+      expect(mockRepository.save).toHaveBeenCalled();
+    });
+
+    it("should create a sanction with sources", async () => {
+      const createDto = {
+        officialId: "official-uuid",
+        type: SanctionType.OFAC_SDN,
+        programCode: "VENEZUELA",
+        programName: "Test Program",
+        reason: "Test reason",
+        imposedDate: "2020-01-01",
+        sources: [
+          {
+            url: "https://ofac.treasury.gov/test",
+            type: SourceType.OFFICIAL,
+            title: "OFAC SDN List",
+          },
+        ],
+        confidenceLevel: 5,
+      };
+
+      mockRepository.create.mockImplementation((data) => data);
+      mockRepository.save.mockResolvedValue(mockSanction);
+
+      await service.create(createDto);
+
+      expect(mockRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sources: createDto.sources,
+          confidenceLevel: 5,
+        }),
+      );
     });
   });
 

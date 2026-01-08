@@ -174,13 +174,6 @@ test.describe("Search Functionality", () => {
 
       // Wait for results to load
       await page.waitForLoadState("networkidle");
-
-      // Check if results appear
-      const results = page.locator(
-        "[data-testid*='card'], [data-testid*='result'], .card, .result",
-      );
-      await results.count();
-
       // Results should load (or no results message should appear)
       expect(page.url()).toBeTruthy();
     }
