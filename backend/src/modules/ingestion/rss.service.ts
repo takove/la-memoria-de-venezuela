@@ -16,6 +16,16 @@ interface RssFeed {
 }
 
 /**
+ * Parsed article from RSS/Atom feed
+ */
+type ParsedArticle = {
+  title: string;
+  source_url: string;
+  content: string;
+  published_at: Date;
+};
+
+/**
  * RSS Polling Service
  *
  * Periodically checks RSS feeds for new articles and enqueues them
@@ -177,14 +187,7 @@ export class RssService {
    * @param feed RSS feed configuration
    * @returns Array of parsed articles with title, URL, content, published date
    */
-  private async fetchFeedArticles(feed: RssFeed): Promise<
-    Array<{
-      title: string;
-      source_url: string;
-      content: string;
-      published_at: Date;
-    }>
-  > {
+  private async fetchFeedArticles(feed: RssFeed): Promise<ParsedArticle[]> {
     return new Promise((resolve, reject) => {
       const protocol = feed.url.startsWith("https") ? https : http;
 
@@ -212,10 +215,9 @@ export class RssService {
             const parsed =
               await this.xmlParser.parseStringPromise(sanitizedData);
 
-            let skippedItems = 0;
-
             // Handle RSS 2.0 format
             if (parsed.rss?.channel?.[0]?.item) {
+              let skippedItems = 0;
               const items = parsed.rss.channel[0].item;
               const articles = items
                 .slice(0, 10) // Limit to last 10 items per feed
@@ -238,19 +240,8 @@ export class RssService {
                   }
                 })
                 .filter(
-                  (
-                    article: {
-                      title: string;
-                      source_url: string;
-                      content: string;
-                      published_at: Date;
-                    } | null,
-                  ): article is {
-                    title: string;
-                    source_url: string;
-                    content: string;
-                    published_at: Date;
-                  } => article !== null,
+                  (article: ParsedArticle | null): article is ParsedArticle =>
+                    article !== null,
                 );
 
               if (skippedItems > 0) {
@@ -265,6 +256,7 @@ export class RssService {
 
             // Handle Atom 1.0 format
             if (parsed.feed?.entry) {
+              let skippedItems = 0;
               const entries = parsed.feed.entry;
               const articles = entries
                 .slice(0, 10) // Limit to last 10 items
@@ -290,19 +282,8 @@ export class RssService {
                   }
                 })
                 .filter(
-                  (
-                    article: {
-                      title: string;
-                      source_url: string;
-                      content: string;
-                      published_at: Date;
-                    } | null,
-                  ): article is {
-                    title: string;
-                    source_url: string;
-                    content: string;
-                    published_at: Date;
-                  } => article !== null,
+                  (article: ParsedArticle | null): article is ParsedArticle =>
+                    article !== null,
                 );
 
               if (skippedItems > 0) {
