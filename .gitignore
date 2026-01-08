@@ -37,3 +37,4 @@ coverage/
 # Misc
 *.tsbuildinfo
 .vercel/
+package-lock.json
