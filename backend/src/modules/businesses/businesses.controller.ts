@@ -14,7 +14,7 @@ import { BusinessCategory } from "../../entities";
 import { CreateBusinessDto } from "./dto/create-business.dto";
 import { UpdateBusinessDto } from "./dto/update-business.dto";
 
-@Controller("api/v1/businesses")
+@Controller("businesses")
 export class BusinessesController {
   constructor(private businessesService: BusinessesService) {}
 

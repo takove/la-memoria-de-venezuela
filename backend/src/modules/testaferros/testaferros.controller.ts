@@ -14,7 +14,7 @@ import { TestaferroCategory, TestaferroStatus } from "../../entities";
 import { CreateTestaferroDto } from "./dto/create-testaferro.dto";
 import { UpdateTestaferroDto } from "./dto/update-testaferro.dto";
 
-@Controller("api/v1/testaferros")
+@Controller("testaferros")
 export class TestaferrosController {
   constructor(private testaferrosService: TestaferrosService) {}
 

@@ -51,7 +51,7 @@ const BUSINESS_SEEDS: Partial<Business>[] = [
         reason: "Corruption, illicit food scheme benefiting regime",
       },
     ],
-    evidenceSources: [
+    sources: [
       {
         type: "indictment",
         title: "US v. Álex Saab - Southern District of New York",
@@ -127,7 +127,7 @@ const BUSINESS_SEEDS: Partial<Business>[] = [
         reason: "Providing material support to government of Venezuela",
       },
     ],
-    evidenceSources: [
+    sources: [
       {
         type: "article",
         title: "Derwick Associates: A Billion Dollar Bribery Scheme",
@@ -163,7 +163,7 @@ const BUSINESS_SEEDS: Partial<Business>[] = [
         reason: "Suspicious transaction patterns with Venezuelan entities",
       },
     ],
-    evidenceSources: [
+    sources: [
       {
         type: "advisory",
         title: "FinCEN Venezuela Advisory - Financial Intermediaries",
@@ -219,7 +219,7 @@ const BUSINESS_SEEDS: Partial<Business>[] = [
         reason: "International bribery and money laundering",
       },
     ],
-    evidenceSources: [
+    sources: [
       {
         type: "document",
         title: "Odebrecht Plea Agreement - US Department of Justice",
@@ -260,7 +260,7 @@ const BUSINESS_SEEDS: Partial<Business>[] = [
         description: "No-bid contract with no deliverables",
       },
     ],
-    evidenceSources: [
+    sources: [
       {
         type: "document",
         title: "ICIJ Offshore Leaks - Petrodelta",
