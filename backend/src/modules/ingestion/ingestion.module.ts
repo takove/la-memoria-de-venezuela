@@ -15,12 +15,26 @@ import { RssService } from "./rss.service";
 import { IngestionProcessor } from "./ingestion.processor";
 import { TestaferroIngestionService } from "./testaferro-ingestion.service";
 import { TestaferroIngestionController } from "./testaferro-ingestion.controller";
-import { StgNode, StgEdge, StgEntity, StgArticle, Testaferro, Official } from "../../entities";
+import {
+  StgNode,
+  StgEdge,
+  StgEntity,
+  StgArticle,
+  Testaferro,
+  Official,
+} from "../../entities";
 import { Tier1Module } from "./tier1/tier1.module";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([StgNode, StgEdge, StgEntity, StgArticle, Testaferro, Official]),
+    TypeOrmModule.forFeature([
+      StgNode,
+      StgEdge,
+      StgEntity,
+      StgArticle,
+      Testaferro,
+      Official,
+    ]),
     BullModule.registerQueue({
       name: "ingestion",
     }),

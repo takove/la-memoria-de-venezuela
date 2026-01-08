@@ -1,16 +1,13 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { TestaferroIngestionService } from './testaferro-ingestion.service';
-import { Testaferro } from '../../entities/testaferro.entity';
-import { Official } from '../../entities/official.entity';
-import { ImportTestaferroDto } from './dto/import-testaferro.dto';
-import { BadRequestException } from '@nestjs/common';
+import { Test, TestingModule } from "@nestjs/testing";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { TestaferroIngestionService } from "./testaferro-ingestion.service";
+import { Testaferro } from "../../entities/testaferro.entity";
+import { Official } from "../../entities/official.entity";
+import { ImportTestaferroDto } from "./dto/import-testaferro.dto";
 
-describe('TestaferroIngestionService', () => {
+describe("TestaferroIngestionService", () => {
   let service: TestaferroIngestionService;
-  let testaferroRepository: Repository<Testaferro>;
-  let officialRepository: Repository<Official>;
 
   const mockTestaferroRepository = {
     findOne: jest.fn(),
@@ -43,38 +40,32 @@ describe('TestaferroIngestionService', () => {
     service = module.get<TestaferroIngestionService>(
       TestaferroIngestionService,
     );
-    testaferroRepository = module.get<Repository<Testaferro>>(
-      getRepositoryToken(Testaferro),
-    );
-    officialRepository = module.get<Repository<Official>>(
-      getRepositoryToken(Official),
-    );
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('importFromJson', () => {
-    it('should import valid testaferros successfully', async () => {
+  describe("importFromJson", () => {
+    it("should import valid testaferros successfully", async () => {
       const testData: ImportTestaferroDto[] = [
         {
-          fullName: 'Test Testaferro 1',
+          fullName: "Test Testaferro 1",
           confidenceLevel: 4,
-          knownFor: 'Money laundering',
+          knownFor: "Money laundering",
           sources: [
             {
-              url: 'https://treasury.gov/test',
-              type: 'official' as any,
-              title: 'OFAC Sanction',
-              publicationDate: '2020-01-01',
+              url: "https://treasury.gov/test",
+              type: "official" as any,
+              title: "OFAC Sanction",
+              publicationDate: "2020-01-01",
             },
           ],
         },
         {
-          fullName: 'Test Testaferro 2',
+          fullName: "Test Testaferro 2",
           confidenceLevel: 5,
-          knownFor: 'Corruption',
+          knownFor: "Corruption",
         },
       ];
 
@@ -92,17 +83,17 @@ describe('TestaferroIngestionService', () => {
       expect(mockTestaferroRepository.save).toHaveBeenCalledTimes(2);
     });
 
-    it('should handle duplicate entries gracefully', async () => {
+    it("should handle duplicate entries gracefully", async () => {
       const testData: ImportTestaferroDto[] = [
         {
-          fullName: 'Existing Testaferro',
+          fullName: "Existing Testaferro",
           confidenceLevel: 3,
         },
       ];
 
       mockTestaferroRepository.findOne.mockResolvedValue({
-        id: 'existing-id',
-        fullName: 'Existing Testaferro',
+        id: "existing-id",
+        fullName: "Existing Testaferro",
       });
 
       const result = await service.importFromJson(testData);
@@ -110,20 +101,20 @@ describe('TestaferroIngestionService', () => {
       expect(result.imported).toBe(0);
       expect(result.failed).toBe(1);
       expect(result.errors).toHaveLength(1);
-      expect(result.errors[0]).toContain('already exists');
+      expect(result.errors[0]).toContain("already exists");
     });
 
-    it('should link testaferro to related official when found', async () => {
+    it("should link testaferro to related official when found", async () => {
       const mockOfficial = {
-        id: 'official-123',
-        fullName: 'Nicolás Maduro',
+        id: "official-123",
+        fullName: "Nicolás Maduro",
       };
 
       const testData: ImportTestaferroDto[] = [
         {
-          fullName: 'Test Testaferro',
+          fullName: "Test Testaferro",
           confidenceLevel: 5,
-          relatedOfficialId: 'official-123',
+          relatedOfficialId: "official-123",
         },
       ];
 
@@ -138,21 +129,21 @@ describe('TestaferroIngestionService', () => {
 
       expect(result.imported).toBe(1);
       expect(mockOfficialRepository.findOne).toHaveBeenCalledWith({
-        where: { id: 'official-123' },
+        where: { id: "official-123" },
       });
     });
 
-    it('should find official by name when ID not provided', async () => {
+    it("should find official by name when ID not provided", async () => {
       const mockOfficial = {
-        id: 'official-123',
-        fullName: 'Nicolás Maduro',
+        id: "official-123",
+        fullName: "Nicolás Maduro",
       };
 
       const testData: ImportTestaferroDto[] = [
         {
-          fullName: 'Test Testaferro',
+          fullName: "Test Testaferro",
           confidenceLevel: 5,
-          relatedOfficialName: 'Maduro',
+          relatedOfficialName: "Maduro",
         },
       ];
 
@@ -177,11 +168,11 @@ describe('TestaferroIngestionService', () => {
     });
   });
 
-  describe('validateImportData', () => {
-    it('should pass validation for valid data', () => {
+  describe("validateImportData", () => {
+    it("should pass validation for valid data", () => {
       const validData: ImportTestaferroDto[] = [
         {
-          fullName: 'Valid Name',
+          fullName: "Valid Name",
           confidenceLevel: 4,
         },
       ];
@@ -192,10 +183,10 @@ describe('TestaferroIngestionService', () => {
       expect(result.errors).toHaveLength(0);
     });
 
-    it('should fail validation when fullName is missing', () => {
+    it("should fail validation when fullName is missing", () => {
       const invalidData: ImportTestaferroDto[] = [
         {
-          fullName: '',
+          fullName: "",
           confidenceLevel: 4,
         },
       ];
@@ -203,13 +194,13 @@ describe('TestaferroIngestionService', () => {
       const result = service.validateImportData(invalidData);
 
       expect(result.valid).toBe(false);
-      expect(result.errors).toContain('Row 1: fullName is required');
+      expect(result.errors).toContain("Row 1: fullName is required");
     });
 
-    it('should fail validation when confidenceLevel is out of range', () => {
+    it("should fail validation when confidenceLevel is out of range", () => {
       const invalidData: ImportTestaferroDto[] = [
         {
-          fullName: 'Test',
+          fullName: "Test",
           confidenceLevel: 6,
         },
       ];
@@ -217,27 +208,27 @@ describe('TestaferroIngestionService', () => {
       const result = service.validateImportData(invalidData);
 
       expect(result.valid).toBe(false);
-      expect(result.errors[0]).toContain('must be between 1 and 5');
+      expect(result.errors[0]).toContain("must be between 1 and 5");
     });
 
-    it('should fail validation when sources is not an array', () => {
+    it("should fail validation when sources is not an array", () => {
       const invalidData: any[] = [
         {
-          fullName: 'Test',
+          fullName: "Test",
           confidenceLevel: 4,
-          sources: 'not-an-array',
+          sources: "not-an-array",
         },
       ];
 
       const result = service.validateImportData(invalidData);
 
       expect(result.valid).toBe(false);
-      expect(result.errors[0]).toContain('sources must be an array');
+      expect(result.errors[0]).toContain("sources must be an array");
     });
   });
 
-  describe('getImportStats', () => {
-    it('should return correct statistics', async () => {
+  describe("getImportStats", () => {
+    it("should return correct statistics", async () => {
       mockTestaferroRepository.count.mockResolvedValue(100);
 
       const mockQueryBuilder = {
@@ -245,9 +236,9 @@ describe('TestaferroIngestionService', () => {
         addSelect: jest.fn().mockReturnThis(),
         groupBy: jest.fn().mockReturnThis(),
         getRawMany: jest.fn().mockResolvedValue([
-          { level: 3, count: '30' },
-          { level: 4, count: '50' },
-          { level: 5, count: '20' },
+          { level: 3, count: "30" },
+          { level: 4, count: "50" },
+          { level: 5, count: "20" },
         ]),
         where: jest.fn().mockReturnThis(),
         getCount: jest.fn().mockResolvedValue(75),

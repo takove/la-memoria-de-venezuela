@@ -10,7 +10,10 @@ const AppDataSource = new DataSource({
   url: process.env.DATABASE_URL,
   entities: ["dist/entities/**/*.js"],
   migrations: ["dist/migrations/**/*.js"],
-  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
+  ssl:
+    process.env.NODE_ENV === "production"
+      ? { rejectUnauthorized: false }
+      : false,
   logging: true,
 });
 
@@ -22,7 +25,7 @@ async function runMigrations() {
 
     console.log("🔄 Running pending migrations...");
     const migrations = await AppDataSource.runMigrations();
-    
+
     if (migrations.length === 0) {
       console.log("✅ No pending migrations");
     } else {

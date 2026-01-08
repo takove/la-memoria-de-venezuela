@@ -1,6 +1,14 @@
-import { IsString, IsOptional, IsInt, Min, Max, IsArray, IsDate } from 'class-validator';
-import { Type } from 'class-transformer';
-import { SourceDto } from '../../officials/dto/source.dto';
+import {
+  IsString,
+  IsOptional,
+  IsInt,
+  Min,
+  Max,
+  IsArray,
+  IsDate,
+} from "class-validator";
+import { Type } from "class-transformer";
+import { SourceDto } from "../../officials/dto/source.dto";
 
 export class ImportTestaferroDto {
   @IsString()

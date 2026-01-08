@@ -57,7 +57,15 @@ describe("api helpers", () => {
       statusText: "OK",
     });
 
-    await getVictims({ page: 1, limit: 10, search: "victim", category: "death", minConfidence: 4, yearFrom: 2000, yearTo: 2024 });
+    await getVictims({
+      page: 1,
+      limit: 10,
+      search: "victim",
+      category: "death",
+      minConfidence: 4,
+      yearFrom: 2000,
+      yearTo: 2024,
+    });
 
     expect(fetchMock).toHaveBeenCalledWith(
       "http://localhost:3000/api/v1/memorial/victims?page=1&limit=10&search=victim&category=death&minConfidence=4&yearFrom=2000&yearTo=2024",
@@ -89,14 +97,14 @@ describe("api helpers", () => {
       statusText: "OK",
     });
 
-    await getPrisoners({ 
-      page: 1, 
-      limit: 20, 
-      search: "prisoner", 
-      status: "detained", 
+    await getPrisoners({
+      page: 1,
+      limit: 20,
+      search: "prisoner",
+      status: "detained",
       facilityType: "military",
       torture: true,
-      currentlyDetained: true 
+      currentlyDetained: true,
     });
 
     expect(fetchMock).toHaveBeenCalledWith(
@@ -113,15 +121,15 @@ describe("api helpers", () => {
       statusText: "OK",
     });
 
-    await getExileStories({ 
-      page: 1, 
-      limit: 15, 
-      search: "exile", 
+    await getExileStories({
+      page: 1,
+      limit: 15,
+      search: "exile",
       destination: "Colombia",
       reason: "persecution",
       journeyRoute: "land",
       yearFrom: 2015,
-      yearTo: 2024
+      yearTo: 2024,
     });
 
     expect(fetchMock).toHaveBeenCalledWith(
@@ -139,7 +147,12 @@ describe("api helpers", () => {
       statusText: "OK",
     });
 
-    await getOfficials({ page: 2, limit: 20, search: "Maduro", status: "active" });
+    await getOfficials({
+      page: 2,
+      limit: 20,
+      search: "Maduro",
+      status: "active",
+    });
 
     expect(fetchMock).toHaveBeenCalledWith(
       "http://localhost:3000/api/v1/officials?page=2&limit=20&search=Maduro&status=active",
@@ -237,7 +250,12 @@ describe("api helpers", () => {
       statusText: "OK",
     });
 
-    await getCases({ page: 1, limit: 25, type: "criminal", jurisdiction: "US" });
+    await getCases({
+      page: 1,
+      limit: 25,
+      type: "criminal",
+      jurisdiction: "US",
+    });
 
     expect(fetchMock).toHaveBeenCalledWith(
       "http://localhost:3000/api/v1/cases?page=1&limit=25&type=criminal&jurisdiction=US",
