@@ -114,7 +114,6 @@ test.describe("Officials Page", () => {
 
       // Verify detail page loads
       await page.waitForLoadState("networkidle");
-
       // Detail page should have some content
       expect(page.url()).toContain("/officials/");
     }
