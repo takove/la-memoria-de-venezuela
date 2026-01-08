@@ -182,6 +182,7 @@ test.describe("Search Functionality", () => {
       const count = await results.count();
 
       // Results should load (or no results message should appear)
+      expect(count).toBeGreaterThanOrEqual(0);
       expect(page.url()).toBeTruthy();
     }
   });

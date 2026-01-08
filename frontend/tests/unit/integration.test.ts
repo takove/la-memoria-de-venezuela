@@ -336,6 +336,7 @@ describe("Performance", () => {
     }
 
     // In a real implementation, debouncing would reduce this
-    expect(mockSearch).toHaveBeenCalled();
+    expect(mockSearch).toHaveBeenCalledTimes(10);
+    expect(searchCount).toBe(10);
   });
 });
